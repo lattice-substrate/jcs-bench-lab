@@ -45,11 +45,15 @@ All comparisons use:
 \item Cohen's $d$ for effect size.\footnote{Computed as
       $(\bar{x}_\text{schubfach} - \bar{x}_\text{json-canon}) / s_p$;
       negative values indicate schubfach is faster.}
-\item Noise floor documentation: $\text{CV} \times \bar{x}_\text{faster}$.
-\item Minimum observable effect: $\frac{2.8 \times \text{CV} \times 100}{\sqrt{N}}$,
+\item Noise floor documentation: standard deviation of the faster
+      implementation ($\sigma = \text{CV} \times \bar{x}_\text{faster}$),
+      quantifying measurement noise in the same units as the metric.
+\item Minimum observable effect:
+      $\frac{2.8 \sqrt{2}\,\times\,\text{CV}\,\times\,100}{\sqrt{N}}$,
       where $2.8 \approx z_{\alpha/2} + z_\beta$ for $\alpha = 0.05$ and
       80\% power (approximate minimum detectable effect for a two-sample
-      $z$-test; permutation test power may differ for small $n$).
+      $z$-test with equal group sizes; uses only the faster implementation's
+      CV and $n$ as an approximation).
 \item Benjamini-Hochberg false discovery rate (FDR) control at $q = 0.05$
       across all $N$ comparisons.  We report both raw and BH-adjusted
       $p$-values.

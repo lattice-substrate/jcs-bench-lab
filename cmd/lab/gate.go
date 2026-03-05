@@ -22,6 +22,15 @@ func runGate(conformancePath, statsPath, fuzzPath, baselinePath string, maxRegre
 	statsPath = choosePath(statsPath, filepath.Join(root, "results", "latest-stats.json"))
 	fuzzPath = choosePath(fuzzPath, filepath.Join(root, "results", "latest-fuzz.json"))
 
+	// Verify the conformance gate was active during benchmarking.
+	qualityPath := filepath.Join(root, "results", "latest-quality.json")
+	if qb, qerr := os.ReadFile(qualityPath); qerr == nil {
+		var qr qualityReport
+		if json.Unmarshal(qb, &qr) == nil && !qr.ConformanceGateActive {
+			return errors.New("gate failed: benchmark was run with --skip-conformance; re-run without it")
+		}
+	}
+
 	conf, err := loadConformanceReport(conformancePath)
 	if err != nil {
 		return err

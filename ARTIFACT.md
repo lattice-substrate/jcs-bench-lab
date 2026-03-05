@@ -2,9 +2,10 @@
 
 ## Prerequisites
 
-- Go 1.24+ (`go version`)
-- Node.js 23+ (`node --version`) — for oracle vector regeneration only
+- Go 1.24+ (`go version`); reported results used Go 1.25.6
+- Node.js 23+ (`node --version`) — for oracle vector regeneration only; oracle verified with v23.3.0
 - Linux x86-64 (arm64 for cross-architecture verification)
+- `qemu-aarch64-static` (optional): for arm64 cross-compilation determinism verification; tested with QEMU 8.2.2
 - `benchstat` (optional): `go install golang.org/x/perf/cmd/benchstat@latest`
 - LaTeX (optional): for paper compilation (`pdflatex`, `bibtex`)
 

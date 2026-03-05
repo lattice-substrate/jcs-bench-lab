@@ -22,7 +22,9 @@ benchmarks on Graviton, Apple Silicon, or Ampere hardware.
 \textbf{Single JavaScript engine oracle.}
 Oracle vectors are generated from V8 (via Node.js).  While ECMA-262
 \texttt{Number::toString} semantics are normative and engine-independent,
-our vectors are verified against only one engine.  This is mitigated by
+our vectors are verified against only one engine and one version
+(V8~12.9.202.28).  Cross-version stability is expected from the
+normative spec but not independently verified.  This is mitigated by
 dense boundary coverage: 286{,}362 vectors including all subnormals
 up to $2^{12}$, all binary64 powers of two, subnormal/normal boundary
 neighborhoods, \rfcjcs Appendix~B examples with neighbors, and

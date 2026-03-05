@@ -46,12 +46,13 @@ big-integer buffers across calls.
 
 \subsection{Schubfach (Fixed-Width)}
 
-The \schubfach algorithm~\cite{giulietti2022schubfach} operates entirely
-within fixed-width 64/128-bit arithmetic via \texttt{math/bits}
-(\texttt{Mul64}, \texttt{Add64}, \texttt{TrailingZeros64}).  It uses
-precomputed tables of powers of ten and 128-bit multiplications to
-determine the shortest decimal significand.  No heap allocation is
-required in the digit-generation path.
+The \schubfach algorithm~\cite{giulietti2022schubfach} uses fixed-width
+64/128-bit arithmetic, relying on \texttt{math/bits} for 128-bit
+multiplication (\texttt{Mul64}, \texttt{Add64}) and bit inspection
+(\texttt{TrailingZeros64}).  It uses precomputed tables of powers of ten
+and 128-bit multiplications to determine the shortest decimal
+significand.  No heap allocation is required in the digit-generation
+path.
 
 The key advantage is constant-time (with respect to exponent magnitude)
 operation and zero GC pressure.  The precomputed table is approximately

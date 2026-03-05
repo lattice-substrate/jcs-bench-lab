@@ -53,7 +53,7 @@ type statsReport struct {
 	Comparisons    []statsComparison `json:"comparisons"`
 }
 
-func runStats(runsPath string, alpha float64, resamples int) error {
+func runStats(runsPath, apiBenchPath string, alpha float64, resamples int) error {
 	if alpha <= 0 || alpha >= 1 {
 		return errors.New("alpha must be in (0,1)")
 	}
@@ -65,6 +65,7 @@ func runStats(runsPath string, alpha float64, resamples int) error {
 		return err
 	}
 	runsPath = choosePath(runsPath, filepath.Join(root, "results", "latest-cli-runs.csv"))
+	apiBenchPath = choosePath(apiBenchPath, filepath.Join(root, "results", "latest-api-bench.txt"))
 
 	runs, err := loadRunsCSV(runsPath)
 	if err != nil {
@@ -72,6 +73,17 @@ func runStats(runsPath string, alpha float64, resamples int) error {
 	}
 
 	comparisons := buildStatsComparisons(runs, alpha, resamples)
+
+	// Parse API bench output and add API comparisons.
+	apiRuns, apiErr := loadAPIBenchRuns(apiBenchPath)
+	if apiErr == nil && len(apiRuns) > 0 {
+		apiComparisons := buildStatsComparisons(apiRuns, alpha, resamples)
+		comparisons = append(comparisons, apiComparisons...)
+		fmt.Printf("included %d API comparisons from %s\n", len(apiComparisons), apiBenchPath)
+	} else if apiErr != nil {
+		fmt.Printf("warning: skipping API bench stats (%v)\n", apiErr)
+	}
+
 	applyBenjaminiHochberg(comparisons, alpha)
 
 	report := statsReport{
@@ -109,6 +121,96 @@ func runStats(runsPath string, alpha float64, resamples int) error {
 	fmt.Printf("latest links\n- %s\n- %s\n", latestJSON, latestMD)
 	return nil
 }
+
+// loadAPIBenchRuns parses Go testing.B benchmark output into runRecord entries
+// suitable for the same statistical comparison pipeline used by CLI benchmarks.
+// Each BenchmarkAPI line becomes one run with track="api".
+func loadAPIBenchRuns(path string) ([]runRecord, error) {
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return nil, err
+	}
+
+	var runs []runRecord
+	sessionCounters := map[string]int{} // track session IDs per impl+workload
+
+	for _, line := range strings.Split(string(data), "\n") {
+		line = strings.TrimSpace(line)
+		if !strings.HasPrefix(line, "Benchmark") {
+			continue
+		}
+		// Parse: BenchmarkAPICanonicalizeSchubfach/workload-GOMAXPROCS \t iters \t ns/op ...
+		// or:   BenchmarkAPICanonicalizeJSONCanon/workload-GOMAXPROCS ...
+		fields := strings.Fields(line)
+		if len(fields) < 4 {
+			continue
+		}
+		name := fields[0]
+		// Find ns/op value
+		var nsOp float64
+		for i, f := range fields {
+			if f == "ns/op" && i > 0 {
+				nsOp, _ = strconv.ParseFloat(fields[i-1], 64)
+				break
+			}
+		}
+		if nsOp == 0 {
+			continue
+		}
+
+		// Extract impl and mode/workload from benchmark name.
+		var impl, mode, workload string
+		slashIdx := strings.Index(name, "/")
+		if slashIdx < 0 {
+			continue
+		}
+		prefix := name[:slashIdx]
+		rest := name[slashIdx+1:]
+
+		// Remove -GOMAXPROCS suffix (e.g., "-20").
+		if dashIdx := strings.LastIndex(rest, "-"); dashIdx > 0 {
+			if _, err := strconv.Atoi(rest[dashIdx+1:]); err == nil {
+				rest = rest[:dashIdx]
+			}
+		}
+
+		switch {
+		case strings.Contains(prefix, "CanonicalizeSchubfach"):
+			impl = "schubfach"
+			mode = "canonicalize"
+		case strings.Contains(prefix, "CanonicalizeJSONCanon"):
+			impl = "json-canon"
+			mode = "canonicalize"
+		case strings.Contains(prefix, "VerifySchubfach"):
+			impl = "schubfach"
+			mode = "verify"
+		case strings.Contains(prefix, "VerifyJSONCanon"):
+			impl = "json-canon"
+			mode = "verify"
+		default:
+			continue
+		}
+		workload = rest
+
+		key := impl + "|" + mode + "|" + workload
+		session := sessionCounters[key]
+		sessionCounters[key]++
+
+		runs = append(runs, runRecord{
+			SessionID:    session,
+			Track:        "api",
+			Impl:         impl,
+			Mode:         mode,
+			Workload:     workload,
+			Class:        "valid",
+			OK:           true,
+			PassesOracle: true,
+			DurationNS:   int64(nsOp),
+		})
+	}
+	return runs, nil
+}
+
 
 func loadRunsCSV(path string) ([]runRecord, error) {
 	f, err := os.Open(path)
@@ -214,9 +316,8 @@ func buildStatsComparisons(runs []runRecord, alpha float64, resamples int) []sta
 		pval := permutationPValue(a.durations, b.durations, resamples, key)
 		effect := cohenD(a.durations, b.durations)
 
-		// Noise floor = CV x mean of faster impl.
-		// Approximate minimum detectable effect for a two-sample z-test at 80% power;
-		// permutation test power may differ for small n.
+		// Noise floor = standard deviation of the faster impl (equivalently CV × mean).
+		// This quantifies measurement noise in the same units as the metric (ms).
 		fasterMean := meanA
 		fasterCV := coefficientOfVariation(a.durations)
 		fasterN := float64(len(a.durations))
@@ -228,8 +329,11 @@ func buildStatsComparisons(runs []runRecord, alpha float64, resamples int) []sta
 		noiseFloor := fasterCV * fasterMean
 		minObsEff := 0.0
 		if fasterN > 0 {
-			// 2.8 ≈ z_{α/2} + z_β = 1.96 + 0.84 for α = 0.05 and 80% power.
-			minObsEff = (2.8 * fasterCV * 100.0) / math.Sqrt(fasterN)
+			// Two-sample minimum detectable effect at 80% power (α = 0.05):
+			// Δ/μ = (z_{α/2} + z_β) × √(2/n) × CV × 100
+			// where z_{α/2} + z_β ≈ 1.96 + 0.84 = 2.8, and √2 ≈ 1.4142.
+			// This uses only the faster implementation's CV and n as an approximation.
+			minObsEff = (2.8 * math.Sqrt2 * fasterCV * 100.0) / math.Sqrt(fasterN)
 		}
 
 		cmp = append(cmp, statsComparison{

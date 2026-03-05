@@ -64,6 +64,7 @@ type qualityReport struct {
 	GeneratedAtUTC             string            `json:"generated_at_utc"`
 	Track                      string            `json:"track"`
 	Seed                       int64             `json:"seed"`
+	ConformanceGateActive      bool              `json:"conformance_gate_active"`
 	DeterminismFailures        []string          `json:"determinism_failures"`
 	OutputEqualityFailures     []string          `json:"output_equality_failures"`
 	InvalidFailureParityIssues []string          `json:"invalid_failure_parity_issues"`
@@ -171,10 +172,11 @@ func main() {
 	case "stats":
 		fs := flag.NewFlagSet("stats", flag.ExitOnError)
 		runsPath := fs.String("runs", "", "path to raw runs csv (default: results/latest-cli-runs.csv)")
+		apiBenchPath := fs.String("api-bench", "", "path to API bench output (default: results/latest-api-bench.txt)")
 		alpha := fs.Float64("alpha", 0.05, "significance alpha")
 		resamples := fs.Int("resamples", 5000, "bootstrap/permutation resamples")
 		_ = fs.Parse(os.Args[2:])
-		if err := runStats(*runsPath, *alpha, *resamples); err != nil {
+		if err := runStats(*runsPath, *apiBenchPath, *alpha, *resamples); err != nil {
 			fatal(err)
 		}
 	case "gate":
@@ -776,9 +778,10 @@ func runBenchCLI(repeats, warmup int, track string, seed int64, pinCPU int, skip
 	}
 
 	quality := qualityReport{
-		GeneratedAtUTC: time.Now().UTC().Format(time.RFC3339),
-		Track:          track,
-		Seed:           seed,
+		GeneratedAtUTC:        time.Now().UTC().Format(time.RFC3339),
+		Track:                 track,
+		Seed:                  seed,
+		ConformanceGateActive: !skipConformance,
 		Notes: map[string]string{
 			"cli_modes":        "canonicalize on workload input; verify on canonical fixtures for valid cases",
 			"determinism_rule": "successful runs must produce identical stdout hash",
@@ -1578,20 +1581,32 @@ func runARM64Determinism() error {
 		testOutput := string(runOut)
 		testsPassed := 0
 		totalTests := 0
+		goldenResult := "SKIP"
+		stressResult := "SKIP"
 		for _, line := range strings.Split(testOutput, "\n") {
 			if strings.Contains(line, "--- PASS:") {
 				testsPassed++
 				totalTests++
+				if strings.Contains(line, "TestGoldenOracle") {
+					goldenResult = "PASS"
+				} else if strings.Contains(line, "TestStressOracle") {
+					stressResult = "PASS"
+				}
 			} else if strings.Contains(line, "--- FAIL:") {
 				totalTests++
+				if strings.Contains(line, "TestGoldenOracle") {
+					goldenResult = "FAIL"
+				} else if strings.Contains(line, "TestStressOracle") {
+					stressResult = "FAIL"
+				}
 			}
 		}
 		if runErr != nil {
 			fmt.Printf("warning: arm64 oracle tests for %s had errors: %v\n", b.name, runErr)
 		}
 		oracleTests[b.name+"_arm64"] = oracleResult{
-			GoldenVectors: map[string]interface{}{"result": "PASS"},
-			StressVectors: map[string]interface{}{"result": "PASS"},
+			GoldenVectors: map[string]interface{}{"result": goldenResult},
+			StressVectors: map[string]interface{}{"result": stressResult},
 			TotalTests:    totalTests,
 			TotalPassed:   testsPassed,
 		}
