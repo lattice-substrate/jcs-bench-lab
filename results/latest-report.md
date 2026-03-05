@@ -1,6 +1,6 @@
 # Benchmark Report
 
-Generated at: 2026-03-05T06:13:57Z
+Generated at: 2026-03-05T15:42:51Z
 
 Sources:
 - `/home/lenny/jcs-bench-lab/results/latest-api-bench.txt`
@@ -10,14 +10,14 @@ Sources:
 - `/home/lenny/jcs-bench-lab/results/latest-conformance.json`
 - `/home/lenny/jcs-bench-lab/results/latest-stats.json`
 
-- `results/latest-fuzz.json`
+- `/home/lenny/jcs-bench-lab/results/latest-fuzz.json`
 
 ## Executive Summary
 
 - Conformance failures: 0
 - Quality oracle mismatches: 0
 - Differential fuzz failures: 0
-- Statistically significant practical wins: 2
+- Statistically significant practical wins: 5
 - Recommendation status: Recommend `schubfach` based on statistically significant practical wins with conformance/oracle gates passing.
 
 ## Conformance Evidence
@@ -39,135 +39,135 @@ Sources:
 
 | workload | schubfach (avg_ms) | json-canon (avg_ms) | winner | speedup |
 |---|---:|---:|---|---:|
-| array-2048 | 19.556 | 17.999 | json-canon | 1.09x |
-| array-256 | 6.775 | 7.930 | schubfach | 1.17x |
-| canonical-minimal | 4.881 | 6.475 | schubfach | 1.33x |
-| control-escapes | 3.742 | 5.387 | schubfach | 1.44x |
-| deep-64 | 5.104 | 6.597 | schubfach | 1.29x |
-| escaped-key-order | 5.305 | 5.377 | schubfach | 1.01x |
-| long-string | 5.491 | 5.917 | schubfach | 1.08x |
-| nested-mixed | 6.103 | 4.541 | json-canon | 1.34x |
-| numeric-boundary | 4.810 | 4.465 | json-canon | 1.08x |
-| rfc-key-sorting | 6.562 | 4.731 | json-canon | 1.39x |
-| small | 5.795 | 4.136 | json-canon | 1.40x |
-| surrogate-pair | 5.383 | 6.586 | schubfach | 1.22x |
-| unicode | 4.707 | 5.706 | schubfach | 1.21x |
-| verify-whitespace | 5.221 | 5.230 | schubfach | 1.00x |
+| array-2048 | 5.221 | 6.871 | schubfach | 1.32x |
+| array-256 | 1.920 | 2.016 | schubfach | 1.05x |
+| canonical-minimal | 1.391 | 1.567 | schubfach | 1.13x |
+| control-escapes | 1.488 | 1.576 | schubfach | 1.06x |
+| deep-64 | 1.419 | 1.551 | schubfach | 1.09x |
+| escaped-key-order | 1.489 | 1.494 | schubfach | 1.00x |
+| long-string | 1.669 | 1.814 | schubfach | 1.09x |
+| nested-mixed | 1.230 | 1.667 | schubfach | 1.35x |
+| numeric-boundary | 1.417 | 1.730 | schubfach | 1.22x |
+| rfc-key-sorting | 1.417 | 1.573 | schubfach | 1.11x |
+| small | 1.415 | 1.480 | schubfach | 1.05x |
+| surrogate-pair | 1.408 | 1.394 | json-canon | 1.01x |
+| unicode | 1.376 | 1.547 | schubfach | 1.12x |
+| verify-whitespace | 1.337 | 1.476 | schubfach | 1.10x |
 
 ### CLI verify
 
 | workload | schubfach (avg_ms) | json-canon (avg_ms) | winner | speedup |
 |---|---:|---:|---|---:|
-| array-2048 | 23.157 | 28.189 | schubfach | 1.22x |
-| array-256 | 7.129 | 8.914 | schubfach | 1.25x |
-| canonical-minimal | 4.347 | 5.031 | schubfach | 1.16x |
-| control-escapes | 5.195 | 6.435 | schubfach | 1.24x |
-| deep-64 | 4.995 | 6.243 | schubfach | 1.25x |
-| escaped-key-order | 4.434 | 4.839 | schubfach | 1.09x |
-| long-string | 5.339 | 5.513 | schubfach | 1.03x |
-| nested-mixed | 5.932 | 5.433 | json-canon | 1.09x |
-| numeric-boundary | 4.172 | 5.884 | schubfach | 1.41x |
-| rfc-key-sorting | 6.011 | 5.701 | json-canon | 1.05x |
-| small | 5.075 | 5.089 | schubfach | 1.00x |
-| surrogate-pair | 4.940 | 5.364 | schubfach | 1.09x |
-| unicode | 5.757 | 5.159 | json-canon | 1.12x |
-| verify-whitespace | 4.462 | 5.084 | schubfach | 1.14x |
+| array-2048 | 5.373 | 6.968 | schubfach | 1.30x |
+| array-256 | 1.834 | 2.241 | schubfach | 1.22x |
+| canonical-minimal | 1.483 | 1.628 | schubfach | 1.10x |
+| control-escapes | 1.546 | 1.557 | schubfach | 1.01x |
+| deep-64 | 1.510 | 1.391 | json-canon | 1.09x |
+| escaped-key-order | 1.384 | 1.575 | schubfach | 1.14x |
+| long-string | 1.720 | 1.751 | schubfach | 1.02x |
+| nested-mixed | 1.296 | 1.466 | schubfach | 1.13x |
+| numeric-boundary | 1.398 | 1.548 | schubfach | 1.11x |
+| rfc-key-sorting | 1.373 | 1.543 | schubfach | 1.12x |
+| small | 1.453 | 1.550 | schubfach | 1.07x |
+| surrogate-pair | 1.412 | 1.517 | schubfach | 1.07x |
+| unicode | 1.503 | 1.567 | schubfach | 1.04x |
+| verify-whitespace | 1.380 | 1.512 | schubfach | 1.10x |
 
 ### API
 
 | workload | schubfach (ns/op) | json-canon (ns/op) | winner | speedup |
 |---|---:|---:|---|---:|
-| canonicalize/array-2048 | 10390436.000 | 13400888.000 | schubfach | 1.29x |
-| canonicalize/array-256 | 1242055.000 | 1483814.000 | schubfach | 1.19x |
-| canonicalize/canonical-minimal | 1034.000 | 1147.000 | schubfach | 1.11x |
-| canonicalize/control-escapes | 4396.000 | 4419.000 | schubfach | 1.01x |
-| canonicalize/deep | 134957.000 | 141426.000 | schubfach | 1.05x |
-| canonicalize/deep-64 | 55526.000 | 64079.000 | schubfach | 1.15x |
-| canonicalize/escaped-key-order | 2706.000 | 3069.000 | schubfach | 1.13x |
-| canonicalize/large | 34419219.000 | 32711983.000 | json-canon | 1.05x |
-| canonicalize/long-string | 109449.000 | 104875.000 | json-canon | 1.04x |
-| canonicalize/medium | 1235456.000 | 1610904.000 | schubfach | 1.30x |
-| canonicalize/mixed-prod | 478684.000 | 554694.000 | schubfach | 1.16x |
-| canonicalize/nested-mixed | 6505.000 | 9405.000 | schubfach | 1.45x |
-| canonicalize/number-heavy | 17501.000 | 24905.000 | schubfach | 1.42x |
-| canonicalize/numeric-boundary | 14223.000 | 19645.000 | schubfach | 1.38x |
-| canonicalize/rfc-key-sorting | 9266.000 | 8312.000 | json-canon | 1.11x |
-| canonicalize/small | 4030.000 | 5605.000 | schubfach | 1.39x |
-| canonicalize/surrogate-pair | 1976.000 | 2052.000 | schubfach | 1.04x |
-| canonicalize/unicode | 4731.000 | 5217.000 | schubfach | 1.10x |
-| canonicalize/verify-whitespace | 3699.000 | 4280.000 | schubfach | 1.16x |
-| verify/canonical/array-2048 | 11198095.000 | 13106305.000 | schubfach | 1.17x |
-| verify/canonical/array-256 | 1227366.000 | 1704143.000 | schubfach | 1.39x |
-| verify/canonical/canonical-minimal | 1379.000 | 1624.000 | schubfach | 1.18x |
-| verify/canonical/control-escapes | 3780.000 | 4964.000 | schubfach | 1.31x |
-| verify/canonical/deep | 112643.000 | 142435.000 | schubfach | 1.26x |
-| verify/canonical/deep-64 | 63230.000 | 65230.000 | schubfach | 1.03x |
-| verify/canonical/escaped-key-order | 2413.000 | 3476.000 | schubfach | 1.44x |
-| verify/canonical/large | 33524820.000 | 32702136.000 | json-canon | 1.03x |
-| verify/canonical/long-string | 143180.000 | 127728.000 | json-canon | 1.12x |
-| verify/canonical/medium | 1499521.000 | 1922577.000 | schubfach | 1.28x |
-| verify/canonical/mixed-prod | 545587.000 | 666333.000 | schubfach | 1.22x |
-| verify/canonical/nested-mixed | 8609.000 | 9745.000 | schubfach | 1.13x |
-| verify/canonical/number-heavy | 20347.000 | 25870.000 | schubfach | 1.27x |
-| verify/canonical/numeric-boundary | 15163.000 | 21140.000 | schubfach | 1.39x |
-| verify/canonical/rfc-key-sorting | 10990.000 | 9040.000 | json-canon | 1.22x |
-| verify/canonical/small | 4072.000 | 6616.000 | schubfach | 1.62x |
-| verify/canonical/surrogate-pair | 2368.000 | 2875.000 | schubfach | 1.21x |
-| verify/canonical/unicode | 4569.000 | 5358.000 | schubfach | 1.17x |
-| verify/canonical/verify-whitespace | 2761.000 | 4397.000 | schubfach | 1.59x |
-| verify/noncanonical/control-escapes | 4941.000 | 5013.000 | schubfach | 1.01x |
-| verify/noncanonical/escaped-key-order | 2084.000 | 2792.000 | schubfach | 1.34x |
-| verify/noncanonical/large | 28956019.000 | 32457332.000 | schubfach | 1.12x |
-| verify/noncanonical/medium | 754185.000 | 1650602.000 | schubfach | 2.19x |
-| verify/noncanonical/mixed-prod | 474069.000 | 671622.000 | schubfach | 1.42x |
-| verify/noncanonical/nested-mixed | 6415.000 | 9879.000 | schubfach | 1.54x |
-| verify/noncanonical/number-heavy | 16509.000 | 23918.000 | schubfach | 1.45x |
-| verify/noncanonical/numeric-boundary | 14554.000 | 19888.000 | schubfach | 1.37x |
-| verify/noncanonical/rfc-key-sorting | 8347.000 | 7785.000 | json-canon | 1.07x |
-| verify/noncanonical/small | 4756.000 | 4251.000 | json-canon | 1.12x |
-| verify/noncanonical/surrogate-pair | 2116.000 | 1955.000 | json-canon | 1.08x |
-| verify/noncanonical/unicode | 4861.000 | 5250.000 | schubfach | 1.08x |
-| verify/noncanonical/verify-whitespace | 2710.000 | 3415.000 | schubfach | 1.26x |
+| canonicalize/array-2048 | 2548995.833 | 4047979.833 | schubfach | 1.59x |
+| canonicalize/array-256 | 303347.500 | 474368.500 | schubfach | 1.56x |
+| canonicalize/canonical-minimal | 352.283 | 529.300 | schubfach | 1.50x |
+| canonicalize/control-escapes | 1335.167 | 1251.333 | json-canon | 1.07x |
+| canonicalize/deep | 36651.333 | 36688.667 | schubfach | 1.00x |
+| canonicalize/deep-64 | 16236.667 | 16239.833 | schubfach | 1.00x |
+| canonicalize/escaped-key-order | 707.433 | 1124.667 | schubfach | 1.59x |
+| canonicalize/large | 11928619.000 | 20545683.667 | schubfach | 1.72x |
+| canonicalize/long-string | 74802.167 | 73587.500 | json-canon | 1.02x |
+| canonicalize/medium | 340270.333 | 581178.167 | schubfach | 1.71x |
+| canonicalize/mixed-prod | 136311.000 | 178287.333 | schubfach | 1.31x |
+| canonicalize/nested-mixed | 2181.833 | 3065.667 | schubfach | 1.41x |
+| canonicalize/number-heavy | 13529.500 | 20854.833 | schubfach | 1.54x |
+| canonicalize/numeric-boundary | 12395.833 | 18294.167 | schubfach | 1.48x |
+| canonicalize/rfc-key-sorting | 3018.333 | 2967.833 | json-canon | 1.02x |
+| canonicalize/small | 1243.167 | 1667.000 | schubfach | 1.34x |
+| canonicalize/surrogate-pair | 647.250 | 639.950 | json-canon | 1.01x |
+| canonicalize/unicode | 1548.667 | 1558.667 | schubfach | 1.01x |
+| canonicalize/verify-whitespace | 906.500 | 1563.000 | schubfach | 1.72x |
+| verify/canonical/array-2048 | 2469781.333 | 4029019.000 | schubfach | 1.63x |
+| verify/canonical/array-256 | 317223.833 | 489779.667 | schubfach | 1.54x |
+| verify/canonical/canonical-minimal | 358.083 | 548.567 | schubfach | 1.53x |
+| verify/canonical/control-escapes | 1318.833 | 1273.167 | json-canon | 1.04x |
+| verify/canonical/deep | 37935.667 | 38057.500 | schubfach | 1.00x |
+| verify/canonical/deep-64 | 16756.500 | 16837.667 | schubfach | 1.00x |
+| verify/canonical/escaped-key-order | 684.650 | 1130.333 | schubfach | 1.65x |
+| verify/canonical/large | 11506130.667 | 20018040.000 | schubfach | 1.74x |
+| verify/canonical/long-string | 76126.667 | 75923.000 | json-canon | 1.00x |
+| verify/canonical/medium | 341654.667 | 580655.333 | schubfach | 1.70x |
+| verify/canonical/mixed-prod | 134312.000 | 176078.833 | schubfach | 1.31x |
+| verify/canonical/nested-mixed | 2218.167 | 3117.833 | schubfach | 1.41x |
+| verify/canonical/number-heavy | 13608.000 | 21223.833 | schubfach | 1.56x |
+| verify/canonical/numeric-boundary | 12525.833 | 18510.833 | schubfach | 1.48x |
+| verify/canonical/rfc-key-sorting | 2853.667 | 2834.833 | json-canon | 1.01x |
+| verify/canonical/small | 1223.000 | 1658.667 | schubfach | 1.36x |
+| verify/canonical/surrogate-pair | 659.250 | 654.400 | json-canon | 1.01x |
+| verify/canonical/unicode | 1540.000 | 1546.333 | schubfach | 1.00x |
+| verify/canonical/verify-whitespace | 936.467 | 1582.833 | schubfach | 1.69x |
+| verify/noncanonical/control-escapes | 1308.500 | 1261.333 | json-canon | 1.04x |
+| verify/noncanonical/escaped-key-order | 703.350 | 1124.500 | schubfach | 1.60x |
+| verify/noncanonical/large | 11908081.333 | 20607667.167 | schubfach | 1.73x |
+| verify/noncanonical/medium | 343706.167 | 574766.500 | schubfach | 1.67x |
+| verify/noncanonical/mixed-prod | 136452.667 | 178493.167 | schubfach | 1.31x |
+| verify/noncanonical/nested-mixed | 2185.000 | 3063.000 | schubfach | 1.40x |
+| verify/noncanonical/number-heavy | 13609.333 | 20847.833 | schubfach | 1.53x |
+| verify/noncanonical/numeric-boundary | 12518.833 | 18296.500 | schubfach | 1.46x |
+| verify/noncanonical/rfc-key-sorting | 3017.500 | 2968.167 | json-canon | 1.02x |
+| verify/noncanonical/small | 1245.833 | 1664.167 | schubfach | 1.34x |
+| verify/noncanonical/surrogate-pair | 650.567 | 644.033 | json-canon | 1.01x |
+| verify/noncanonical/unicode | 1556.833 | 1552.833 | json-canon | 1.00x |
+| verify/noncanonical/verify-whitespace | 913.567 | 1563.667 | schubfach | 1.71x |
 
 ## Statistical Inference
 
 | track | mode | workload | winner | speedup | ci95 | p-value | practical |
 |---|---|---|---|---:|---|---:|---|
-| e2e | canonicalize | array-2048 | json-canon | 1.086x | [0.676, 1.927] | 0.7591 | true |
-| e2e | canonicalize | array-256 | schubfach | 1.171x | [0.750, 1.858] | 0.5165 | true |
-| e2e | canonicalize | canonical-minimal | schubfach | 1.326x | [1.124, 1.828] | 0.0003 | true |
-| e2e | canonicalize | control-escapes | schubfach | 1.439x | [0.865, 2.809] | 0.2403 | true |
-| e2e | canonicalize | deep-64 | schubfach | 1.293x | [1.045, 1.757] | 0.0497 | true |
-| e2e | canonicalize | escaped-key-order | schubfach | 1.014x | [0.686, 1.472] | 0.9600 | false |
-| e2e | canonicalize | long-string | schubfach | 1.077x | [0.735, 1.594] | 0.6811 | true |
-| e2e | canonicalize | nested-mixed | json-canon | 1.344x | [0.853, 2.280] | 0.2329 | true |
-| e2e | canonicalize | numeric-boundary | json-canon | 1.077x | [0.657, 1.817] | 0.8870 | true |
-| e2e | canonicalize | rfc-key-sorting | json-canon | 1.387x | [1.053, 2.075] | 0.0610 | true |
-| e2e | canonicalize | small | json-canon | 1.401x | [1.008, 2.201] | 0.0760 | true |
-| e2e | canonicalize | surrogate-pair | schubfach | 1.223x | [0.850, 1.831] | 0.3242 | true |
-| e2e | canonicalize | unicode | schubfach | 1.212x | [0.785, 2.059] | 0.4209 | true |
-| e2e | canonicalize | verify-whitespace | schubfach | 1.002x | [0.615, 1.519] | 0.9960 | false |
-| e2e | verify | array-2048 | schubfach | 1.217x | [0.858, 1.641] | 0.2692 | true |
-| e2e | verify | array-256 | schubfach | 1.250x | [0.869, 1.829] | 0.2912 | true |
-| e2e | verify | canonical-minimal | schubfach | 1.157x | [0.711, 1.785] | 0.5402 | true |
-| e2e | verify | control-escapes | schubfach | 1.238x | [0.996, 1.568] | 0.0906 | true |
-| e2e | verify | deep-64 | schubfach | 1.250x | [0.919, 1.908] | 0.2289 | true |
-| e2e | verify | escaped-key-order | schubfach | 1.091x | [0.691, 1.645] | 0.7178 | true |
-| e2e | verify | long-string | schubfach | 1.033x | [0.648, 1.601] | 0.8944 | true |
-| e2e | verify | nested-mixed | json-canon | 1.092x | [0.854, 1.548] | 0.6101 | true |
-| e2e | verify | numeric-boundary | schubfach | 1.411x | [0.903, 2.543] | 0.1866 | true |
-| e2e | verify | rfc-key-sorting | json-canon | 1.054x | [0.892, 1.338] | 0.7304 | true |
-| e2e | verify | small | schubfach | 1.003x | [0.657, 1.440] | 0.9937 | false |
-| e2e | verify | surrogate-pair | schubfach | 1.086x | [0.787, 1.482] | 0.6315 | true |
-| e2e | verify | unicode | json-canon | 1.116x | [0.880, 1.556] | 0.4585 | true |
-| e2e | verify | verify-whitespace | schubfach | 1.139x | [0.806, 1.725] | 0.5202 | true |
+| e2e | canonicalize | array-2048 | schubfach | 1.316x | [1.222, 1.419] | 0.0007 | true |
+| e2e | canonicalize | array-256 | schubfach | 1.050x | [0.942, 1.173] | 0.4115 | true |
+| e2e | canonicalize | canonical-minimal | schubfach | 1.127x | [0.940, 1.357] | 0.2316 | true |
+| e2e | canonicalize | control-escapes | schubfach | 1.059x | [0.920, 1.240] | 0.4778 | true |
+| e2e | canonicalize | deep-64 | schubfach | 1.093x | [0.909, 1.288] | 0.3486 | true |
+| e2e | canonicalize | escaped-key-order | schubfach | 1.003x | [0.877, 1.150] | 0.9630 | false |
+| e2e | canonicalize | long-string | schubfach | 1.087x | [0.937, 1.249] | 0.2892 | true |
+| e2e | canonicalize | nested-mixed | schubfach | 1.355x | [1.181, 1.541] | 0.0017 | true |
+| e2e | canonicalize | numeric-boundary | schubfach | 1.221x | [1.038, 1.447] | 0.0360 | true |
+| e2e | canonicalize | rfc-key-sorting | schubfach | 1.110x | [0.924, 1.336] | 0.3296 | true |
+| e2e | canonicalize | small | schubfach | 1.046x | [0.883, 1.262] | 0.6258 | true |
+| e2e | canonicalize | surrogate-pair | json-canon | 1.010x | [0.848, 1.203] | 0.9134 | false |
+| e2e | canonicalize | unicode | schubfach | 1.124x | [0.949, 1.306] | 0.1833 | true |
+| e2e | canonicalize | verify-whitespace | schubfach | 1.104x | [0.926, 1.310] | 0.3126 | true |
+| e2e | verify | array-2048 | schubfach | 1.297x | [1.223, 1.374] | 0.0007 | true |
+| e2e | verify | array-256 | schubfach | 1.222x | [1.045, 1.449] | 0.0383 | true |
+| e2e | verify | canonical-minimal | schubfach | 1.098x | [0.945, 1.277] | 0.2566 | true |
+| e2e | verify | control-escapes | schubfach | 1.007x | [0.845, 1.192] | 0.9320 | false |
+| e2e | verify | deep-64 | json-canon | 1.085x | [0.924, 1.247] | 0.3269 | true |
+| e2e | verify | escaped-key-order | schubfach | 1.138x | [0.961, 1.348] | 0.1709 | true |
+| e2e | verify | long-string | schubfach | 1.018x | [0.882, 1.183] | 0.8197 | false |
+| e2e | verify | nested-mixed | schubfach | 1.132x | [0.912, 1.381] | 0.2822 | true |
+| e2e | verify | numeric-boundary | schubfach | 1.107x | [0.891, 1.380] | 0.3759 | true |
+| e2e | verify | rfc-key-sorting | schubfach | 1.124x | [0.948, 1.328] | 0.2046 | true |
+| e2e | verify | small | schubfach | 1.067x | [0.874, 1.301] | 0.5245 | true |
+| e2e | verify | surrogate-pair | schubfach | 1.074x | [0.914, 1.253] | 0.4169 | true |
+| e2e | verify | unicode | schubfach | 1.043x | [0.908, 1.191] | 0.5675 | true |
+| e2e | verify | verify-whitespace | schubfach | 1.095x | [0.922, 1.320] | 0.3519 | true |
 
 ## benchstat Snippet
 
 ```text
 # Benchstat Snapshot
 
-Generated at: 2026-03-05T06:13:32Z
+Generated at: 2026-03-05T15:37:32Z
 
 Sources:
 - API benchmark: `/home/lenny/jcs-bench-lab/results/latest-api-bench.txt`
@@ -185,66 +185,66 @@ Sources:
 
 | workload | schubfach (avg_ms) | json-canon (avg_ms) | winner | speedup |
 |---|---:|---:|---|---:|
-| array-2048 | 19.556 | 17.999 | json-canon | 1.09x |
-| array-256 | 6.775 | 7.930 | schubfach | 1.17x |
-| canonical-minimal | 4.881 | 6.475 | schubfach | 1.33x |
-| control-escapes | 3.742 | 5.387 | schubfach | 1.44x |
-| deep-64 | 5.104 | 6.597 | schubfach | 1.29x |
-| escaped-key-order | 5.305 | 5.377 | schubfach | 1.01x |
-| long-string | 5.491 | 5.917 | schubfach | 1.08x |
-| nested-mixed | 6.103 | 4.541 | json-canon | 1.34x |
-| numeric-boundary | 4.810 | 4.465 | json-canon | 1.08x |
-| rfc-key-sorting | 6.562 | 4.731 | json-canon | 1.39x |
-| small | 5.795 | 4.136 | json-canon | 1.40x |
-| surrogate-pair | 5.383 | 6.586 | schubfach | 1.22x |
-| unicode | 4.707 | 5.706 | schubfach | 1.21x |
-| verify-whitespace | 5.221 | 5.230 | schubfach | 1.00x |
+| array-2048 | 5.221 | 6.871 | schubfach | 1.32x |
+| array-256 | 1.920 | 2.016 | schubfach | 1.05x |
+| canonical-minimal | 1.391 | 1.567 | schubfach | 1.13x |
+| control-escapes | 1.488 | 1.576 | schubfach | 1.06x |
+| deep-64 | 1.419 | 1.551 | schubfach | 1.09x |
+| escaped-key-order | 1.489 | 1.494 | schubfach | 1.00x |
+| long-string | 1.669 | 1.814 | schubfach | 1.09x |
+| nested-mixed | 1.230 | 1.667 | schubfach | 1.35x |
+| numeric-boundary | 1.417 | 1.730 | schubfach | 1.22x |
+| rfc-key-sorting | 1.417 | 1.573 | schubfach | 1.11x |
+| small | 1.415 | 1.480 | schubfach | 1.05x |
+| surrogate-pair | 1.408 | 1.394 | json-canon | 1.01x |
+| unicode | 1.376 | 1.547 | schubfach | 1.12x |
+| verify-whitespace | 1.337 | 1.476 | schubfach | 1.10x |
 
 ## CLI Verify (valid workloads)
 
 | workload | schubfach (avg_ms) | json-canon (avg_ms) | winner | speedup |
 |---|---:|---:|---|---:|
-| array-2048 | 23.157 | 28.189 | schubfach | 1.22x |
-| array-256 | 7.129 | 8.914 | schubfach | 1.25x |
-| canonical-minimal | 4.347 | 5.031 | schubfach | 1.16x |
-| control-escapes | 5.195 | 6.435 | schubfach | 1.24x |
-| deep-64 | 4.995 | 6.243 | schubfach | 1.25x |
-| escaped-key-order | 4.434 | 4.839 | schubfach | 1.09x |
-| long-string | 5.339 | 5.513 | schubfach | 1.03x |
-| nested-mixed | 5.932 | 5.433 | json-canon | 1.09x |
-| numeric-boundary | 4.172 | 5.884 | schubfach | 1.41x |
-| rfc-key-sorting | 6.011 | 5.701 | json-canon | 1.05x |
-| small | 5.075 | 5.089 | schubfach | 1.00x |
-| surrogate-pair | 4.940 | 5.364 | schubfach | 1.09x |
-| unicode | 5.757 | 5.159 | json-canon | 1.12x |
-| verify-whitespace | 4.462 | 5.084 | schubfach | 1.14x |
+| array-2048 | 5.373 | 6.968 | schubfach | 1.30x |
+| array-256 | 1.834 | 2.241 | schubfach | 1.22x |
+| canonical-minimal | 1.483 | 1.628 | schubfach | 1.10x |
+| control-escapes | 1.546 | 1.557 | schubfach | 1.01x |
+| deep-64 | 1.510 | 1.391 | json-canon | 1.09x |
+| escaped-key-order | 1.384 | 1.575 | schubfach | 1.14x |
+| long-string | 1.720 | 1.751 | schubfach | 1.02x |
+| nested-mixed | 1.296 | 1.466 | schubfach | 1.13x |
+| numeric-boundary | 1.398 | 1.548 | schubfach | 1.11x |
+| rfc-key-sorting | 1.373 | 1.543 | schubfach | 1.12x |
+| small | 1.453 | 1.550 | schubfach | 1.07x |
+| surrogate-pair | 1.412 | 1.517 | schubfach | 1.07x |
+| unicode | 1.503 | 1.567 | schubfach | 1.04x |
+| verify-whitespace | 1.380 | 1.512 | schubfach | 1.10x |
 
 ## API Benchmarks (ns/op)
 
 | workload | schubfach (ns/op) | json-canon (ns/op) | winner | speedup |
 |---|---:|---:|---|---:|
-| canonicalize/array-2048 | 10390436.000 | 13400888.000 | schubfach | 1.29x |
-| canonicalize/array-256 | 1242055.000 | 1483814.000 | schubfach | 1.19x |
-| canonicalize/canonical-minimal | 1034.000 | 1147.000 | schubfach | 1.11x |
-| canonicalize/control-escapes | 4396.000 | 4419.000 | schubfach | 1.01x |
-| canonicalize/deep | 134957.000 | 141426.000 | schubfach | 1.05x |
-| canonicalize/deep-64 | 55526.000 | 64079.000 | schubfach | 1.15x |
-| canonicalize/escaped-key-order | 2706.000 | 3069.000 | schubfach | 1.13x |
-| canonicalize/large | 34419219.000 | 32711983.000 | json-canon | 1.05x |
-| canonicalize/long-string | 109449.000 | 104875.000 | json-canon | 1.04x |
-| canonicalize/medium | 1235456.000 | 1610904.000 | schubfach | 1.30x |
-| canonicalize/mixed-prod | 478684.000 | 554694.000 | schubfach | 1.16x |
-| canonicalize/nested-mixed | 6505.000 | 9405.000 | schubfach | 1.45x |
-| canonicalize/number-heavy | 17501.000 | 24905.000 | schubfach | 1.42x |
-| canonicalize/numeric-boundary | 14223.000 | 19645.000 | schubfach | 1.38x |
-| canonicalize/rfc-key-sorting | 9266.000 | 8312.000 | json-canon | 1.11x |
-| canonicalize/small | 4030.000 | 5605.000 | schubfach | 1.39x |
-| canonicalize/surrogate-pair | 1976.000 | 2052.000 | schubfach | 1.04x |
-| canonicalize/unicode | 4731.000 | 5217.000 | schubfach | 1.10x |
-| canonicalize/verify-whitespace | 3699.000 | 4280.000 | schubfach | 1.16x |
-| verify/canonical/array-2048 | 11198095.000 | 13106305.000 | schubfach | 1.17x |
-| verify/canonical/array-256 | 1227366.000 | 1704143.000 | schubfach | 1.39x |
-| verify/canonical/canonical-minimal | 1379.000 | 1624.000 | schubfach | 1.18x |
+| canonicalize/array-2048 | 2548995.833 | 4047979.833 | schubfach | 1.59x |
+| canonicalize/array-256 | 303347.500 | 474368.500 | schubfach | 1.56x |
+| canonicalize/canonical-minimal | 352.283 | 529.300 | schubfach | 1.50x |
+| canonicalize/control-escapes | 1335.167 | 1251.333 | json-canon | 1.07x |
+| canonicalize/deep | 36651.333 | 36688.667 | schubfach | 1.00x |
+| canonicalize/deep-64 | 16236.667 | 16239.833 | schubfach | 1.00x |
+| canonicalize/escaped-key-order | 707.433 | 1124.667 | schubfach | 1.59x |
+| canonicalize/large | 11928619.000 | 20545683.667 | schubfach | 1.72x |
+| canonicalize/long-string | 74802.167 | 73587.500 | json-canon | 1.02x |
+| canonicalize/medium | 340270.333 | 581178.167 | schubfach | 1.71x |
+| canonicalize/mixed-prod | 136311.000 | 178287.333 | schubfach | 1.31x |
+| canonicalize/nested-mixed | 2181.833 | 3065.667 | schubfach | 1.41x |
+| canonicalize/number-heavy | 13529.500 | 20854.833 | schubfach | 1.54x |
+| canonicalize/numeric-boundary | 12395.833 | 18294.167 | schubfach | 1.48x |
+| canonicalize/rfc-key-sorting | 3018.333 | 2967.833 | json-canon | 1.02x |
+| canonicalize/small | 1243.167 | 1667.000 | schubfach | 1.34x |
+| canonicalize/surrogate-pair | 647.250 | 639.950 | json-canon | 1.01x |
+| canonicalize/unicode | 1548.667 | 1558.667 | schubfach | 1.01x |
+| canonicalize/verify-whitespace | 906.500 | 1563.000 | schubfach | 1.72x |
+| verify/canonical/array-2048 | 2469781.333 | 4029019.000 | schubfach | 1.63x |
+| verify/canonical/array-256 | 317223.833 | 489779.667 | schubfach | 1.54x |
+| verify/canonical/canonical-minimal | 358.083 | 548.567 | schubfach | 1.53x |
 ```
 
 ## Production Recommendation
