@@ -1,6 +1,6 @@
 module github.com/lattice-substrate/jcs-bench-lab
 
-go 1.22.5
+go 1.24
 
 require (
 	github.com/lattice-substrate/jcs-schubfach v0.0.0

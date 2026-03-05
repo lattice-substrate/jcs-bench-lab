@@ -228,7 +228,8 @@ func buildStatsComparisons(runs []runRecord, alpha float64, resamples int) []sta
 		noiseFloor := fasterCV * fasterMean
 		minObsEff := 0.0
 		if fasterN > 0 {
-			minObsEff = (2.0 * fasterCV * 100.0) / math.Sqrt(fasterN)
+			// 2.8 ≈ z_{α/2} + z_β = 1.96 + 0.84 for α = 0.05 and 80% power.
+			minObsEff = (2.8 * fasterCV * 100.0) / math.Sqrt(fasterN)
 		}
 
 		cmp = append(cmp, statsComparison{

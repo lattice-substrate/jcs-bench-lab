@@ -1613,11 +1613,11 @@ func runARM64Determinism() error {
 			"total_workload_mode_impl_comparisons": totalComparisons,
 			"all_sha256_match":                     len(failures) == 0,
 		},
-		"conclusion": fmt.Sprintf("Both implementations produce byte-identical output across x86-64 and arm64 for all %d CLI workload comparisons.", totalComparisons),
+		"conclusion": fmt.Sprintf("Cross-compilation determinism verified via QEMU user-mode emulation on x86-64 host for all %d CLI workload comparisons. This verifies Go cross-compilation determinism, not native arm64 hardware behavior.", totalComparisons),
 	}
 
 	if len(failures) > 0 {
-		report["conclusion"] = fmt.Sprintf("%d of %d comparisons failed cross-architecture determinism check.", len(failures), totalComparisons)
+		report["conclusion"] = fmt.Sprintf("%d of %d comparisons failed cross-compilation determinism check (QEMU user-mode emulation on x86-64 host).", len(failures), totalComparisons)
 	}
 
 	b, err := json.MarshalIndent(report, "", "  ")
