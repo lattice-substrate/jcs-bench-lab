@@ -1,0 +1,13 @@
+goos: linux
+goarch: amd64
+pkg: github.com/lattice-substrate/jcs-bench-lab/internal/apibench
+cpu: 12th Gen Intel(R) Core(TM) i7-12700K
+BenchmarkAPICanonicalizeJSONCanon/deep-20         	   10000	    171090 ns/op	   6.77 MB/s	   58972 B/op	     843 allocs/op
+BenchmarkAPICanonicalizeJSONCanon/large-20        	      36	  31804986 ns/op	  14.57 MB/s	21578402 B/op	  237565 allocs/op
+BenchmarkAPICanonicalizeJSONCanon/medium-20       	     825	   1718349 ns/op	   8.00 MB/s	  639892 B/op	    7394 allocs/op
+BenchmarkAPICanonicalizeJSONCanon/mixed-prod-20   	    6253	    574315 ns/op	   9.84 MB/s	  263256 B/op	    2595 allocs/op
+BenchmarkAPICanonicalizeJSONCanon/number-heavy-20 	   42064	     25786 ns/op	   5.43 MB/s	    5408 B/op	      80 allocs/op
+BenchmarkAPICanonicalizeJSONCanon/small-20        	  509284	      5910 ns/op	   7.61 MB/s	    2203 B/op	      24 allocs/op
+BenchmarkAPICanonicalizeJSONCanon/unicode-20      	  373993	      5503 ns/op	  17.81 MB/s	    2019 B/op	      19 allocs/op
+PASS
+ok  	github.com/lattice-substrate/jcs-bench-lab/internal/apibench	14.757s

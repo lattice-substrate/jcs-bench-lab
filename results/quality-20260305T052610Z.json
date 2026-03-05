@@ -1,0 +1,13 @@
+{
+  "generated_at_utc": "2026-03-05T05:26:08Z",
+  "determinism_failures": null,
+  "output_equality_failures": null,
+  "invalid_failure_parity_issues": null,
+  "notes": {
+    "api_note": "API benchmark is canonicalize-only because verify API is not exported",
+    "cli_modes": "canonicalize + verify on identical inputs",
+    "determinism_rule": "successful runs must produce identical stdout hash",
+    "parity_rule": "invalid inputs should have same success/failure outcome across implementations",
+    "smoke_default_runs": "3 repeats, 1 warmup"
+  }
+}

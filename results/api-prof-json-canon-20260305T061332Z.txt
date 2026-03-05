@@ -1,0 +1,57 @@
+goos: linux
+goarch: amd64
+pkg: github.com/lattice-substrate/jcs-bench-lab/internal/apibench
+cpu: 12th Gen Intel(R) Core(TM) i7-12700K
+BenchmarkAPICanonicalizeJSONCanon/array-2048-20         	      14	  18261241 ns/op	   5.42 MB/s	 5126457 B/op	   57332 allocs/op
+BenchmarkAPICanonicalizeJSONCanon/array-256-20          	      76	   1391263 ns/op	   8.56 MB/s	  629882 B/op	    7151 allocs/op
+BenchmarkAPICanonicalizeJSONCanon/canonical-minimal-20  	  127752	      1854 ns/op	   3.78 MB/s	     504 B/op	       8 allocs/op
+BenchmarkAPICanonicalizeJSONCanon/control-escapes-20    	   17982	      6040 ns/op	   9.77 MB/s	    2064 B/op	      21 allocs/op
+BenchmarkAPICanonicalizeJSONCanon/deep-20               	    1633	     81223 ns/op	  14.26 MB/s	   58963 B/op	     843 allocs/op
+BenchmarkAPICanonicalizeJSONCanon/deep-64-20            	    1820	     79011 ns/op	   6.45 MB/s	   26917 B/op	     387 allocs/op
+BenchmarkAPICanonicalizeJSONCanon/escaped-key-order-20  	   21028	      5879 ns/op	   3.06 MB/s	    1209 B/op	      16 allocs/op
+BenchmarkAPICanonicalizeJSONCanon/large-20              	       5	  32273804 ns/op	  14.36 MB/s	21580520 B/op	  237567 allocs/op
+BenchmarkAPICanonicalizeJSONCanon/long-string-20        	    1218	    111287 ns/op	 147.39 MB/s	   35948 B/op	      14 allocs/op
+BenchmarkAPICanonicalizeJSONCanon/medium-20             	     100	   1079487 ns/op	  12.73 MB/s	  639913 B/op	    7393 allocs/op
+BenchmarkAPICanonicalizeJSONCanon/mixed-prod-20         	     228	    809230 ns/op	   6.99 MB/s	  263250 B/op	    2595 allocs/op
+BenchmarkAPICanonicalizeJSONCanon/nested-mixed-20       	    6691	     15676 ns/op	   3.13 MB/s	    4213 B/op	      49 allocs/op
+BenchmarkAPICanonicalizeJSONCanon/number-heavy-20       	    4412	     33308 ns/op	   4.20 MB/s	    5409 B/op	      80 allocs/op
+BenchmarkAPICanonicalizeJSONCanon/numeric-boundary-20   	    6535	     19786 ns/op	   4.95 MB/s	    3918 B/op	      52 allocs/op
+BenchmarkAPICanonicalizeJSONCanon/rfc-key-sorting-20    	   23368	     11785 ns/op	  17.14 MB/s	    4256 B/op	      47 allocs/op
+BenchmarkAPICanonicalizeJSONCanon/small-20              	   45381	      3104 ns/op	  14.50 MB/s	    2203 B/op	      24 allocs/op
+BenchmarkAPICanonicalizeJSONCanon/surrogate-pair-20     	   42607	      2506 ns/op	  11.57 MB/s	    1168 B/op	      14 allocs/op
+BenchmarkAPICanonicalizeJSONCanon/unicode-20            	   15709	      6892 ns/op	  14.22 MB/s	    2019 B/op	      19 allocs/op
+BenchmarkAPICanonicalizeJSONCanon/verify-whitespace-20  	   32894	      3717 ns/op	   6.46 MB/s	    1658 B/op	      23 allocs/op
+BenchmarkAPIVerifyJSONCanon/canonical/array-2048-20     	       8	  13679082 ns/op	   7.23 MB/s	 5124309 B/op	   57329 allocs/op
+BenchmarkAPIVerifyJSONCanon/canonical/array-256-20      	     109	   1437427 ns/op	   8.29 MB/s	  629717 B/op	    7150 allocs/op
+BenchmarkAPIVerifyJSONCanon/canonical/canonical-minimal-20         	  198817	      1100 ns/op	   6.36 MB/s	     504 B/op	       8 allocs/op
+BenchmarkAPIVerifyJSONCanon/canonical/control-escapes-20           	   21891	      6272 ns/op	   9.41 MB/s	    2064 B/op	      21 allocs/op
+BenchmarkAPIVerifyJSONCanon/canonical/deep-20                      	    1672	    127783 ns/op	   9.06 MB/s	   58964 B/op	     843 allocs/op
+BenchmarkAPIVerifyJSONCanon/canonical/deep-64-20                   	    2965	     52657 ns/op	   9.69 MB/s	   26906 B/op	     387 allocs/op
+BenchmarkAPIVerifyJSONCanon/canonical/escaped-key-order-20         	   62947	      2010 ns/op	   6.47 MB/s	    1201 B/op	      16 allocs/op
+BenchmarkAPIVerifyJSONCanon/canonical/large-20                     	       2	  60865454 ns/op	   7.60 MB/s	21576456 B/op	  237565 allocs/op
+BenchmarkAPIVerifyJSONCanon/canonical/long-string-20               	    1538	    142259 ns/op	 115.30 MB/s	   35948 B/op	      14 allocs/op
+BenchmarkAPIVerifyJSONCanon/canonical/medium-20                    	     112	   1026479 ns/op	  13.35 MB/s	  639687 B/op	    7393 allocs/op
+BenchmarkAPIVerifyJSONCanon/canonical/mixed-prod-20                	     282	    852259 ns/op	   6.60 MB/s	  263164 B/op	    2594 allocs/op
+BenchmarkAPIVerifyJSONCanon/canonical/nested-mixed-20              	    7082	     14921 ns/op	   3.28 MB/s	    4212 B/op	      49 allocs/op
+BenchmarkAPIVerifyJSONCanon/canonical/number-heavy-20              	    4362	     22954 ns/op	   5.92 MB/s	    5405 B/op	      80 allocs/op
+BenchmarkAPIVerifyJSONCanon/canonical/numeric-boundary-20          	    6535	     21674 ns/op	   4.52 MB/s	    3914 B/op	      52 allocs/op
+BenchmarkAPIVerifyJSONCanon/canonical/rfc-key-sorting-20           	   25414	     10734 ns/op	  16.77 MB/s	    4240 B/op	      42 allocs/op
+BenchmarkAPIVerifyJSONCanon/canonical/small-20                     	   17269	      7414 ns/op	   5.66 MB/s	    2203 B/op	      24 allocs/op
+BenchmarkAPIVerifyJSONCanon/canonical/surrogate-pair-20            	   41948	      3195 ns/op	   6.57 MB/s	    1160 B/op	      14 allocs/op
+BenchmarkAPIVerifyJSONCanon/canonical/unicode-20                   	   19516	      6603 ns/op	  14.54 MB/s	    2003 B/op	      19 allocs/op
+BenchmarkAPIVerifyJSONCanon/canonical/verify-whitespace-20         	   40650	      3656 ns/op	   4.65 MB/s	    1658 B/op	      23 allocs/op
+BenchmarkAPIVerifyJSONCanon/noncanonical/control-escapes-20        	   82518	      1343 ns/op	  43.93 MB/s	    2064 B/op	      21 allocs/op
+BenchmarkAPIVerifyJSONCanon/noncanonical/escaped-key-order-20      	   96823	      1792 ns/op	  10.05 MB/s	    1209 B/op	      16 allocs/op
+BenchmarkAPIVerifyJSONCanon/noncanonical/large-20                  	       6	  30022710 ns/op	  15.44 MB/s	21577552 B/op	  237561 allocs/op
+BenchmarkAPIVerifyJSONCanon/noncanonical/medium-20                 	     100	   2288041 ns/op	   6.01 MB/s	  639934 B/op	    7394 allocs/op
+BenchmarkAPIVerifyJSONCanon/noncanonical/mixed-prod-20             	     164	    982491 ns/op	   5.75 MB/s	  263286 B/op	    2595 allocs/op
+BenchmarkAPIVerifyJSONCanon/noncanonical/nested-mixed-20           	   20482	      5353 ns/op	   9.15 MB/s	    4214 B/op	      49 allocs/op
+BenchmarkAPIVerifyJSONCanon/noncanonical/number-heavy-20           	    5242	     30011 ns/op	   4.66 MB/s	    5409 B/op	      80 allocs/op
+BenchmarkAPIVerifyJSONCanon/noncanonical/numeric-boundary-20       	    6100	     21933 ns/op	   4.47 MB/s	    3918 B/op	      52 allocs/op
+BenchmarkAPIVerifyJSONCanon/noncanonical/rfc-key-sorting-20        	   17502	     10316 ns/op	  19.58 MB/s	    4256 B/op	      47 allocs/op
+BenchmarkAPIVerifyJSONCanon/noncanonical/small-20                  	   33913	      4820 ns/op	   9.34 MB/s	    2203 B/op	      24 allocs/op
+BenchmarkAPIVerifyJSONCanon/noncanonical/surrogate-pair-20         	   37286	      2989 ns/op	   9.70 MB/s	    1168 B/op	      14 allocs/op
+BenchmarkAPIVerifyJSONCanon/noncanonical/unicode-20                	   25632	      6366 ns/op	  15.39 MB/s	    2019 B/op	      19 allocs/op
+BenchmarkAPIVerifyJSONCanon/noncanonical/verify-whitespace-20      	   47484	      5889 ns/op	   4.08 MB/s	    1658 B/op	      23 allocs/op
+PASS
+ok  	github.com/lattice-substrate/jcs-bench-lab/internal/apibench	11.462s

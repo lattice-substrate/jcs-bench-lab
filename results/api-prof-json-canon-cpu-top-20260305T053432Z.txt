@@ -1,0 +1,29 @@
+File: apibench.test
+Build ID: f8d21951509b10455d8af57d48bcc66ca0049d37
+Type: cpu
+Time: 2026-03-04 23:34:49 CST
+Duration: 14.74s, Total samples = 18330ms (124.35%)
+Showing nodes accounting for 7300ms, 39.83% of 18330ms total
+Dropped 256 nodes (cum <= 91.65ms)
+Showing top 20 nodes out of 197
+      flat  flat%   sum%        cum   cum%
+     710ms  3.87%  3.87%      710ms  3.87%  runtime.nextFreeFast (inline)
+     690ms  3.76%  7.64%      690ms  3.76%  runtime.memmove
+     600ms  3.27% 10.91%      600ms  3.27%  strconv.leftShift
+     540ms  2.95% 13.86%     1030ms  5.62%  github.com/lattice-substrate/json-canon/jcs.serializeString
+     480ms  2.62% 16.48%      480ms  2.62%  aeshashbody
+     420ms  2.29% 18.77%     1280ms  6.98%  runtime.scanobject
+     410ms  2.24% 21.00%      430ms  2.35%  runtime.(*mspan).writeHeapBitsSmall
+     410ms  2.24% 23.24%      410ms  2.24%  runtime.memclrNoHeapPointers
+     390ms  2.13% 25.37%     2870ms 15.66%  runtime.mallocgcSmallScanNoHeader
+     320ms  1.75% 27.11%     1730ms  9.44%  github.com/lattice-substrate/json-canon/jcstoken.(*parser).parseString
+     290ms  1.58% 28.70%      290ms  1.58%  math/big.mulAddVWW
+     250ms  1.36% 30.06%     1300ms  7.09%  github.com/lattice-substrate/json-canon/jcs.validateValueTree
+     250ms  1.36% 31.42%     4040ms 22.04%  runtime.mallocgc
+     240ms  1.31% 32.73%      240ms  1.31%  runtime.futex
+     230ms  1.25% 33.99%      890ms  4.86%  math/big.(*Int).mul
+     230ms  1.25% 35.24%      380ms  2.07%  runtime.mallocgcTiny
+     210ms  1.15% 36.39%     7090ms 38.68%  github.com/lattice-substrate/json-canon/jcs.serializeObject
+     210ms  1.15% 37.53%      210ms  1.15%  math.archLog
+     210ms  1.15% 38.68%      810ms  4.42%  runtime.mapassign_faststr
+     210ms  1.15% 39.83%      210ms  1.15%  runtime.procyield

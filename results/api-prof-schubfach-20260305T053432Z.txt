@@ -1,0 +1,13 @@
+goos: linux
+goarch: amd64
+pkg: github.com/lattice-substrate/jcs-bench-lab/internal/apibench
+cpu: 12th Gen Intel(R) Core(TM) i7-12700K
+BenchmarkAPICanonicalizeSchubfach/deep-20         	   10000	    137933 ns/op	   8.40 MB/s	   58970 B/op	     843 allocs/op
+BenchmarkAPICanonicalizeSchubfach/large-20        	      38	  31399275 ns/op	  14.76 MB/s	20915341 B/op	  204775 allocs/op
+BenchmarkAPICanonicalizeSchubfach/medium-20       	    1272	   1520359 ns/op	   9.04 MB/s	  618708 B/op	    6380 allocs/op
+BenchmarkAPICanonicalizeSchubfach/mixed-prod-20   	    1806	    573471 ns/op	   9.86 MB/s	  257021 B/op	    2340 allocs/op
+BenchmarkAPICanonicalizeSchubfach/number-heavy-20 	   61819	     17354 ns/op	   8.07 MB/s	    4576 B/op	      60 allocs/op
+BenchmarkAPICanonicalizeSchubfach/small-20        	  832522	      4790 ns/op	   9.39 MB/s	    2152 B/op	      22 allocs/op
+BenchmarkAPICanonicalizeSchubfach/unicode-20      	  203602	      5829 ns/op	  16.81 MB/s	    2019 B/op	      19 allocs/op
+PASS
+ok  	github.com/lattice-substrate/jcs-bench-lab/internal/apibench	15.161s

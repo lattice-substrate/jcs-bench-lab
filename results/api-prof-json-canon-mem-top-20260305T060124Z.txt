@@ -1,0 +1,38 @@
+File: apibench.test
+Build ID: a01b1d9d9bfe6ab0ebe10919939a94cadcc89ef7
+Type: alloc_space
+Time: 2026-03-05 00:01:52 CST
+Showing nodes accounting for 4.76GB, 98.98% of 4.81GB total
+Dropped 80 nodes (cum <= 0.02GB)
+Showing top 30 nodes out of 33
+      flat  flat%   sum%        cum   cum%
+    1.57GB 32.62% 32.62%     3.09GB 64.24%  github.com/lattice-substrate/json-canon/jcstoken.(*parser).parseObject
+    1.02GB 21.18% 53.80%     1.53GB 31.79%  github.com/lattice-substrate/json-canon/jcs.serializeObject
+       1GB 20.70% 74.50%        1GB 20.70%  github.com/lattice-substrate/json-canon/jcstoken.(*parser).parseString
+    0.34GB  7.06% 81.56%     0.34GB  7.06%  internal/reflectlite.Swapper
+    0.24GB  5.07% 86.63%     1.13GB 23.56%  github.com/lattice-substrate/json-canon/jcstoken.(*parser).parseArray
+    0.23GB  4.77% 91.39%     0.23GB  4.77%  github.com/lattice-substrate/json-canon/jcstoken.(*parser).buildNumberValue
+    0.18GB  3.64% 95.03%     4.65GB 96.68%  github.com/lattice-substrate/json-canon/jcs.Canonicalize
+    0.06GB  1.32% 96.35%     0.09GB  1.93%  github.com/lattice-substrate/json-canon/jcsfloat.pow10Big
+    0.05GB  1.09% 97.44%     0.05GB  1.09%  github.com/lattice-substrate/json-canon/jcstoken.(*parser).parseBool
+    0.03GB  0.63% 98.06%     0.03GB  0.63%  github.com/lattice-substrate/json-canon/jcsfloat.appendIntegerFixed (inline)
+    0.03GB  0.62% 98.68%     0.03GB  0.62%  math/big.nat.make (inline)
+    0.01GB  0.29% 98.98%     0.06GB  1.20%  github.com/lattice-substrate/json-canon/jcsfloat.formatECMA
+         0     0% 98.98%     1.55GB 32.18%  github.com/lattice-substrate/jcs-bench-lab/internal/apibench.BenchmarkAPICanonicalizeJSONCanon.func1
+         0     0% 98.98%     1.59GB 33.09%  github.com/lattice-substrate/jcs-bench-lab/internal/apibench.BenchmarkAPIVerifyJSONCanon.func1.1
+         0     0% 98.98%     1.51GB 31.31%  github.com/lattice-substrate/jcs-bench-lab/internal/apibench.BenchmarkAPIVerifyJSONCanon.func2.1
+         0     0% 98.98%     3.10GB 64.41%  github.com/lattice-substrate/jcs-bench-lab/internal/apibench.verifyViaCanonicalize (inline)
+         0     0% 98.98%     0.50GB 10.47%  github.com/lattice-substrate/json-canon/jcs.serializeArray
+         0     0% 98.98%     1.48GB 30.78%  github.com/lattice-substrate/json-canon/jcs.serializeInto
+         0     0% 98.98%     0.17GB  3.48%  github.com/lattice-substrate/json-canon/jcs.serializeNumber
+         0     0% 98.98%     1.53GB 31.79%  github.com/lattice-substrate/json-canon/jcs.serializeValue
+         0     0% 98.98%     0.17GB  3.48%  github.com/lattice-substrate/json-canon/jcsfloat.FormatDouble
+         0     0% 98.98%     0.11GB  2.28%  github.com/lattice-substrate/json-canon/jcsfloat.generateDigits
+         0     0% 98.98%     0.09GB  1.93%  github.com/lattice-substrate/json-canon/jcsfloat.scaleByPower10
+         0     0% 98.98%     0.23GB  4.77%  github.com/lattice-substrate/json-canon/jcstoken.(*parser).parseNumber
+         0     0% 98.98%     3.09GB 64.24%  github.com/lattice-substrate/json-canon/jcstoken.(*parser).parseValue
+         0     0% 98.98%        3GB 62.26%  github.com/lattice-substrate/json-canon/jcstoken.Parse (inline)
+         0     0% 98.98%        3GB 62.26%  github.com/lattice-substrate/json-canon/jcstoken.ParseWithOptions
+         0     0% 98.98%     0.03GB  0.61%  math/big.(*Int).Set (inline)
+         0     0% 98.98%     0.03GB  0.61%  math/big.nat.set (inline)
+         0     0% 98.98%     0.34GB  7.06%  sort.Slice

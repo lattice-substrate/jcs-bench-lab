@@ -1,0 +1,28 @@
+File: apibench.test
+Build ID: f8d21951509b10455d8af57d48bcc66ca0049d37
+Type: alloc_space
+Time: 2026-03-04 23:34:48 CST
+Showing nodes accounting for 6.42GB, 99.27% of 6.47GB total
+Dropped 43 nodes (cum <= 0.03GB)
+Showing top 20 nodes out of 24
+      flat  flat%   sum%        cum   cum%
+    2.13GB 32.98% 32.98%     4.31GB 66.60%  github.com/lattice-substrate/jcs-schubfach/jcstoken.(*parser).parseObject
+    1.41GB 21.83% 54.81%     1.99GB 30.77%  github.com/lattice-substrate/jcs-schubfach/jcs.serializeObject
+    1.16GB 17.95% 72.75%     1.16GB 17.95%  github.com/lattice-substrate/jcs-schubfach/jcstoken.(*parser).parseString
+    0.44GB  6.78% 79.53%     2.54GB 39.24%  github.com/lattice-substrate/jcs-schubfach/jcstoken.(*parser).parseArray
+    0.44GB  6.73% 86.27%     0.44GB  6.73%  internal/reflectlite.Swapper
+    0.40GB  6.11% 92.38%     0.40GB  6.11%  github.com/lattice-substrate/jcs-schubfach/jcstoken.(*parser).buildNumberValue
+    0.18GB  2.79% 95.16%     0.18GB  2.79%  github.com/lattice-substrate/jcs-schubfach/jcstoken.(*parser).parseBool
+    0.16GB  2.40% 97.57%     6.16GB 95.21%  github.com/lattice-substrate/jcs-schubfach/jcs.Canonicalize
+    0.05GB  0.77% 98.34%     0.05GB  0.77%  github.com/lattice-substrate/jcs-schubfach/jcsfloat.appendFractionFixed (inline)
+    0.04GB  0.58% 98.92%     0.04GB  0.58%  github.com/lattice-substrate/jcs-schubfach/jcsfloat.appendIntegerFixed (inline)
+    0.02GB  0.35% 99.27%     0.12GB  1.78%  github.com/lattice-substrate/jcs-schubfach/jcsfloat.formatECMA
+         0     0% 99.27%     6.15GB 95.11%  github.com/lattice-substrate/jcs-bench-lab/internal/apibench.BenchmarkAPICanonicalizeSchubfach.func1
+         0     0% 99.27%     1.07GB 16.49%  github.com/lattice-substrate/jcs-schubfach/jcs.serializeArray
+         0     0% 99.27%     1.88GB 29.04%  github.com/lattice-substrate/jcs-schubfach/jcs.serializeInto
+         0     0% 99.27%     0.14GB  2.21%  github.com/lattice-substrate/jcs-schubfach/jcs.serializeNumber
+         0     0% 99.27%     1.99GB 30.77%  github.com/lattice-substrate/jcs-schubfach/jcs.serializeValue
+         0     0% 99.27%     0.14GB  2.21%  github.com/lattice-substrate/jcs-schubfach/jcsfloat.FormatDouble
+         0     0% 99.27%     0.40GB  6.11%  github.com/lattice-substrate/jcs-schubfach/jcstoken.(*parser).parseNumber
+         0     0% 99.27%     4.31GB 66.60%  github.com/lattice-substrate/jcs-schubfach/jcstoken.(*parser).parseValue
+         0     0% 99.27%     4.12GB 63.77%  github.com/lattice-substrate/jcs-schubfach/jcstoken.Parse (inline)

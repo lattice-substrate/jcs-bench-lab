@@ -1,0 +1,20 @@
+goos: linux
+goarch: amd64
+pkg: github.com/lattice-substrate/jcs-bench-lab/internal/apibench
+cpu: 12th Gen Intel(R) Core(TM) i7-12700K
+BenchmarkAPICanonicalizeSchubfach/deep-20         	   10000	    125562 ns/op	   9.22 MB/s	   58961 B/op	     843 allocs/op
+BenchmarkAPICanonicalizeSchubfach/large-20        	      30	  36175022 ns/op	  12.81 MB/s	20914274 B/op	  204776 allocs/op
+BenchmarkAPICanonicalizeSchubfach/medium-20       	    1539	   1302259 ns/op	  10.55 MB/s	  618685 B/op	    6380 allocs/op
+BenchmarkAPICanonicalizeSchubfach/mixed-prod-20   	    5337	    538806 ns/op	  10.49 MB/s	  256987 B/op	    2340 allocs/op
+BenchmarkAPICanonicalizeSchubfach/number-heavy-20 	   65323	     16871 ns/op	   8.30 MB/s	    4576 B/op	      60 allocs/op
+BenchmarkAPICanonicalizeSchubfach/small-20        	  850686	      4377 ns/op	  10.28 MB/s	    2152 B/op	      22 allocs/op
+BenchmarkAPICanonicalizeSchubfach/unicode-20      	  244332	      4727 ns/op	  20.73 MB/s	    2019 B/op	      19 allocs/op
+BenchmarkAPICanonicalizeJSONCanon/deep-20         	   10000	    125954 ns/op	   9.19 MB/s	   58960 B/op	     843 allocs/op
+BenchmarkAPICanonicalizeJSONCanon/large-20        	      39	  33163338 ns/op	  13.98 MB/s	21578054 B/op	  237571 allocs/op
+BenchmarkAPICanonicalizeJSONCanon/medium-20       	     662	   1927679 ns/op	   7.13 MB/s	  639787 B/op	    7394 allocs/op
+BenchmarkAPICanonicalizeJSONCanon/mixed-prod-20   	    1552	    708426 ns/op	   7.98 MB/s	  263196 B/op	    2595 allocs/op
+BenchmarkAPICanonicalizeJSONCanon/number-heavy-20 	   43354	     24390 ns/op	   5.74 MB/s	    5405 B/op	      80 allocs/op
+BenchmarkAPICanonicalizeJSONCanon/small-20        	  478756	      4509 ns/op	   9.98 MB/s	    2202 B/op	      24 allocs/op
+BenchmarkAPICanonicalizeJSONCanon/unicode-20      	  427072	      4362 ns/op	  22.47 MB/s	    2019 B/op	      19 allocs/op
+PASS
+ok  	github.com/lattice-substrate/jcs-bench-lab/internal/apibench	27.955s

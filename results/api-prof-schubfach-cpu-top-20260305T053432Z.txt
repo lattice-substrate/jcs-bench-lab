@@ -1,0 +1,29 @@
+File: apibench.test
+Build ID: f8d21951509b10455d8af57d48bcc66ca0049d37
+Type: cpu
+Time: 2026-03-04 23:34:33 CST
+Duration: 15.14s, Total samples = 21360ms (141.10%)
+Showing nodes accounting for 9890ms, 46.30% of 21360ms total
+Dropped 241 nodes (cum <= 106.80ms)
+Showing top 20 nodes out of 174
+      flat  flat%   sum%        cum   cum%
+     930ms  4.35%  4.35%      950ms  4.45%  strconv.leftShift
+     820ms  3.84%  8.19%      820ms  3.84%  runtime.nextFreeFast (inline)
+     760ms  3.56% 11.75%      760ms  3.56%  runtime.memmove
+     740ms  3.46% 15.22%      740ms  3.46%  runtime.memclrNoHeapPointers
+     710ms  3.32% 18.54%     2600ms 12.17%  runtime.scanobject
+     650ms  3.04% 21.58%      650ms  3.04%  aeshashbody
+     570ms  2.67% 24.25%      610ms  2.86%  runtime.(*mspan).writeHeapBitsSmall
+     510ms  2.39% 26.64%      510ms  2.39%  runtime.(*mspan).base (inline)
+     490ms  2.29% 28.93%      900ms  4.21%  github.com/lattice-substrate/jcs-schubfach/jcs.serializeString
+     490ms  2.29% 31.23%     3930ms 18.40%  runtime.mallocgcSmallScanNoHeader
+     410ms  1.92% 33.15%      410ms  1.92%  runtime.(*gcBits).bitp (inline)
+     390ms  1.83% 34.97%     2410ms 11.28%  github.com/lattice-substrate/jcs-schubfach/jcstoken.(*parser).parseString
+     340ms  1.59% 36.56%     1720ms  8.05%  runtime.growslice
+     320ms  1.50% 38.06%      320ms  1.50%  runtime.futex
+     310ms  1.45% 39.51%      310ms  1.45%  runtime.duffcopy
+     310ms  1.45% 40.96%     5200ms 24.34%  runtime.mallocgc
+     300ms  1.40% 42.37%     5060ms 23.69%  github.com/lattice-substrate/jcs-schubfach/jcs.serializeObject
+     290ms  1.36% 43.73%     1520ms  7.12%  github.com/lattice-substrate/jcs-schubfach/jcs.validateValueTree
+     280ms  1.31% 45.04%     8120ms 38.01%  github.com/lattice-substrate/jcs-schubfach/jcstoken.(*parser).parseObject
+     270ms  1.26% 46.30%      270ms  1.26%  runtime.(*lfstack).pop

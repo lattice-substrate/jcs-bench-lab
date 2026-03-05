@@ -1,0 +1,14 @@
+timestamp_utc=2026-03-05T05:28:29Z
+go_runtime=go1.25.6
+go_version_cmd=go version go1.25.6 linux/amd64
+goos=linux
+goarch=amd64
+gomaxprocs=20
+num_cpu=20
+hostname=ubuntu-22
+uname=Linux ubuntu-22 6.8.0-101-generic #101-Ubuntu SMP PREEMPT_DYNAMIC Mon Feb  9 10:15:05 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux
+cpu_model=12th Gen Intel(R) Core(TM) i7-12700K
+impl-schubfach_rev=040567503dfbfbd343c234e0cdb5f14e3f1dd57a
+impl-schubfach_bin_bytes=2562438
+impl-json-canon_rev=a99592dc71e7b1c7478d84e3a3b9f2e689ea5fa3
+impl-json-canon_bin_bytes=2726193

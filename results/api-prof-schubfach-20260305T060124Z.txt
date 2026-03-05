@@ -1,0 +1,57 @@
+goos: linux
+goarch: amd64
+pkg: github.com/lattice-substrate/jcs-bench-lab/internal/apibench
+cpu: 12th Gen Intel(R) Core(TM) i7-12700K
+BenchmarkAPICanonicalizeSchubfach/array-2048-20         	      39	   4997750 ns/op	  19.79 MB/s	 4939425 B/op	   49134 allocs/op
+BenchmarkAPICanonicalizeSchubfach/array-256-20          	     170	   1627771 ns/op	   7.32 MB/s	  604876 B/op	    6131 allocs/op
+BenchmarkAPICanonicalizeSchubfach/canonical-minimal-20  	  163712	      1334 ns/op	   5.25 MB/s	     504 B/op	       8 allocs/op
+BenchmarkAPICanonicalizeSchubfach/control-escapes-20    	   52872	      5535 ns/op	  10.66 MB/s	    2064 B/op	      21 allocs/op
+BenchmarkAPICanonicalizeSchubfach/deep-20               	    1044	    178254 ns/op	   6.50 MB/s	   58960 B/op	     843 allocs/op
+BenchmarkAPICanonicalizeSchubfach/deep-64-20            	    6124	     79299 ns/op	   6.43 MB/s	   26911 B/op	     387 allocs/op
+BenchmarkAPICanonicalizeSchubfach/escaped-key-order-20  	   40568	      3083 ns/op	   5.84 MB/s	    1168 B/op	      14 allocs/op
+BenchmarkAPICanonicalizeSchubfach/large-20              	       4	  41022276 ns/op	  11.30 MB/s	20916204 B/op	  204775 allocs/op
+BenchmarkAPICanonicalizeSchubfach/long-string-20        	    1483	    117448 ns/op	 139.66 MB/s	   35948 B/op	      14 allocs/op
+BenchmarkAPICanonicalizeSchubfach/medium-20             	     126	   1633131 ns/op	   8.41 MB/s	  618811 B/op	    6380 allocs/op
+BenchmarkAPICanonicalizeSchubfach/mixed-prod-20         	     331	    375187 ns/op	  15.07 MB/s	  256987 B/op	    2340 allocs/op
+BenchmarkAPICanonicalizeSchubfach/nested-mixed-20       	   47286	      9931 ns/op	   4.93 MB/s	    4128 B/op	      45 allocs/op
+BenchmarkAPICanonicalizeSchubfach/number-heavy-20       	    6045	     23309 ns/op	   6.01 MB/s	    4576 B/op	      60 allocs/op
+BenchmarkAPICanonicalizeSchubfach/numeric-boundary-20   	    8150	     16297 ns/op	   6.01 MB/s	    3209 B/op	      38 allocs/op
+BenchmarkAPICanonicalizeSchubfach/rfc-key-sorting-20    	   19858	     10813 ns/op	  18.68 MB/s	    4256 B/op	      47 allocs/op
+BenchmarkAPICanonicalizeSchubfach/small-20              	   23616	      7021 ns/op	   6.41 MB/s	    2152 B/op	      22 allocs/op
+BenchmarkAPICanonicalizeSchubfach/surrogate-pair-20     	   33384	      3230 ns/op	   8.98 MB/s	    1168 B/op	      14 allocs/op
+BenchmarkAPICanonicalizeSchubfach/unicode-20            	   45822	      5755 ns/op	  17.03 MB/s	    2019 B/op	      19 allocs/op
+BenchmarkAPICanonicalizeSchubfach/verify-whitespace-20  	   36928	      4121 ns/op	   5.82 MB/s	    1576 B/op	      19 allocs/op
+BenchmarkAPIVerifySchubfach/canonical/array-2048-20     	      24	   7271400 ns/op	  13.60 MB/s	 4939221 B/op	   49134 allocs/op
+BenchmarkAPIVerifySchubfach/canonical/array-256-20      	      81	   1433177 ns/op	   8.31 MB/s	  604976 B/op	    6131 allocs/op
+BenchmarkAPIVerifySchubfach/canonical/canonical-minimal-20         	   67404	      1893 ns/op	   3.70 MB/s	     504 B/op	       8 allocs/op
+BenchmarkAPIVerifySchubfach/canonical/control-escapes-20           	   24129	      5895 ns/op	  10.01 MB/s	    2064 B/op	      21 allocs/op
+BenchmarkAPIVerifySchubfach/canonical/deep-20                      	    2461	     93602 ns/op	  12.37 MB/s	   58963 B/op	     843 allocs/op
+BenchmarkAPIVerifySchubfach/canonical/deep-64-20                   	    2256	     52524 ns/op	   9.71 MB/s	   26904 B/op	     387 allocs/op
+BenchmarkAPIVerifySchubfach/canonical/escaped-key-order-20         	   42600	      2687 ns/op	   4.84 MB/s	    1160 B/op	      14 allocs/op
+BenchmarkAPIVerifySchubfach/canonical/large-20                     	       9	  30193045 ns/op	  15.32 MB/s	20914226 B/op	  204775 allocs/op
+BenchmarkAPIVerifySchubfach/canonical/long-string-20               	     854	    149503 ns/op	 109.72 MB/s	   35957 B/op	      14 allocs/op
+BenchmarkAPIVerifySchubfach/canonical/medium-20                    	     100	   1154242 ns/op	  11.87 MB/s	  618681 B/op	    6380 allocs/op
+BenchmarkAPIVerifySchubfach/canonical/mixed-prod-20                	     202	    587999 ns/op	   9.57 MB/s	  256985 B/op	    2340 allocs/op
+BenchmarkAPIVerifySchubfach/canonical/nested-mixed-20              	   12556	     10672 ns/op	   4.59 MB/s	    4128 B/op	      45 allocs/op
+BenchmarkAPIVerifySchubfach/canonical/number-heavy-20              	    5934	     17090 ns/op	   7.96 MB/s	    4576 B/op	      60 allocs/op
+BenchmarkAPIVerifySchubfach/canonical/numeric-boundary-20          	    7946	     15025 ns/op	   6.52 MB/s	    3208 B/op	      38 allocs/op
+BenchmarkAPIVerifySchubfach/canonical/rfc-key-sorting-20           	   16450	      9230 ns/op	  19.50 MB/s	    4239 B/op	      42 allocs/op
+BenchmarkAPIVerifySchubfach/canonical/small-20                     	   51284	      6024 ns/op	   6.97 MB/s	    2152 B/op	      22 allocs/op
+BenchmarkAPIVerifySchubfach/canonical/surrogate-pair-20            	   40682	      2951 ns/op	   7.12 MB/s	    1160 B/op	      14 allocs/op
+BenchmarkAPIVerifySchubfach/canonical/unicode-20                   	   31290	      3788 ns/op	  25.35 MB/s	    2003 B/op	      19 allocs/op
+BenchmarkAPIVerifySchubfach/canonical/verify-whitespace-20         	  126975	      1665 ns/op	  10.21 MB/s	    1576 B/op	      19 allocs/op
+BenchmarkAPIVerifySchubfach/noncanonical/control-escapes-20        	   19932	      5471 ns/op	  10.78 MB/s	    2064 B/op	      21 allocs/op
+BenchmarkAPIVerifySchubfach/noncanonical/escaped-key-order-20      	   47025	      3127 ns/op	   5.76 MB/s	    1168 B/op	      14 allocs/op
+BenchmarkAPIVerifySchubfach/noncanonical/large-20                  	       4	  28901898 ns/op	  16.04 MB/s	20914220 B/op	  204775 allocs/op
+BenchmarkAPIVerifySchubfach/noncanonical/medium-20                 	     100	   1325782 ns/op	  10.36 MB/s	  618683 B/op	    6380 allocs/op
+BenchmarkAPIVerifySchubfach/noncanonical/mixed-prod-20             	     260	    674758 ns/op	   8.38 MB/s	  257050 B/op	    2340 allocs/op
+BenchmarkAPIVerifySchubfach/noncanonical/nested-mixed-20           	   24711	     10480 ns/op	   4.68 MB/s	    4128 B/op	      45 allocs/op
+BenchmarkAPIVerifySchubfach/noncanonical/number-heavy-20           	    5895	     20896 ns/op	   6.70 MB/s	    4577 B/op	      60 allocs/op
+BenchmarkAPIVerifySchubfach/noncanonical/numeric-boundary-20       	    8010	     15709 ns/op	   6.24 MB/s	    3208 B/op	      38 allocs/op
+BenchmarkAPIVerifySchubfach/noncanonical/rfc-key-sorting-20        	   19141	     13689 ns/op	  14.76 MB/s	    4256 B/op	      47 allocs/op
+BenchmarkAPIVerifySchubfach/noncanonical/small-20                  	   16158	      7144 ns/op	   6.30 MB/s	    2153 B/op	      22 allocs/op
+BenchmarkAPIVerifySchubfach/noncanonical/surrogate-pair-20         	   30060	      3786 ns/op	   7.66 MB/s	    1168 B/op	      14 allocs/op
+BenchmarkAPIVerifySchubfach/noncanonical/unicode-20                	   21895	      6206 ns/op	  15.79 MB/s	    2019 B/op	      19 allocs/op
+BenchmarkAPIVerifySchubfach/noncanonical/verify-whitespace-20      	  100434	      4267 ns/op	   5.62 MB/s	    1576 B/op	      19 allocs/op
+PASS
+ok  	github.com/lattice-substrate/jcs-bench-lab/internal/apibench	13.471s
