@@ -9,19 +9,21 @@ JVM with generational GC).  The \texttt{sync.Pool} optimization in the
 \burgerdybvig implementation is Go-specific.
 
 \textbf{Single-architecture performance data.}
-Performance benchmarks run on a single x86-64 machine.  While
-cross-architecture \emph{determinism} is verified on arm64 VMs (both
-implementations produce byte-identical output), arm64 \emph{performance}
-benchmarks are deferred due to lack of bare-metal hardware.  VM overhead
-makes cross-architecture performance comparison meaningless.  Future
-work should include bare-metal arm64 benchmarks on Graviton, Apple
-Silicon, or Ampere hardware.
+Performance benchmarks run on a single x86-64 machine.
+Cross-compilation \emph{determinism} is verified by building arm64
+binaries and executing them under QEMU user-mode emulation on the x86-64
+host.  Because QEMU user-mode translates system calls but executes
+floating-point operations on the host CPU, this verifies Go compiler
+determinism across target architectures, not native arm64 hardware
+behavior.  Arm64 \emph{performance} benchmarks are deferred due to lack
+of bare-metal hardware.  Future work should include bare-metal arm64
+benchmarks on Graviton, Apple Silicon, or Ampere hardware.
 
 \textbf{Single JavaScript engine oracle.}
 Oracle vectors are generated from V8 (via Node.js).  While ECMA-262
 \texttt{Number::toString} semantics are normative and engine-independent,
 our vectors are verified against only one engine.  This is mitigated by
-exhaustive boundary coverage: 286{,}362 vectors including all subnormals
+dense boundary coverage: 286{,}362 vectors including all subnormals
 up to $2^{12}$, all binary64 powers of two, subnormal/normal boundary
 neighborhoods, \rfcjcs Appendix~B examples with neighbors, and
 pseudorandom fill.
@@ -39,6 +41,21 @@ untested.  While the canonicalization algorithms do not depend on byte
 order (they operate on IEEE~754 binary64 values via language-level
 primitives), edge cases in binary representation parsing could
 theoretically differ on big-endian platforms.
+
+\textbf{CPU core affinity.}
+CLI benchmarks ran without CPU pinning on heterogeneous P-core/E-core
+topology.  Process migration may inflate variance for small workloads
+near the noise floor.  API benchmarks (in-process) are less susceptible.
+
+\textbf{Warmup validation.}
+CLI benchmarks discard 3~warmup runs.  We did not formally validate
+convergence; however, Go static binaries have minimal JIT-like warmup
+effects, and permutation tests are robust to mild non-stationarity.
+
+\textbf{Oracle SHA-256 circularity.}
+SHA-256 checksums verify vector integrity but cannot verify oracle
+correctness.  Independent verification against a second JS engine
+(SpiderMonkey, JavaScriptCore) is noted as future work.
 
 \textbf{sync.Pool mitigation.}
 The \burgerdybvig implementation uses \texttt{sync.Pool} to reuse

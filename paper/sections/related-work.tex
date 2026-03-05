@@ -1,43 +1,86 @@
 \section{Related Work}
 \label{sec:related-work}
 
-\textbf{Float-to-string algorithms.}
-Burger and Dybvig~\cite{burger1996printing} established the
-shortest-representation framework using multiprecision arithmetic.
-Loitsch~\cite{loitsch2010grisu} introduced Grisu, the first
-integer-only approach, handling $\sim$99.5\% of inputs without fallback.
-Adams~\cite{adams2018ryu} proposed Ry\={u}, achieving full coverage with
-fixed-width 128-bit arithmetic and lookup tables.
-Jeon~\cite{jeon2021dragonbox} developed Dragonbox with improved table
-compression.  Giulietti~\cite{giulietti2022schubfach} presented
-\schubfach, which our implementation follows.  Champagne Gareau and
-Lemire~\cite{champagnegareau2026} provide a comprehensive survey of
-these algorithms.
+Extensive prior work has optimized float-to-string conversion in
+isolation.  This paper is the first to evaluate these algorithms inside a
+specification-constrained canonicalization pipeline where conformance is
+a binary gate.  We summarize the most relevant prior work, organized by
+the problem dimension each addresses.
 
-Gay's \texttt{dtoa.c}~\cite{gay1990dtoa} is the foundational practical
-implementation of float-to-string conversion and remains widely used in
-language runtimes as a reference or fallback.
+\subsection{Multiprecision Foundations}
 
-All prior work focuses on the algorithms in isolation.  Our contribution
-is the first comparison \emph{inside a specification-constrained pipeline}
-where the formatting stage and surrounding canonicalization logic are
-non-trivial.
+Burger and Dybvig~\cite{burger1996printing} establish the theoretical
+framework for shortest-representation printing using arbitrary-precision
+rational arithmetic.  Their algorithm is our multiprecision baseline.
+Gay's \texttt{dtoa.c}~\cite{gay1990dtoa} provides the foundational
+practical implementation and remains widely used in language runtimes as
+a reference or fallback.  Both works evaluate algorithms in isolation and
+do not consider performance inside a pipeline where formatting policy is
+externally constrained.
 
-\textbf{Deterministic serialization standards.}
+\subsection{Fixed-Width Approaches}
+
+Loitsch~\cite{loitsch2010grisu} demonstrated that integer-only arithmetic
+suffices for the common case with Grisu.  However, Grisu3 falls back to
+arbitrary precision for $\sim$0.5\% of inputs, making conformance
+guarantees harder to establish in specification-constrained contexts.
+
+Adams~\cite{adams2018ryu} proposed Ry\=u, achieving full coverage with
+fixed-width 128-bit arithmetic and lookup tables.  Adams provides the
+most comprehensive prior performance comparison of fixed-width vs.\
+multiprecision approaches (we refer the reader to Adams's literature
+review rather than replicating it), but evaluates algorithms in isolation
+on microbenchmarks without specification constraints.
+
+Giulietti~\cite{giulietti2022schubfach} introduced the \schubfach
+algorithm, which we implement and evaluate within the \rfcjcs pipeline.
+Jeon~\cite{jeon2021dragonbox} extends and refines the \schubfach approach
+with Dragonbox, improving table compression and branch structure.  Go~1.26
+adopted Dragonbox for \texttt{strconv}, providing additional motivation
+for evaluating fixed-width approaches in specification-constrained
+contexts.
+
+\subsection{Comprehensive Experimental Review}
+
+Champagne Gareau and Lemire~\cite{champagnegareau2026} provide the most
+comprehensive experimental comparison of modern float-to-string
+algorithms, evaluating Dragon4, Grisu3, Ry\=u, \schubfach, Dragonbox,
+and \texttt{std::to\_chars} in C++.  Their work evaluates algorithms in
+isolation on microbenchmarks.  Our contribution differs: we evaluate two
+representatives (\burgerdybvig and \schubfach) inside a
+specification-constrained canonicalization pipeline where (a)~\ecma
+formatting policy is a hard constraint, (b)~correctness against
+286{,}362 oracle vectors is a binary gate, and (c)~digit generation is
+only one component of the total cost.
+
+The complementary direction---fast string-to-float parsing---is addressed
+by Lemire~\cite{lemire2021number}, whose Eisel-Lemire algorithm achieves
+gigabyte-per-second parsing throughput.  While outside our scope, this
+work shares the fixed-width arithmetic philosophy that motivates
+\schubfach and Dragonbox.
+
+\subsection{Deterministic Serialization Standards}
+
 Beyond JSON, deterministic encoding is required by other serialization
 formats.  CBOR (RFC~8949)~\cite{rfc8949} specifies deterministic encoding
 rules (\S4.2) for binary data, addressing analogous concerns about
-canonical representation.  Our conformance-gated methodology could be
-adapted to other deterministic serialization benchmarks.
+canonical representation.  W3C RDF Dataset
+Canonicalization~\cite{w3c2024rdf} addresses graph-level canonicalization
+(structural equivalence of RDF datasets), a fundamentally different
+problem from the byte-level serialization determinism required by
+\rfcjcs.  Our conformance-gated methodology could be adapted to other
+deterministic serialization benchmarks.
 
-\textbf{JSON canonicalization.}
+\subsection{JSON Canonicalization}
+
 \rfcjcs~\cite{rfc8785} is the primary standard.  Prior to RFC~8785,
 ad-hoc canonicalization schemes existed in various ecosystems (e.g.,
 JSON-LD canonicalization, OLPC canonical JSON).  None specify the
 floating-point formatting requirement with the precision of
 \ecma~\cite{ecma262}.
 
-\textbf{Benchmark methodology.}
+\subsection{Benchmark Methodology}
+
 Our conformance-before-performance approach draws on the principle that
 correctness is a prerequisite for meaningful performance comparison, as
 advocated in systems benchmarking methodology literature.  The use of

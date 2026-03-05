@@ -24,7 +24,7 @@ This paper makes three contributions:
 \item The first empirical comparison of multiprecision vs.\ fixed-width
       digit generation under \ecma/\rfcjcs constraints, showing that
       \schubfach achieves 1.3--1.7$\times$ speedup on number-heavy
-      workloads in API benchmarks (attenuated to 1.1--1.3$\times$ in
+      workloads in API benchmarks (attenuated to 1.1--1.4$\times$ in
       end-to-end CLI measurement) but $<$5\% on string-dominant inputs.
 
 \item A benchmark methodology that gates performance measurement on
@@ -33,7 +33,8 @@ This paper makes three contributions:
       data is collected.  We document noise floors and minimum observable
       effect sizes for all comparisons.
 
-\item Cross-architecture determinism verification showing byte-identical
-      output on x86-64 and arm64, with all evidence released as a
-      reproducibility artifact.
+\item Cross-compilation determinism verification showing byte-identical
+      output under Go cross-compilation for x86-64 and arm64 (arm64
+      binaries verified via QEMU user-mode emulation on x86-64 host),
+      with all evidence released as a reproducibility artifact.
 \end{enumerate}

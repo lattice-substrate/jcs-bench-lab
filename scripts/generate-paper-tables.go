@@ -119,6 +119,7 @@ func generateCLITable(resultsDir, tablesDir string) error {
 	}
 
 	b.WriteString("\\bottomrule\n")
+	b.WriteString("\\multicolumn{6}{l}{\\footnotesize Speedup = slower/faster mean wall time. $n=15$ repetitions, 3 warmup runs discarded.} \\\\\n")
 	b.WriteString("\\end{tabular}\n")
 	b.WriteString("\\end{table}\n")
 
@@ -178,6 +179,8 @@ func generateStatsTable(resultsDir, tablesDir string) error {
 
 	b.WriteString("\\bottomrule\n")
 	b.WriteString("\\multicolumn{11}{l}{\\footnotesize $^*$Significant after Benjamini-Hochberg FDR correction at $q = 0.05$.} \\\\\n")
+	b.WriteString("\\multicolumn{11}{l}{\\footnotesize $d$ = Cohen's $d$ effect size (negative = schubfach faster). Track: e2e = end-to-end CLI.} \\\\\n")
+	b.WriteString("\\multicolumn{11}{l}{\\footnotesize Noise = CV $\\times$ mean of faster impl. Min.\\ Eff.\\ = minimum detectable effect at 80\\% power.} \\\\\n")
 	b.WriteString("\\end{tabular}\n")
 	b.WriteString("\\end{table*}\n")
 
@@ -340,6 +343,8 @@ func generateAPITable(resultsDir, tablesDir string) error {
 	}
 
 	b.WriteString("\\bottomrule\n")
+	b.WriteString("\\multicolumn{7}{l}{\\footnotesize B/op = bytes allocated per operation. allocs/op = heap allocations per operation.} \\\\\n")
+	b.WriteString("\\multicolumn{7}{l}{\\footnotesize $\\Delta$ columns show json-canon $-$ schubfach (positive = schubfach allocates less).} \\\\\n")
 	b.WriteString("\\end{tabular}\n")
 	b.WriteString("\\end{table*}\n")
 

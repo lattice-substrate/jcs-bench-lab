@@ -10,11 +10,12 @@ measurements are only meaningful for correct implementations.
 Key findings:
 \begin{itemize}
 \item \schubfach achieves 1.3--1.7$\times$ speedup on number-heavy
-      workloads in API benchmarks (1.1--1.3$\times$ end-to-end CLI)
+      workloads in API benchmarks (1.1--1.4$\times$ end-to-end CLI)
       due to zero heap allocation.
 \item The advantage narrows to $<$5\% on string-dominant inputs.
-\item Both implementations produce byte-identical output across x86-64
-      and arm64.
+\item Both implementations produce byte-identical output under
+      cross-compilation for x86-64 and arm64 (arm64 binaries verified
+      via QEMU user-mode emulation on x86-64 host).
 \item Digit generation accounts for 15--40\% of total canonicalization
       cost depending on number density.
 \end{itemize}

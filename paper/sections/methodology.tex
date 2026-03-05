@@ -42,15 +42,25 @@ All comparisons use:
       $\alpha = 0.05$.
 \item BCa (bias-corrected and accelerated) bootstrap 95\% confidence
       intervals (5{,}000 resamples) for speedup ratios.
-\item Cohen's $d$ for effect size.
+\item Cohen's $d$ for effect size.\footnote{Computed as
+      $(\bar{x}_\text{schubfach} - \bar{x}_\text{json-canon}) / s_p$;
+      negative values indicate schubfach is faster.}
 \item Noise floor documentation: $\text{CV} \times \bar{x}_\text{faster}$.
-\item Minimum observable effect: $\frac{2 \times \text{CV} \times 100}{\sqrt{N}}$
-      (approximate minimum detectable effect for a two-sample $z$-test at
-      80\% power; permutation test power may differ for small $n$).
+\item Minimum observable effect: $\frac{2.8 \times \text{CV} \times 100}{\sqrt{N}}$,
+      where $2.8 \approx z_{\alpha/2} + z_\beta$ for $\alpha = 0.05$ and
+      80\% power (approximate minimum detectable effect for a two-sample
+      $z$-test; permutation test power may differ for small $n$).
 \item Benjamini-Hochberg false discovery rate (FDR) control at $q = 0.05$
       across all $N$ comparisons.  We report both raw and BH-adjusted
       $p$-values.
+\item No outlier exclusion.  Permutation tests are nonparametric and
+      robust to non-normality; BCa bootstrap accounts for skewness via the
+      acceleration constant.
 \end{itemize}
+
+Statistical resampling uses deterministic per-comparison seeds derived
+via FNV-1a hashing of the comparison key, ensuring reproducible
+$p$-values and confidence intervals across runs.
 
 \subsection{Environment}
 
@@ -60,6 +70,16 @@ documented, and load average recorded at benchmark start.  Full hardware
 specification (CPU model, cache hierarchy, RAM, relevant CPU feature
 flags) is captured automatically by the benchmark harness.
 
-Cross-architecture determinism is verified on arm64 VMs (output
-correctness only; arm64 performance benchmarks are deferred to future
-work on bare-metal hardware).
+CPU core affinity pinning is supported (\texttt{-{}-pin-cpu}) but was not used
+for the reported results.  The i7-12700K has heterogeneous P-core/E-core
+topology; without pinning, the OS scheduler may migrate processes.  This
+adds variance but does not bias the comparison since both implementations
+share the same scheduling environment.
+
+Cross-compilation determinism is verified by building arm64 binaries via
+\texttt{GOARCH=arm64} and executing them under QEMU user-mode emulation
+on the x86-64 host.  QEMU user-mode translates system calls but executes
+floating-point operations on the host CPU; this tests Go compiler
+determinism across target architectures, not native arm64 hardware
+behavior.  Arm64 performance benchmarks are deferred to future work on
+bare-metal hardware.
