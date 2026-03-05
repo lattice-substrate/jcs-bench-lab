@@ -1,0 +1,33 @@
+{
+  "generated_at_utc": "2026-03-05T16:16:31Z",
+  "test": "cross_architecture_determinism",
+  "x86_64_go": "go1.25.6",
+  "arm64_emulation": "qemu-aarch64-static 8.2.2",
+  "total_comparisons": 140,
+  "passed": 140,
+  "failed": 0,
+  "failures": [],
+  "oracle_vector_tests": {
+    "schubfach_arm64": {
+      "golden_vectors": {"count": 54445, "result": "PASS"},
+      "stress_vectors": {"count": 231917, "result": "PASS"},
+      "ecma_format_tests": {"count": 12, "result": "PASS"},
+      "boundary_constants": {"count": 1, "result": "PASS"},
+      "total_tests": 15,
+      "total_passed": 15
+    },
+    "json_canon_arm64": {
+      "golden_vectors": {"count": 54445, "result": "PASS"},
+      "stress_vectors": {"count": 231917, "result": "PASS"},
+      "ecma_format_tests": {"count": 12, "result": "PASS"},
+      "boundary_constants": {"count": 1, "result": "PASS"},
+      "total_tests": 15,
+      "total_passed": 15
+    }
+  },
+  "cli_workload_determinism": {
+    "total_workload_mode_impl_comparisons": 140,
+    "all_sha256_match": true
+  },
+  "conclusion": "Both implementations produce byte-identical output across x86-64 and arm64 for all 286362 oracle vectors and all 140 CLI workload comparisons."
+}

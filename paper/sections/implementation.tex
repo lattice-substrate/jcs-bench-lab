@@ -1,0 +1,30 @@
+\section{Implementation}
+\label{sec:implementation}
+
+Both implementations are written in Go (1.24+) and share the same
+\rfcjcs-compliant JSON canonicalization pipeline.  They differ only in
+the digit-generation module:
+
+\begin{itemize}
+\item \texttt{impl-schubfach}: uses the \schubfach algorithm with
+      \texttt{bits.Mul64} for 128-bit multiplication.  Zero heap
+      allocation in the formatting hot path.
+
+\item \texttt{impl-json-canon}: uses the \burgerdybvig algorithm with
+      \texttt{math/big.Int}.  Uses \texttt{sync.Pool} to reuse
+      big-integer buffers.
+\end{itemize}
+
+Both implementations:
+\begin{itemize}
+\item Do not use \texttt{encoding/json} for canonicalization.
+\item Produce static binaries (\texttt{CGO\_ENABLED=0}).
+\item Pass identical conformance gates (154 structural cases + 286{,}362
+      oracle vectors).
+\item Implement identical CLI ABI: \texttt{canonicalize} and
+      \texttt{verify} modes with defined exit codes and error classes.
+\end{itemize}
+
+The shared pipeline handles JSON parsing, recursive key sorting (UTF-16
+code unit order per \rfcjcs), string escaping, and output serialization.
+The digit-generation module is invoked only for JSON number values.

@@ -1,0 +1,34 @@
+\section{Related Work}
+\label{sec:related-work}
+
+\textbf{Float-to-string algorithms.}
+Burger and Dybvig~\cite{burger1996printing} established the
+shortest-representation framework using multiprecision arithmetic.
+Loitsch~\cite{loitsch2010grisu} introduced Grisu, the first
+integer-only approach, handling $\sim$99.5\% of inputs without fallback.
+Adams~\cite{adams2018ryu} proposed Ry\={u}, achieving full coverage with
+fixed-width 128-bit arithmetic and lookup tables.
+Jeon~\cite{jeon2021dragonbox} developed Dragonbox with improved table
+compression.  Giulietti~\cite{giulietti2022schubfach} presented
+\schubfach, which our implementation follows.  Champagne Gareau and
+Lemire~\cite{champagnegareau2026} provide a comprehensive survey of
+these algorithms.
+
+All prior work focuses on the algorithms in isolation.  Our contribution
+is the first comparison \emph{inside a specification-constrained pipeline}
+where the formatting stage and surrounding canonicalization logic are
+non-trivial.
+
+\textbf{JSON canonicalization.}
+\rfcjcs~\cite{rfc8785} is the primary standard.  Prior to RFC~8785,
+ad-hoc canonicalization schemes existed in various ecosystems (e.g.,
+JSON-LD canonicalization, OLPC canonical JSON).  None specify the
+floating-point formatting requirement with the precision of
+\ecma~\cite{ecma262}.
+
+\textbf{Benchmark methodology.}
+Our conformance-before-performance approach draws on the principle that
+correctness is a prerequisite for meaningful performance comparison, as
+advocated in systems benchmarking methodology literature.  The use of
+permutation tests and bootstrap confidence intervals follows modern
+statistical practice for performance evaluation.

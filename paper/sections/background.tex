@@ -1,0 +1,41 @@
+\section{Background}
+\label{sec:background}
+
+\subsection{RFC 8785: JSON Canonicalization Scheme}
+
+\rfcjcs~\cite{rfc8785} defines a deterministic JSON serialization by
+specifying: (1)~lexicographic key ordering using UTF-16 code unit
+comparison, (2)~no insignificant whitespace, and (3)~floating-point
+formatting matching \ecma \texttt{Number::toString}.
+
+The floating-point requirement is the most technically demanding.  It
+requires producing the \emph{shortest decimal representation} that
+round-trips to the original IEEE~754 binary64 value under
+roundTiesToEven, then applying the \ecma formatting policy (exponential
+notation thresholds, sign handling, integer elision rules).
+
+\subsection{ECMA-262 Number Formatting}
+
+\ecma~\cite{ecma262} \S7.1.12.1 specifies \texttt{Number::toString} as
+a two-stage process:
+
+\begin{enumerate}
+\item \textbf{Digit generation}: find the shortest decimal significand
+      $d$ and exponent $n$ such that $d \times 10^{n-k} = x$ (where $k$
+      is the number of digits in $d$) and the value round-trips.
+
+\item \textbf{Formatting}: apply branch logic based on the relationship
+      between $k$ (digit count) and $n$ (decimal exponent position) to
+      produce the final string.  Key thresholds: $n \geq 1 \land n \leq
+      21$ produces fixed notation; $n > 21$ or $n \leq 0$ with $|n| <
+      certain bounds$ produces exponential notation.
+\end{enumerate}
+
+\subsection{IEEE 754 and Shortest Representation}
+
+IEEE~754-2019~\cite{ieee754} binary64 has a 52-bit significand, 11-bit
+exponent, and 1 sign bit.  The \emph{shortest representation} property
+requires finding the decimal string with fewest digits that uniquely
+identifies the original binary64 value among all representable values.
+This is the core algorithmic challenge addressed by both \burgerdybvig
+and \schubfach.

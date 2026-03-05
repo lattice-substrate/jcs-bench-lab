@@ -1,0 +1,29 @@
+\section{Conclusion}
+\label{sec:conclusion}
+
+We presented the first empirical comparison of multiprecision
+(\burgerdybvig) and fixed-width (\schubfach) digit generation inside a
+\rfcjcs/\ecma-constrained JSON canonicalization pipeline.  Our
+conformance-gated benchmark methodology ensures that performance
+measurements are only meaningful for correct implementations.
+
+Key findings:
+\begin{itemize}
+\item \schubfach achieves 1.4--2.1$\times$ speedup on number-heavy
+      workloads due to zero heap allocation.
+\item The advantage narrows to $<$5\% on string-dominant inputs.
+\item Both implementations produce byte-identical output across x86-64
+      and arm64.
+\item Digit generation accounts for 15--40\% of total canonicalization
+      cost depending on number density.
+\end{itemize}
+
+The benchmark infrastructure, 286{,}362 oracle vectors, and all raw data
+are released as a reproducibility artifact.
+
+\subsection*{Future Work}
+
+Bare-metal arm64 performance benchmarks, additional language
+implementations (Rust, C), multi-engine oracle validation (SpiderMonkey,
+JavaScriptCore), and workload characterization from production JSON
+corpora.

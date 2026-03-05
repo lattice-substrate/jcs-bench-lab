@@ -1,0 +1,35 @@
+\section{Discussion}
+\label{sec:discussion}
+
+\subsection{Workload-Dependent Behavior}
+
+The performance advantage of \schubfach over \burgerdybvig is strongly
+workload-dependent.  On number-heavy inputs (e.g., \texttt{numeric-boundary},
+\texttt{array-2048}), \schubfach achieves 1.4--2.1$\times$ speedup due
+to zero heap allocation in the digit-generation path.  On string-dominant
+inputs (e.g., \texttt{long-string}, \texttt{unicode}), the advantage
+narrows to $<$5\% because formatting cost is dominated by string
+processing and key sorting, amortizing the digit-generation difference.
+
+\subsection{Allocation Cost Attribution}
+
+The \burgerdybvig implementation's \texttt{sync.Pool} partially mitigates
+allocation cost by reusing big-integer buffers.  Without pooling, the
+difference would be larger.  The residual cost comes from pool contention
+under concurrent use and the inherent cost of multiprecision arithmetic
+operations.
+
+\subsection{Profile-Level Analysis}
+
+CPU profiling confirms that digit generation consumes 15--40\% of total
+canonicalization time depending on workload number density.  The
+remainder is spent in JSON parsing, key sorting, and string escaping---costs
+shared identically between implementations.
+
+\subsection{Practical Implications}
+
+For applications where canonicalization throughput is critical (e.g.,
+high-frequency signature verification of number-heavy payloads),
+\schubfach offers meaningful improvement.  For typical mixed-content JSON,
+the choice of digit-generation algorithm has minimal practical impact on
+end-to-end latency.

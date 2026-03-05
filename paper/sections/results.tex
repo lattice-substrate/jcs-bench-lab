@@ -1,0 +1,28 @@
+\section{Results}
+\label{sec:results}
+
+% Tables will be generated from benchmark data by scripts/generate-paper-tables.go
+% and placed in paper/tables/
+
+\subsection{Conformance}
+
+Both implementations pass all 154 structural conformance cases and
+286{,}362 oracle vectors with zero failures.  Output SHA-256 digests are
+byte-identical between implementations for all valid inputs.
+
+\subsection{API Benchmarks}
+
+\input{tables/api-benchmarks}
+
+\subsection{CLI Benchmarks}
+
+\input{tables/cli-benchmarks}
+
+\subsection{Statistical Comparisons}
+
+\input{tables/stats-comparisons}
+
+\subsection{Differential Fuzzing}
+
+2{,}000 differential fuzz cases produced zero divergences between
+implementations.

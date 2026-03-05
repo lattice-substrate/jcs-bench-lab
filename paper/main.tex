@@ -1,0 +1,60 @@
+\documentclass[sigconf,nonacm]{acmart}
+
+\usepackage{booktabs}
+\usepackage{subcaption}
+\usepackage{xspace}
+
+\newcommand{\schubfach}{Schubfach\xspace}
+\newcommand{\burgerdybvig}{Burger--Dybvig\xspace}
+\newcommand{\ecma}{ECMA-262\xspace}
+\newcommand{\rfcjcs}{RFC~8785\xspace}
+
+\begin{document}
+
+\title{Multiprecision vs.\ Fixed-Width Digit Generation\\for JSON Canonicalization: An Empirical Study}
+
+\author{Anonymous}
+\affiliation{%
+  \institution{Anonymous Institution}
+}
+\email{anonymous@example.com}
+
+\begin{abstract}
+JSON Canonicalization Scheme (RFC~8785) requires deterministic
+floating-point formatting that matches ECMA-262 \texttt{Number::toString}.
+We present the first empirical comparison of multiprecision
+(\burgerdybvig) and fixed-width (\schubfach) digit generation inside a
+specification-constrained canonicalization pipeline.  Our methodology
+gates performance measurement on conformance: only implementations
+passing 286{,}362 oracle vectors (generated from the V8 JavaScript
+engine) and 154 structural conformance cases proceed to benchmarking.
+Using permutation tests, bootstrap confidence intervals, and noise-floor
+documentation across 10+ repeated measurements, we find that \schubfach
+is 1.4--2.1$\times$ faster on number-heavy workloads due to zero heap
+allocation in the digit-generation path, while the advantage narrows to
+$<$5\% on string-dominant inputs where formatting cost is amortized.
+Both implementations produce byte-identical output across x86-64 and
+arm64.  We release the benchmark infrastructure, oracle vectors, and
+all raw data as a reproducibility artifact.
+\end{abstract}
+
+\keywords{JSON canonicalization, floating-point formatting, Schubfach,
+Burger--Dybvig, RFC~8785, ECMA-262, benchmark methodology}
+
+\maketitle
+
+\input{sections/introduction}
+\input{sections/background}
+\input{sections/algorithms}
+\input{sections/implementation}
+\input{sections/methodology}
+\input{sections/results}
+\input{sections/discussion}
+\input{sections/related-work}
+\input{sections/threats}
+\input{sections/conclusion}
+
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{references}
+
+\end{document}

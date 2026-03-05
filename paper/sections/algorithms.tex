@@ -1,0 +1,67 @@
+\section{Algorithms}
+\label{sec:algorithms}
+
+\subsection{Definitions}
+
+\begin{definition}[Minimal Significand]
+\label{def:minimal-significand}
+Given a finite IEEE~754 binary64 value $x$, the \emph{minimal
+significand} is the shortest decimal significand $d$ (with digit count
+$k$) such that parsing $d \times 10^{n-k}$ under roundTiesToEven
+recovers $x$ exactly.
+\end{definition}
+
+\begin{definition}[Minimal Printed String]
+\label{def:minimal-printed-string}
+The \emph{minimal printed string} of $x$ is the output of \ecma
+\texttt{Number::toString} applied to $x$: the minimal significand
+formatted according to the \ecma branch table.
+\end{definition}
+
+\begin{proposition}
+Definitions~\ref{def:minimal-significand} and
+\ref{def:minimal-printed-string} are not equivalent in string length.
+\end{proposition}
+
+\begin{proof}
+By counterexample.  Consider $x = 10^{20}$: the minimal significand is
+$d = 1$ ($k = 1$, $n = 21$).  Since $n = 21 \leq 21$, \ecma uses fixed
+notation, yielding \texttt{100000000000000000000} (21~characters).  Now
+consider $x = 10^{21}$: again $d = 1$ ($k = 1$, $n = 22$), but $n > 21$
+triggers exponential notation, yielding \texttt{1e+21} (5~characters).
+The $n = 21$ boundary creates divergence between significand minimality
+and printed-string length.
+\end{proof}
+
+\subsection{Burger--Dybvig (Multiprecision)}
+
+The \burgerdybvig algorithm~\cite{burger1996printing} uses arbitrary-precision
+rational arithmetic to compute the shortest decimal representation.  It
+maintains big-integer numerator/denominator pairs and iteratively
+extracts decimal digits.  The algorithm is general (handles any radix)
+but requires heap-allocated multiprecision integers, with cost
+proportional to the magnitude of the exponent.
+
+In our Go implementation, this uses \texttt{math/big.Int} operations.
+The \texttt{sync.Pool} partially mitigates allocation cost by reusing
+big-integer buffers across calls.
+
+\subsection{Schubfach (Fixed-Width)}
+
+The \schubfach algorithm~\cite{giulietti2022schubfach} operates entirely
+within 64-bit and 128-bit unsigned integer arithmetic.  It uses
+precomputed tables of powers of ten and a single 128-bit multiply
+(\texttt{bits.Mul64} in Go) to determine the shortest decimal
+significand.  No heap allocation is required in the digit-generation
+path.
+
+The key advantage is constant-time (with respect to exponent magnitude)
+operation and zero GC pressure.  The precomputed table is approximately
+5~KiB.
+
+\subsection{ECMA-262 Formatting Stage}
+
+Both algorithms share an identical formatting stage that converts the
+minimal significand $(d, k, n)$ triple into the final \ecma-compliant
+string.  This stage implements the branch table from \ecma \S7.1.12.1
+and is pure string manipulation with no arithmetic.

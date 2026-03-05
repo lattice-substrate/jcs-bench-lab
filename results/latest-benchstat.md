@@ -1,6 +1,6 @@
 # Benchstat Snapshot
 
-Generated at: 2026-03-05T15:37:32Z
+Generated at: 2026-03-05T16:39:29Z
 
 Sources:
 - API benchmark: `/home/lenny/jcs-bench-lab/results/latest-api-bench.txt`
@@ -18,318 +18,96 @@ Sources:
 
 | workload | schubfach (avg_ms) | json-canon (avg_ms) | winner | speedup |
 |---|---:|---:|---|---:|
-| array-2048 | 5.221 | 6.871 | schubfach | 1.32x |
-| array-256 | 1.920 | 2.016 | schubfach | 1.05x |
-| canonical-minimal | 1.391 | 1.567 | schubfach | 1.13x |
-| control-escapes | 1.488 | 1.576 | schubfach | 1.06x |
-| deep-64 | 1.419 | 1.551 | schubfach | 1.09x |
-| escaped-key-order | 1.489 | 1.494 | schubfach | 1.00x |
-| long-string | 1.669 | 1.814 | schubfach | 1.09x |
-| nested-mixed | 1.230 | 1.667 | schubfach | 1.35x |
-| numeric-boundary | 1.417 | 1.730 | schubfach | 1.22x |
-| rfc-key-sorting | 1.417 | 1.573 | schubfach | 1.11x |
-| small | 1.415 | 1.480 | schubfach | 1.05x |
-| surrogate-pair | 1.408 | 1.394 | json-canon | 1.01x |
-| unicode | 1.376 | 1.547 | schubfach | 1.12x |
-| verify-whitespace | 1.337 | 1.476 | schubfach | 1.10x |
+| array-2048 | 5.466 | 7.342 | schubfach | 1.34x |
+| array-256 | 2.025 | 2.340 | schubfach | 1.16x |
+| canonical-minimal | 1.472 | 1.564 | schubfach | 1.06x |
+| control-escapes | 1.479 | 1.550 | schubfach | 1.05x |
+| deep-64 | 1.545 | 1.629 | schubfach | 1.05x |
+| escaped-key-order | 1.503 | 1.652 | schubfach | 1.10x |
+| long-string | 1.561 | 1.740 | schubfach | 1.11x |
+| nested-mixed | 1.461 | 1.649 | schubfach | 1.13x |
+| numeric-boundary | 1.470 | 1.602 | schubfach | 1.09x |
+| rfc-key-sorting | 1.451 | 1.629 | schubfach | 1.12x |
+| small | 1.414 | 1.494 | schubfach | 1.06x |
+| surrogate-pair | 1.323 | 1.576 | schubfach | 1.19x |
+| unicode | 1.429 | 1.616 | schubfach | 1.13x |
+| verify-whitespace | 1.481 | 1.475 | json-canon | 1.00x |
 
 ## CLI Verify (valid workloads)
 
 | workload | schubfach (avg_ms) | json-canon (avg_ms) | winner | speedup |
 |---|---:|---:|---|---:|
-| array-2048 | 5.373 | 6.968 | schubfach | 1.30x |
-| array-256 | 1.834 | 2.241 | schubfach | 1.22x |
-| canonical-minimal | 1.483 | 1.628 | schubfach | 1.10x |
-| control-escapes | 1.546 | 1.557 | schubfach | 1.01x |
-| deep-64 | 1.510 | 1.391 | json-canon | 1.09x |
-| escaped-key-order | 1.384 | 1.575 | schubfach | 1.14x |
-| long-string | 1.720 | 1.751 | schubfach | 1.02x |
-| nested-mixed | 1.296 | 1.466 | schubfach | 1.13x |
-| numeric-boundary | 1.398 | 1.548 | schubfach | 1.11x |
-| rfc-key-sorting | 1.373 | 1.543 | schubfach | 1.12x |
-| small | 1.453 | 1.550 | schubfach | 1.07x |
-| surrogate-pair | 1.412 | 1.517 | schubfach | 1.07x |
-| unicode | 1.503 | 1.567 | schubfach | 1.04x |
-| verify-whitespace | 1.380 | 1.512 | schubfach | 1.10x |
+| array-2048 | 5.707 | 7.335 | schubfach | 1.29x |
+| array-256 | 1.916 | 2.213 | schubfach | 1.16x |
+| canonical-minimal | 1.511 | 1.618 | schubfach | 1.07x |
+| control-escapes | 1.625 | 1.503 | json-canon | 1.08x |
+| deep-64 | 1.480 | 1.712 | schubfach | 1.16x |
+| escaped-key-order | 1.437 | 1.583 | schubfach | 1.10x |
+| long-string | 1.550 | 1.828 | schubfach | 1.18x |
+| nested-mixed | 1.481 | 1.529 | schubfach | 1.03x |
+| numeric-boundary | 1.507 | 1.589 | schubfach | 1.05x |
+| rfc-key-sorting | 1.452 | 1.478 | schubfach | 1.02x |
+| small | 1.459 | 1.463 | schubfach | 1.00x |
+| surrogate-pair | 1.389 | 1.528 | schubfach | 1.10x |
+| unicode | 1.309 | 1.592 | schubfach | 1.22x |
+| verify-whitespace | 1.387 | 1.595 | schubfach | 1.15x |
 
 ## API Benchmarks (ns/op)
 
 | workload | schubfach (ns/op) | json-canon (ns/op) | winner | speedup |
 |---|---:|---:|---|---:|
-| canonicalize/array-2048 | 2548995.833 | 4047979.833 | schubfach | 1.59x |
-| canonicalize/array-256 | 303347.500 | 474368.500 | schubfach | 1.56x |
-| canonicalize/canonical-minimal | 352.283 | 529.300 | schubfach | 1.50x |
-| canonicalize/control-escapes | 1335.167 | 1251.333 | json-canon | 1.07x |
-| canonicalize/deep | 36651.333 | 36688.667 | schubfach | 1.00x |
-| canonicalize/deep-64 | 16236.667 | 16239.833 | schubfach | 1.00x |
-| canonicalize/escaped-key-order | 707.433 | 1124.667 | schubfach | 1.59x |
-| canonicalize/large | 11928619.000 | 20545683.667 | schubfach | 1.72x |
-| canonicalize/long-string | 74802.167 | 73587.500 | json-canon | 1.02x |
-| canonicalize/medium | 340270.333 | 581178.167 | schubfach | 1.71x |
-| canonicalize/mixed-prod | 136311.000 | 178287.333 | schubfach | 1.31x |
-| canonicalize/nested-mixed | 2181.833 | 3065.667 | schubfach | 1.41x |
-| canonicalize/number-heavy | 13529.500 | 20854.833 | schubfach | 1.54x |
-| canonicalize/numeric-boundary | 12395.833 | 18294.167 | schubfach | 1.48x |
-| canonicalize/rfc-key-sorting | 3018.333 | 2967.833 | json-canon | 1.02x |
-| canonicalize/small | 1243.167 | 1667.000 | schubfach | 1.34x |
-| canonicalize/surrogate-pair | 647.250 | 639.950 | json-canon | 1.01x |
-| canonicalize/unicode | 1548.667 | 1558.667 | schubfach | 1.01x |
-| canonicalize/verify-whitespace | 906.500 | 1563.000 | schubfach | 1.72x |
-| verify/canonical/array-2048 | 2469781.333 | 4029019.000 | schubfach | 1.63x |
-| verify/canonical/array-256 | 317223.833 | 489779.667 | schubfach | 1.54x |
-| verify/canonical/canonical-minimal | 358.083 | 548.567 | schubfach | 1.53x |
-| verify/canonical/control-escapes | 1318.833 | 1273.167 | json-canon | 1.04x |
-| verify/canonical/deep | 37935.667 | 38057.500 | schubfach | 1.00x |
-| verify/canonical/deep-64 | 16756.500 | 16837.667 | schubfach | 1.00x |
-| verify/canonical/escaped-key-order | 684.650 | 1130.333 | schubfach | 1.65x |
-| verify/canonical/large | 11506130.667 | 20018040.000 | schubfach | 1.74x |
-| verify/canonical/long-string | 76126.667 | 75923.000 | json-canon | 1.00x |
-| verify/canonical/medium | 341654.667 | 580655.333 | schubfach | 1.70x |
-| verify/canonical/mixed-prod | 134312.000 | 176078.833 | schubfach | 1.31x |
-| verify/canonical/nested-mixed | 2218.167 | 3117.833 | schubfach | 1.41x |
-| verify/canonical/number-heavy | 13608.000 | 21223.833 | schubfach | 1.56x |
-| verify/canonical/numeric-boundary | 12525.833 | 18510.833 | schubfach | 1.48x |
-| verify/canonical/rfc-key-sorting | 2853.667 | 2834.833 | json-canon | 1.01x |
-| verify/canonical/small | 1223.000 | 1658.667 | schubfach | 1.36x |
-| verify/canonical/surrogate-pair | 659.250 | 654.400 | json-canon | 1.01x |
-| verify/canonical/unicode | 1540.000 | 1546.333 | schubfach | 1.00x |
-| verify/canonical/verify-whitespace | 936.467 | 1582.833 | schubfach | 1.69x |
-| verify/noncanonical/control-escapes | 1308.500 | 1261.333 | json-canon | 1.04x |
-| verify/noncanonical/escaped-key-order | 703.350 | 1124.500 | schubfach | 1.60x |
-| verify/noncanonical/large | 11908081.333 | 20607667.167 | schubfach | 1.73x |
-| verify/noncanonical/medium | 343706.167 | 574766.500 | schubfach | 1.67x |
-| verify/noncanonical/mixed-prod | 136452.667 | 178493.167 | schubfach | 1.31x |
-| verify/noncanonical/nested-mixed | 2185.000 | 3063.000 | schubfach | 1.40x |
-| verify/noncanonical/number-heavy | 13609.333 | 20847.833 | schubfach | 1.53x |
-| verify/noncanonical/numeric-boundary | 12518.833 | 18296.500 | schubfach | 1.46x |
-| verify/noncanonical/rfc-key-sorting | 3017.500 | 2968.167 | json-canon | 1.02x |
-| verify/noncanonical/small | 1245.833 | 1664.167 | schubfach | 1.34x |
-| verify/noncanonical/surrogate-pair | 650.567 | 644.033 | json-canon | 1.01x |
-| verify/noncanonical/unicode | 1556.833 | 1552.833 | json-canon | 1.00x |
-| verify/noncanonical/verify-whitespace | 913.567 | 1563.667 | schubfach | 1.71x |
+| canonicalize/array-2048 | 2561729.700 | 4100567.700 | schubfach | 1.60x |
+| canonicalize/array-256 | 306198.500 | 475343.900 | schubfach | 1.55x |
+| canonicalize/canonical-minimal | 351.560 | 531.430 | schubfach | 1.51x |
+| canonicalize/control-escapes | 1349.800 | 1264.900 | json-canon | 1.07x |
+| canonicalize/deep | 36879.800 | 36765.500 | json-canon | 1.00x |
+| canonicalize/deep-64 | 16244.400 | 16336.800 | schubfach | 1.01x |
+| canonicalize/escaped-key-order | 705.980 | 1129.900 | schubfach | 1.60x |
+| canonicalize/large | 11976455.000 | 20612503.900 | schubfach | 1.72x |
+| canonicalize/long-string | 76796.100 | 75367.800 | json-canon | 1.02x |
+| canonicalize/medium | 346537.400 | 586299.200 | schubfach | 1.69x |
+| canonicalize/mixed-prod | 136379.000 | 180597.100 | schubfach | 1.32x |
+| canonicalize/nested-mixed | 2176.000 | 3144.200 | schubfach | 1.44x |
+| canonicalize/number-heavy | 14115.500 | 21353.100 | schubfach | 1.51x |
+| canonicalize/numeric-boundary | 12712.400 | 18781.000 | schubfach | 1.48x |
+| canonicalize/rfc-key-sorting | 3002.900 | 2977.400 | json-canon | 1.01x |
+| canonicalize/small | 1242.900 | 1673.900 | schubfach | 1.35x |
+| canonicalize/surrogate-pair | 649.910 | 641.800 | json-canon | 1.01x |
+| canonicalize/unicode | 1559.500 | 1551.100 | json-canon | 1.01x |
+| canonicalize/verify-whitespace | 915.130 | 1561.800 | schubfach | 1.71x |
+| verify/canonical/array-2048 | 2483304.200 | 4031763.700 | schubfach | 1.62x |
+| verify/canonical/array-256 | 317027.400 | 485794.700 | schubfach | 1.53x |
+| verify/canonical/canonical-minimal | 360.160 | 547.070 | schubfach | 1.52x |
+| verify/canonical/control-escapes | 1330.600 | 1270.100 | json-canon | 1.05x |
+| verify/canonical/deep | 38141.200 | 38114.800 | json-canon | 1.00x |
+| verify/canonical/deep-64 | 16803.900 | 16810.200 | schubfach | 1.00x |
+| verify/canonical/escaped-key-order | 692.740 | 1124.600 | schubfach | 1.62x |
+| verify/canonical/large | 11583371.600 | 20145353.200 | schubfach | 1.74x |
+| verify/canonical/long-string | 77610.300 | 77086.700 | json-canon | 1.01x |
+| verify/canonical/medium | 344421.200 | 582648.300 | schubfach | 1.69x |
+| verify/canonical/mixed-prod | 134723.400 | 177058.100 | schubfach | 1.31x |
+| verify/canonical/nested-mixed | 2221.200 | 3114.800 | schubfach | 1.40x |
+| verify/canonical/number-heavy | 13950.600 | 21546.000 | schubfach | 1.54x |
+| verify/canonical/numeric-boundary | 12875.600 | 18819.500 | schubfach | 1.46x |
+| verify/canonical/rfc-key-sorting | 2859.200 | 2856.100 | json-canon | 1.00x |
+| verify/canonical/small | 1232.700 | 1655.500 | schubfach | 1.34x |
+| verify/canonical/surrogate-pair | 658.750 | 656.930 | json-canon | 1.00x |
+| verify/canonical/unicode | 1555.200 | 1555.200 | schubfach | 1.00x |
+| verify/canonical/verify-whitespace | 939.430 | 1592.900 | schubfach | 1.70x |
+| verify/noncanonical/control-escapes | 1322.300 | 1273.400 | json-canon | 1.04x |
+| verify/noncanonical/escaped-key-order | 704.360 | 1136.600 | schubfach | 1.61x |
+| verify/noncanonical/large | 12019413.200 | 20762854.000 | schubfach | 1.73x |
+| verify/noncanonical/medium | 340768.000 | 576457.000 | schubfach | 1.69x |
+| verify/noncanonical/mixed-prod | 135143.100 | 179242.600 | schubfach | 1.33x |
+| verify/noncanonical/nested-mixed | 2183.900 | 3076.600 | schubfach | 1.41x |
+| verify/noncanonical/number-heavy | 13947.400 | 21264.300 | schubfach | 1.52x |
+| verify/noncanonical/numeric-boundary | 12792.700 | 18670.100 | schubfach | 1.46x |
+| verify/noncanonical/rfc-key-sorting | 2998.900 | 2979.500 | json-canon | 1.01x |
+| verify/noncanonical/small | 1241.100 | 1674.100 | schubfach | 1.35x |
+| verify/noncanonical/surrogate-pair | 647.670 | 647.350 | json-canon | 1.00x |
+| verify/noncanonical/unicode | 1546.300 | 1557.500 | schubfach | 1.01x |
+| verify/noncanonical/verify-whitespace | 908.000 | 1566.600 | schubfach | 1.73x |
 
 ## benchstat Output
 
-```text
-│ /tmp/jcs-benchstat-2027231477/schubfach.txt │ /tmp/jcs-benchstat-2027231477/json-canon.txt │
-                                      │                   sec/op                    │        sec/op          vs base               │
-Canonicalize/array-2048                                                 2.552m ± 1%             4.053m ± 1%  +58.81% (p=0.002 n=6)
-Canonicalize/array-256                                                  303.4µ ± 1%             473.3µ ± 2%  +56.00% (p=0.002 n=6)
-Canonicalize/canonical-minimal                                          352.1n ± 2%             529.0n ± 1%  +50.22% (p=0.002 n=6)
-Canonicalize/control-escapes                                            1.333µ ± 2%             1.250µ ± 2%   -6.23% (p=0.002 n=6)
-Canonicalize/deep                                                       36.66µ ± 0%             36.67µ ± 1%        ~ (p=0.784 n=6)
-Canonicalize/deep-64                                                    16.21µ ± 1%             16.21µ ± 1%        ~ (p=0.589 n=6)
-Canonicalize/escaped-key-order                                          706.6n ± 1%            1123.0n ± 1%  +58.93% (p=0.002 n=6)
-Canonicalize/large                                                      11.92m ± 1%             20.56m ± 1%  +72.52% (p=0.002 n=6)
-Canonicalize/long-string                                                74.84µ ± 1%             73.40µ ± 2%   -1.92% (p=0.026 n=6)
-Canonicalize/medium                                                     340.0µ ± 2%             580.0µ ± 1%  +70.59% (p=0.002 n=6)
-Canonicalize/mixed-prod                                                 136.0µ ± 1%             178.2µ ± 1%  +31.03% (p=0.002 n=6)
-Canonicalize/nested-mixed                                               2.176µ ± 1%             3.065µ ± 1%  +40.83% (p=0.002 n=6)
-Canonicalize/number-heavy                                               13.48µ ± 2%             20.86µ ± 2%  +54.76% (p=0.002 n=6)
-Canonicalize/numeric-boundary                                           12.38µ ± 1%             18.23µ ± 2%  +47.21% (p=0.002 n=6)
-Canonicalize/rfc-key-sorting                                            3.015µ ± 1%             2.969µ ± 1%   -1.53% (p=0.009 n=6)
-Canonicalize/small                                                      1.246µ ± 1%             1.673µ ± 2%  +34.32% (p=0.002 n=6)
-Canonicalize/surrogate-pair                                             647.6n ± 0%             639.5n ± 1%   -1.25% (p=0.002 n=6)
-Canonicalize/unicode                                                    1.550µ ± 1%             1.558µ ± 1%        ~ (p=0.108 n=6)
-Canonicalize/verify-whitespace                                          906.9n ± 1%            1560.0n ± 1%  +72.01% (p=0.002 n=6)
-Verify/canonical/array-2048                                             2.468m ± 1%             4.026m ± 1%  +63.12% (p=0.002 n=6)
-Verify/canonical/array-256                                              317.0µ ± 1%             490.5µ ± 1%  +54.73% (p=0.002 n=6)
-Verify/canonical/canonical-minimal                                      357.2n ± 1%             548.4n ± 0%  +53.55% (p=0.002 n=6)
-Verify/canonical/control-escapes                                        1.319µ ± 0%             1.275µ ± 1%   -3.26% (p=0.002 n=6)
-Verify/canonical/deep                                                   37.98µ ± 1%             38.01µ ± 1%        ~ (p=0.310 n=6)
-Verify/canonical/deep-64                                                16.77µ ± 1%             16.85µ ± 1%        ~ (p=0.180 n=6)
-Verify/canonical/escaped-key-order                                      685.9n ± 1%            1131.0n ± 1%  +64.90% (p=0.002 n=6)
-Verify/canonical/large                                                  11.48m ± 1%             20.03m ± 1%  +74.48% (p=0.002 n=6)
-Verify/canonical/long-string                                            76.04µ ± 2%             76.00µ ± 2%        ~ (p=0.818 n=6)
-Verify/canonical/medium                                                 341.1µ ± 1%             581.0µ ± 1%  +70.34% (p=0.002 n=6)
-Verify/canonical/mixed-prod                                             134.7µ ± 1%             175.9µ ± 1%  +30.62% (p=0.002 n=6)
-Verify/canonical/nested-mixed                                           2.220µ ± 1%             3.114µ ± 1%  +40.27% (p=0.002 n=6)
-Verify/canonical/number-heavy                                           13.65µ ± 2%             21.26µ ± 1%  +55.74% (p=0.002 n=6)
-Verify/canonical/numeric-boundary                                       12.54µ ± 1%             18.53µ ± 1%  +47.68% (p=0.002 n=6)
-Verify/canonical/rfc-key-sorting                                        2.844µ ± 2%             2.836µ ± 1%        ~ (p=0.240 n=6)
-Verify/canonical/small                                                  1.224µ ± 1%             1.660µ ± 1%  +35.62% (p=0.002 n=6)
-Verify/canonical/surrogate-pair                                         658.2n ± 1%             655.2n ± 1%   -0.46% (p=0.011 n=6)
-Verify/canonical/unicode                                                1.541µ ± 1%             1.541µ ± 2%        ~ (p=0.781 n=6)
-Verify/canonical/verify-whitespace                                      933.3n ± 2%            1582.5n ± 1%  +69.56% (p=0.002 n=6)
-Verify/noncanonical/control-escapes                                     1.308µ ± 1%             1.264µ ± 1%   -3.37% (p=0.002 n=6)
-Verify/noncanonical/escaped-key-order                                   703.3n ± 1%            1123.5n ± 1%  +59.74% (p=0.002 n=6)
-Verify/noncanonical/large                                               11.92m ± 1%             20.63m ± 1%  +73.08% (p=0.002 n=6)
-Verify/noncanonical/medium                                              343.3µ ± 1%             574.1µ ± 2%  +67.20% (p=0.002 n=6)
-Verify/noncanonical/mixed-prod                                          136.3µ ± 2%             178.9µ ± 2%  +31.22% (p=0.002 n=6)
-Verify/noncanonical/nested-mixed                                        2.181µ ± 1%             3.058µ ± 1%  +40.21% (p=0.002 n=6)
-Verify/noncanonical/number-heavy                                        13.61µ ± 2%             20.82µ ± 1%  +52.97% (p=0.002 n=6)
-Verify/noncanonical/numeric-boundary                                    12.52µ ± 1%             18.18µ ± 2%  +45.17% (p=0.002 n=6)
-Verify/noncanonical/rfc-key-sorting                                     3.015µ ± 1%             2.968µ ± 1%   -1.58% (p=0.002 n=6)
-Verify/noncanonical/small                                               1.248µ ± 1%             1.661µ ± 1%  +33.11% (p=0.002 n=6)
-Verify/noncanonical/surrogate-pair                                      651.5n ± 1%             643.8n ± 1%        ~ (p=0.058 n=6)
-Verify/noncanonical/unicode                                             1.556µ ± 1%             1.552µ ± 1%        ~ (p=0.554 n=6)
-Verify/noncanonical/verify-whitespace                                   912.9n ± 1%            1563.0n ± 1%  +71.22% (p=0.002 n=6)
-geomean                                                                 12.32µ                  16.18µ       +31.33%
-
-                                      │ /tmp/jcs-benchstat-2027231477/schubfach.txt │ /tmp/jcs-benchstat-2027231477/json-canon.txt │
-                                      │                     B/s                     │          B/s           vs base               │
-Canonicalize/array-2048                                                36.96Mi ± 1%            23.27Mi ± 1%  -37.04% (p=0.002 n=6)
-Canonicalize/array-256                                                 37.45Mi ± 1%            24.01Mi ± 2%  -35.88% (p=0.002 n=6)
-Canonicalize/canonical-minimal                                         18.95Mi ± 2%            12.62Mi ± 1%  -33.41% (p=0.002 n=6)
-Canonicalize/control-escapes                                           42.20Mi ± 2%            45.01Mi ± 2%   +6.64% (p=0.002 n=6)
-Canonicalize/deep                                                      30.13Mi ± 0%            30.12Mi ± 1%        ~ (p=0.922 n=6)
-Canonicalize/deep-64                                                   30.00Mi ± 1%            30.00Mi ± 1%        ~ (p=0.589 n=6)
-Canonicalize/escaped-key-order                                         24.29Mi ± 1%            15.29Mi ± 1%  -37.08% (p=0.002 n=6)
-Canonicalize/large                                                     37.09Mi ± 1%            21.50Mi ± 1%  -42.04% (p=0.002 n=6)
-Canonicalize/long-string                                               209.0Mi ± 1%            213.1Mi ± 2%   +1.96% (p=0.026 n=6)
-Canonicalize/medium                                                    38.54Mi ± 1%            22.59Mi ± 1%  -41.38% (p=0.002 n=6)
-Canonicalize/mixed-prod                                                39.64Mi ± 1%            30.25Mi ± 1%  -23.69% (p=0.002 n=6)
-Canonicalize/nested-mixed                                              21.47Mi ± 1%            15.25Mi ± 1%  -28.98% (p=0.002 n=6)
-Canonicalize/number-heavy                                              9.904Mi ± 2%            6.399Mi ± 2%  -35.39% (p=0.002 n=6)
-Canonicalize/numeric-boundary                                          7.548Mi ± 1%            5.131Mi ± 2%  -32.03% (p=0.002 n=6)
-Canonicalize/rfc-key-sorting                                           63.91Mi ± 1%            64.90Mi ± 1%   +1.56% (p=0.009 n=6)
-Canonicalize/small                                                     34.46Mi ± 1%            25.65Mi ± 2%  -25.55% (p=0.002 n=6)
-Canonicalize/surrogate-pair                                            42.71Mi ± 0%            43.24Mi ± 1%   +1.26% (p=0.002 n=6)
-Canonicalize/unicode                                                   60.31Mi ± 1%            59.99Mi ± 1%        ~ (p=0.065 n=6)
-Canonicalize/verify-whitespace                                         25.24Mi ± 1%            14.67Mi ± 1%  -41.87% (p=0.002 n=6)
-Verify/canonical/array-2048                                            38.21Mi ± 1%            23.43Mi ± 1%  -38.69% (p=0.002 n=6)
-Verify/canonical/array-256                                             35.84Mi ± 1%            23.16Mi ± 1%  -35.36% (p=0.002 n=6)
-Verify/canonical/canonical-minimal                                     18.69Mi ± 1%            12.17Mi ± 1%  -34.87% (p=0.002 n=6)
-Verify/canonical/control-escapes                                       42.68Mi ± 0%            44.11Mi ± 1%   +3.36% (p=0.002 n=6)
-Verify/canonical/deep                                                  29.08Mi ± 1%            29.05Mi ± 1%        ~ (p=0.331 n=6)
-Verify/canonical/deep-64                                               29.00Mi ± 1%            28.87Mi ± 1%        ~ (p=0.119 n=6)
-Verify/canonical/escaped-key-order                                     18.08Mi ± 1%            10.96Mi ± 1%  -39.36% (p=0.002 n=6)
-Verify/canonical/large                                                 38.42Mi ± 1%            22.02Mi ± 1%  -42.69% (p=0.002 n=6)
-Verify/canonical/long-string                                           205.7Mi ± 2%            205.8Mi ± 2%        ~ (p=0.818 n=6)
-Verify/canonical/medium                                                38.31Mi ± 1%            22.49Mi ± 1%  -41.29% (p=0.002 n=6)
-Verify/canonical/mixed-prod                                            39.85Mi ± 1%            30.51Mi ± 1%  -23.44% (p=0.002 n=6)
-Verify/canonical/nested-mixed                                          21.05Mi ± 1%            15.00Mi ± 1%  -28.73% (p=0.002 n=6)
-Verify/canonical/number-heavy                                          9.499Mi ± 2%            6.104Mi ± 1%  -35.74% (p=0.002 n=6)
-Verify/canonical/numeric-boundary                                      7.453Mi ± 1%            5.045Mi ± 1%  -32.31% (p=0.002 n=6)
-Verify/canonical/rfc-key-sorting                                       60.36Mi ± 2%            60.54Mi ± 1%        ~ (p=0.240 n=6)
-Verify/canonical/small                                                 32.72Mi ± 1%            24.13Mi ± 1%  -26.25% (p=0.002 n=6)
-Verify/canonical/surrogate-pair                                        30.42Mi ± 1%            30.57Mi ± 1%   +0.47% (p=0.009 n=6)
-Verify/canonical/unicode                                               59.42Mi ± 1%            59.41Mi ± 2%        ~ (p=0.699 n=6)
-Verify/canonical/verify-whitespace                                     17.37Mi ± 2%            10.25Mi ± 1%  -41.01% (p=0.002 n=6)
-Verify/noncanonical/control-escapes                                    43.03Mi ± 1%            44.53Mi ± 1%   +3.50% (p=0.002 n=6)
-Verify/noncanonical/escaped-key-order                                  24.41Mi ± 1%            15.28Mi ± 1%  -37.39% (p=0.002 n=6)
-Verify/noncanonical/large                                              37.09Mi ± 1%            21.43Mi ± 1%  -42.22% (p=0.002 n=6)
-Verify/noncanonical/medium                                             38.17Mi ± 1%            22.83Mi ± 2%  -40.19% (p=0.002 n=6)
-Verify/noncanonical/mixed-prod                                         39.54Mi ± 1%            30.14Mi ± 2%  -23.79% (p=0.002 n=6)
-Verify/noncanonical/nested-mixed                                       21.43Mi ± 1%            15.28Mi ± 1%  -28.68% (p=0.002 n=6)
-Verify/noncanonical/number-heavy                                       9.809Mi ± 2%            6.413Mi ± 1%  -34.61% (p=0.002 n=6)
-Verify/noncanonical/numeric-boundary                                   7.467Mi ± 1%            5.140Mi ± 2%  -31.16% (p=0.002 n=6)
-Verify/noncanonical/rfc-key-sorting                                    63.90Mi ± 1%            64.92Mi ± 1%   +1.60% (p=0.002 n=6)
-Verify/noncanonical/small                                              34.41Mi ± 1%            25.84Mi ± 1%  -24.89% (p=0.002 n=6)
-Verify/noncanonical/surrogate-pair                                     42.45Mi ± 1%            42.95Mi ± 1%        ~ (p=0.058 n=6)
-Verify/noncanonical/unicode                                            60.08Mi ± 1%            60.23Mi ± 1%        ~ (p=0.615 n=6)
-Verify/noncanonical/verify-whitespace                                  25.07Mi ± 1%            14.64Mi ± 1%  -41.61% (p=0.002 n=6)
-geomean                                                                31.20Mi                 23.76Mi       -23.86%
-
-                                      │ /tmp/jcs-benchstat-2027231477/schubfach.txt │ /tmp/jcs-benchstat-2027231477/json-canon.txt │
-                                      │                    B/op                     │        B/op          vs base                 │
-Canonicalize/array-2048                                                4.710Mi ± 0%          4.889Mi ± 0%   +3.78% (p=0.002 n=6)
-Canonicalize/array-256                                                 590.7Ki ± 0%          615.1Ki ± 0%   +4.13% (p=0.002 n=6)
-Canonicalize/canonical-minimal                                           504.0 ± 0%            504.0 ± 0%        ~ (p=1.000 n=6) ¹
-Canonicalize/control-escapes                                           2.016Ki ± 0%          2.016Ki ± 0%        ~ (p=1.000 n=6) ¹
-Canonicalize/deep                                                      57.58Ki ± 0%          57.58Ki ± 0%        ~ (p=1.000 n=6) ¹
-Canonicalize/deep-64                                                   26.27Ki ± 0%          26.27Ki ± 0%        ~ (p=1.000 n=6) ¹
-Canonicalize/escaped-key-order                                         1.141Ki ± 0%          1.181Ki ± 0%   +3.51% (p=0.002 n=6)
-Canonicalize/large                                                     19.95Mi ± 0%          20.58Mi ± 0%   +3.17% (p=0.002 n=6)
-Canonicalize/long-string                                               35.11Ki ± 0%          35.11Ki ± 0%        ~ (p=1.000 n=6) ¹
-Canonicalize/medium                                                    604.2Ki ± 0%          624.8Ki ± 0%   +3.42% (p=0.002 n=6)
-Canonicalize/mixed-prod                                                251.0Ki ± 0%          257.1Ki ± 0%   +2.43% (p=0.002 n=6)
-Canonicalize/nested-mixed                                              4.031Ki ± 0%          4.114Ki ± 0%   +2.06% (p=0.002 n=6)
-Canonicalize/number-heavy                                              4.469Ki ± 0%          5.279Ki ± 0%  +18.14% (p=0.002 n=6)
-Canonicalize/numeric-boundary                                          3.133Ki ± 0%          3.822Ki ± 0%  +22.01% (p=0.002 n=6)
-Canonicalize/rfc-key-sorting                                           4.156Ki ± 0%          4.156Ki ± 0%        ~ (p=1.000 n=6) ¹
-Canonicalize/small                                                     2.102Ki ± 0%          2.150Ki ± 0%   +2.32% (p=0.002 n=6)
-Canonicalize/surrogate-pair                                            1.141Ki ± 0%          1.141Ki ± 0%        ~ (p=1.000 n=6) ¹
-Canonicalize/unicode                                                   1.972Ki ± 0%          1.972Ki ± 0%        ~ (p=1.000 n=6) ¹
-Canonicalize/verify-whitespace                                         1.539Ki ± 0%          1.619Ki ± 0%   +5.20% (p=0.002 n=6)
-Verify/canonical/array-2048                                            4.710Mi ± 0%          4.888Mi ± 0%   +3.78% (p=0.002 n=6)
-Verify/canonical/array-256                                             590.7Ki ± 0%          615.3Ki ± 0%   +4.17% (p=0.002 n=6)
-Verify/canonical/canonical-minimal                                       504.0 ± 0%            504.0 ± 0%        ~ (p=1.000 n=6) ¹
-Verify/canonical/control-escapes                                       2.016Ki ± 0%          2.016Ki ± 0%        ~ (p=1.000 n=6) ¹
-Verify/canonical/deep                                                  57.58Ki ± 0%          57.58Ki ± 0%        ~ (p=1.000 n=6) ¹
-Verify/canonical/deep-64                                               26.27Ki ± 0%          26.27Ki ± 0%        ~ (p=1.000 n=6) ¹
-Verify/canonical/escaped-key-order                                     1.133Ki ± 0%          1.173Ki ± 0%   +3.53% (p=0.002 n=6)
-Verify/canonical/large                                                 19.95Mi ± 0%          20.58Mi ± 0%   +3.17% (p=0.002 n=6)
-Verify/canonical/long-string                                           35.11Ki ± 0%          35.11Ki ± 0%        ~ (p=1.000 n=6) ¹
-Verify/canonical/medium                                                604.2Ki ± 0%          625.1Ki ± 0%   +3.45% (p=0.002 n=6)
-Verify/canonical/mixed-prod                                            251.0Ki ± 0%          257.1Ki ± 0%   +2.46% (p=0.002 n=6)
-Verify/canonical/nested-mixed                                          4.031Ki ± 0%          4.115Ki ± 0%   +2.08% (p=0.002 n=6)
-Verify/canonical/number-heavy                                          4.469Ki ± 0%          5.282Ki ± 0%  +18.20% (p=0.002 n=6)
-Verify/canonical/numeric-boundary                                      3.133Ki ± 0%          3.825Ki ± 0%  +22.10% (p=0.002 n=6)
-Verify/canonical/rfc-key-sorting                                       4.141Ki ± 0%          4.141Ki ± 0%        ~ (p=1.000 n=6) ¹
-Verify/canonical/small                                                 2.102Ki ± 0%          2.151Ki ± 0%   +2.37% (p=0.002 n=6)
-Verify/canonical/surrogate-pair                                        1.133Ki ± 0%          1.133Ki ± 0%        ~ (p=1.000 n=6) ¹
-Verify/canonical/unicode                                               1.956Ki ± 0%          1.956Ki ± 0%        ~ (p=1.000 n=6) ¹
-Verify/canonical/verify-whitespace                                     1.539Ki ± 0%          1.619Ki ± 0%   +5.20% (p=0.002 n=6)
-Verify/noncanonical/control-escapes                                    2.016Ki ± 0%          2.016Ki ± 0%        ~ (p=1.000 n=6) ¹
-Verify/noncanonical/escaped-key-order                                  1.141Ki ± 0%          1.181Ki ± 0%   +3.51% (p=0.002 n=6)
-Verify/noncanonical/large                                              19.95Mi ± 0%          20.58Mi ± 0%   +3.17% (p=0.002 n=6)
-Verify/noncanonical/medium                                             604.2Ki ± 0%          624.8Ki ± 0%   +3.42% (p=0.002 n=6)
-Verify/noncanonical/mixed-prod                                         251.0Ki ± 0%          257.0Ki ± 0%   +2.42% (p=0.002 n=6)
-Verify/noncanonical/nested-mixed                                       4.031Ki ± 0%          4.114Ki ± 0%   +2.06% (p=0.002 n=6)
-Verify/noncanonical/number-heavy                                       4.469Ki ± 0%          5.279Ki ± 0%  +18.13% (p=0.002 n=6)
-Verify/noncanonical/numeric-boundary                                   3.133Ki ± 0%          3.822Ki ± 0%  +22.01% (p=0.002 n=6)
-Verify/noncanonical/rfc-key-sorting                                    4.156Ki ± 0%          4.156Ki ± 0%        ~ (p=1.000 n=6) ¹
-Verify/noncanonical/small                                              2.102Ki ± 0%          2.150Ki ± 0%   +2.32% (p=0.002 n=6)
-Verify/noncanonical/surrogate-pair                                     1.141Ki ± 0%          1.141Ki ± 0%        ~ (p=1.000 n=6) ¹
-Verify/noncanonical/unicode                                            1.972Ki ± 0%          1.972Ki ± 0%        ~ (p=1.000 n=6) ¹
-Verify/noncanonical/verify-whitespace                                  1.539Ki ± 0%          1.619Ki ± 0%   +5.20% (p=0.002 n=6)
-geomean                                                                15.70Ki               16.30Ki        +3.81%
-¹ all samples are equal
-
-                                      │ /tmp/jcs-benchstat-2027231477/schubfach.txt │ /tmp/jcs-benchstat-2027231477/json-canon.txt │
-                                      │                  allocs/op                  │      allocs/op       vs base                 │
-Canonicalize/array-2048                                                 49.13k ± 0%           57.34k ± 0%  +16.71% (p=0.002 n=6)
-Canonicalize/array-256                                                  6.131k ± 0%           7.151k ± 0%  +16.64% (p=0.002 n=6)
-Canonicalize/canonical-minimal                                           8.000 ± 0%            8.000 ± 0%        ~ (p=1.000 n=6) ¹
-Canonicalize/control-escapes                                             21.00 ± 0%            21.00 ± 0%        ~ (p=1.000 n=6) ¹
-Canonicalize/deep                                                        843.0 ± 0%            843.0 ± 0%        ~ (p=1.000 n=6) ¹
-Canonicalize/deep-64                                                     387.0 ± 0%            387.0 ± 0%        ~ (p=1.000 n=6) ¹
-Canonicalize/escaped-key-order                                           14.00 ± 0%            16.00 ± 0%  +14.29% (p=0.002 n=6)
-Canonicalize/large                                                      204.8k ± 0%           237.6k ± 0%  +16.01% (p=0.002 n=6)
-Canonicalize/long-string                                                 14.00 ± 0%            14.00 ± 0%        ~ (p=1.000 n=6) ¹
-Canonicalize/medium                                                     6.380k ± 0%           7.394k ± 0%  +15.89% (p=0.002 n=6)
-Canonicalize/mixed-prod                                                 2.340k ± 0%           2.595k ± 0%  +10.90% (p=0.002 n=6)
-Canonicalize/nested-mixed                                                45.00 ± 0%            49.00 ± 0%   +8.89% (p=0.002 n=6)
-Canonicalize/number-heavy                                                60.00 ± 0%            80.00 ± 0%  +33.33% (p=0.002 n=6)
-Canonicalize/numeric-boundary                                            38.00 ± 0%            52.00 ± 0%  +36.84% (p=0.002 n=6)
-Canonicalize/rfc-key-sorting                                             47.00 ± 0%            47.00 ± 0%        ~ (p=1.000 n=6) ¹
-Canonicalize/small                                                       22.00 ± 0%            24.00 ± 0%   +9.09% (p=0.002 n=6)
-Canonicalize/surrogate-pair                                              14.00 ± 0%            14.00 ± 0%        ~ (p=1.000 n=6) ¹
-Canonicalize/unicode                                                     19.00 ± 0%            19.00 ± 0%        ~ (p=1.000 n=6) ¹
-Canonicalize/verify-whitespace                                           19.00 ± 0%            23.00 ± 0%  +21.05% (p=0.002 n=6)
-Verify/canonical/array-2048                                             49.13k ± 0%           57.34k ± 0%  +16.71% (p=0.002 n=6)
-Verify/canonical/array-256                                              6.131k ± 0%           7.152k ± 0%  +16.66% (p=0.002 n=6)
-Verify/canonical/canonical-minimal                                       8.000 ± 0%            8.000 ± 0%        ~ (p=1.000 n=6) ¹
-Verify/canonical/control-escapes                                         21.00 ± 0%            21.00 ± 0%        ~ (p=1.000 n=6) ¹
-Verify/canonical/deep                                                    843.0 ± 0%            843.0 ± 0%        ~ (p=1.000 n=6) ¹
-Verify/canonical/deep-64                                                 387.0 ± 0%            387.0 ± 0%        ~ (p=1.000 n=6) ¹
-Verify/canonical/escaped-key-order                                       14.00 ± 0%            16.00 ± 0%  +14.29% (p=0.002 n=6)
-Verify/canonical/large                                                  204.8k ± 0%           237.6k ± 0%  +16.01% (p=0.002 n=6)
-Verify/canonical/long-string                                             14.00 ± 0%            14.00 ± 0%        ~ (p=1.000 n=6) ¹
-Verify/canonical/medium                                                 6.380k ± 0%           7.395k ± 0%  +15.91% (p=0.002 n=6)
-Verify/canonical/mixed-prod                                             2.340k ± 0%           2.595k ± 0%  +10.90% (p=0.002 n=6)
-Verify/canonical/nested-mixed                                            45.00 ± 0%            49.00 ± 0%   +8.89% (p=0.002 n=6)
-Verify/canonical/number-heavy                                            60.00 ± 0%            80.00 ± 0%  +33.33% (p=0.002 n=6)
-Verify/canonical/numeric-boundary                                        38.00 ± 0%            52.00 ± 0%  +36.84% (p=0.002 n=6)
-Verify/canonical/rfc-key-sorting                                         42.00 ± 0%            42.00 ± 0%        ~ (p=1.000 n=6) ¹
-Verify/canonical/small                                                   22.00 ± 0%            24.00 ± 0%   +9.09% (p=0.002 n=6)
-Verify/canonical/surrogate-pair                                          14.00 ± 0%            14.00 ± 0%        ~ (p=1.000 n=6) ¹
-Verify/canonical/unicode                                                 19.00 ± 0%            19.00 ± 0%        ~ (p=1.000 n=6) ¹
-Verify/canonical/verify-whitespace                                       19.00 ± 0%            23.00 ± 0%  +21.05% (p=0.002 n=6)
-Verify/noncanonical/control-escapes                                      21.00 ± 0%            21.00 ± 0%        ~ (p=1.000 n=6) ¹
-Verify/noncanonical/escaped-key-order                                    14.00 ± 0%            16.00 ± 0%  +14.29% (p=0.002 n=6)
-Verify/noncanonical/large                                               204.8k ± 0%           237.6k ± 0%  +16.01% (p=0.002 n=6)
-Verify/noncanonical/medium                                              6.380k ± 0%           7.394k ± 0%  +15.89% (p=0.002 n=6)
-Verify/noncanonical/mixed-prod                                          2.340k ± 0%           2.595k ± 0%  +10.90% (p=0.002 n=6)
-Verify/noncanonical/nested-mixed                                         45.00 ± 0%            49.00 ± 0%   +8.89% (p=0.002 n=6)
-Verify/noncanonical/number-heavy                                         60.00 ± 0%            80.00 ± 0%  +33.33% (p=0.002 n=6)
-Verify/noncanonical/numeric-boundary                                     38.00 ± 0%            52.00 ± 0%  +36.84% (p=0.002 n=6)
-Verify/noncanonical/rfc-key-sorting                                      47.00 ± 0%            47.00 ± 0%        ~ (p=1.000 n=6) ¹
-Verify/noncanonical/small                                                22.00 ± 0%            24.00 ± 0%   +9.09% (p=0.002 n=6)
-Verify/noncanonical/surrogate-pair                                       14.00 ± 0%            14.00 ± 0%        ~ (p=1.000 n=6) ¹
-Verify/noncanonical/unicode                                              19.00 ± 0%            19.00 ± 0%        ~ (p=1.000 n=6) ¹
-Verify/noncanonical/verify-whitespace                                    19.00 ± 0%            23.00 ± 0%  +21.05% (p=0.002 n=6)
-geomean                                                                  157.7                 174.3       +10.54%
-¹ all samples are equal
-```
+benchstat unavailable; fallback summary above is non-inferential and not CI-gating.

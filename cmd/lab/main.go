@@ -143,7 +143,7 @@ func main() {
 		}
 	case "bench-cli":
 		fs := flag.NewFlagSet("bench-cli", flag.ExitOnError)
-		repeats := fs.Int("repeats", 9, "repetitions per implementation/mode/workload")
+		repeats := fs.Int("repeats", 15, "repetitions per implementation/mode/workload")
 		warmup := fs.Int("warmup", 2, "warmup runs per implementation/mode/workload")
 		track := fs.String("track", "e2e", "benchmark track: e2e | cli-algorithmic | verify-only")
 		seed := fs.Int64("seed", 0, "run randomization seed (0 = current time)")
@@ -154,14 +154,14 @@ func main() {
 		}
 	case "bench-api":
 		fs := flag.NewFlagSet("bench-api", flag.ExitOnError)
-		count := fs.Int("count", 7, "go test -count value")
+		count := fs.Int("count", 10, "go test -count value")
 		_ = fs.Parse(os.Args[2:])
 		if err := runBenchAPI(*count); err != nil {
 			fatal(err)
 		}
 	case "fuzz":
 		fs := flag.NewFlagSet("fuzz", flag.ExitOnError)
-		cases := fs.Int("cases", 500, "number of differential fuzz cases")
+		cases := fs.Int("cases", 2000, "number of differential fuzz cases")
 		seed := fs.Int64("seed", 0, "fuzz seed (0 = current time)")
 		_ = fs.Parse(os.Args[2:])
 		if err := runFuzz(*cases, *seed); err != nil {
@@ -171,7 +171,7 @@ func main() {
 		fs := flag.NewFlagSet("stats", flag.ExitOnError)
 		runsPath := fs.String("runs", "", "path to raw runs csv (default: results/latest-cli-runs.csv)")
 		alpha := fs.Float64("alpha", 0.05, "significance alpha")
-		resamples := fs.Int("resamples", 2000, "bootstrap/permutation resamples")
+		resamples := fs.Int("resamples", 5000, "bootstrap/permutation resamples")
 		_ = fs.Parse(os.Args[2:])
 		if err := runStats(*runsPath, *alpha, *resamples); err != nil {
 			fatal(err)
@@ -330,6 +330,27 @@ func collectEnv(root string) (string, error) {
 	if th := thermalSnapshot(); th != "" {
 		fmt.Fprintf(&b, "thermal_snapshot=%s\n", th)
 	}
+	if mem := readMemTotal(); mem != "" {
+		fmt.Fprintf(&b, "ram_total=%s\n", mem)
+	}
+	for _, cs := range readCacheSizes() {
+		fmt.Fprintf(&b, "%s\n", cs)
+	}
+	if tb := readTurboBoost(); tb != "" {
+		fmt.Fprintf(&b, "turbo_boost=%s\n", tb)
+	}
+	if la := readLoadAvg(); la != "" {
+		fmt.Fprintf(&b, "load_avg=%s\n", la)
+	}
+	if flags := readCPUFlags(); flags != "" {
+		fmt.Fprintf(&b, "cpu_flags=%s\n", flags)
+	}
+	if cgo := os.Getenv("CGO_ENABLED"); cgo != "" {
+		fmt.Fprintf(&b, "cgo_enabled=%s\n", cgo)
+	}
+	if goflags := os.Getenv("GOFLAGS"); goflags != "" {
+		fmt.Fprintf(&b, "goflags=%s\n", goflags)
+	}
 	for _, repo := range []string{"impl-schubfach", "impl-json-canon"} {
 		rev, _ := gitRev(filepath.Join(root, repo))
 		fmt.Fprintf(&b, "%s_rev=%s\n", repo, rev)
@@ -353,12 +374,30 @@ func firstCPUModel() string {
 	if err != nil {
 		return ""
 	}
-	for _, line := range strings.Split(string(data), "\n") {
+	lines := strings.Split(string(data), "\n")
+	for _, line := range lines {
 		if strings.HasPrefix(line, "model name") {
 			parts := strings.SplitN(line, ":", 2)
 			if len(parts) == 2 {
 				return strings.TrimSpace(parts[1])
 			}
+		}
+	}
+	// arm64 fallback: parse CPU implementer + CPU part.
+	var implementer, part string
+	for _, line := range lines {
+		if strings.HasPrefix(line, "CPU implementer") {
+			if ps := strings.SplitN(line, ":", 2); len(ps) == 2 {
+				implementer = strings.TrimSpace(ps[1])
+			}
+		}
+		if strings.HasPrefix(line, "CPU part") {
+			if ps := strings.SplitN(line, ":", 2); len(ps) == 2 {
+				part = strings.TrimSpace(ps[1])
+			}
+		}
+		if implementer != "" && part != "" {
+			return fmt.Sprintf("arm64 implementer=%s part=%s", implementer, part)
 		}
 	}
 	return ""
@@ -393,6 +432,85 @@ func thermalSnapshot() string {
 		return ""
 	}
 	return strings.Join(temps, ",")
+}
+
+func readMemTotal() string {
+	data, err := os.ReadFile("/proc/meminfo")
+	if err != nil {
+		return ""
+	}
+	for _, line := range strings.Split(string(data), "\n") {
+		if strings.HasPrefix(line, "MemTotal:") {
+			return strings.TrimSpace(strings.TrimPrefix(line, "MemTotal:"))
+		}
+	}
+	return ""
+}
+
+func readCacheSizes() []string {
+	var out []string
+	for i := 0; i <= 3; i++ {
+		typeFile := fmt.Sprintf("/sys/devices/system/cpu/cpu0/cache/index%d/type", i)
+		sizeFile := fmt.Sprintf("/sys/devices/system/cpu/cpu0/cache/index%d/size", i)
+		levelFile := fmt.Sprintf("/sys/devices/system/cpu/cpu0/cache/index%d/level", i)
+		sz, err := os.ReadFile(sizeFile)
+		if err != nil {
+			continue
+		}
+		t, _ := os.ReadFile(typeFile)
+		l, _ := os.ReadFile(levelFile)
+		label := fmt.Sprintf("cache_L%s_%s", strings.TrimSpace(string(l)), strings.ToLower(strings.TrimSpace(string(t))))
+		out = append(out, fmt.Sprintf("%s=%s", label, strings.TrimSpace(string(sz))))
+	}
+	return out
+}
+
+func readTurboBoost() string {
+	b, err := os.ReadFile("/sys/devices/system/cpu/intel_pstate/no_turbo")
+	if err != nil {
+		return ""
+	}
+	v := strings.TrimSpace(string(b))
+	if v == "0" {
+		return "enabled"
+	}
+	return "disabled"
+}
+
+func readLoadAvg() string {
+	data, err := os.ReadFile("/proc/loadavg")
+	if err != nil {
+		return ""
+	}
+	return strings.TrimSpace(string(data))
+}
+
+func readCPUFlags() string {
+	data, err := os.ReadFile("/proc/cpuinfo")
+	if err != nil {
+		return ""
+	}
+	wanted := map[string]bool{
+		"sse4_2": true, "avx": true, "avx2": true,
+		"fma": true, "bmi1": true, "bmi2": true,
+	}
+	for _, line := range strings.Split(string(data), "\n") {
+		if strings.HasPrefix(line, "flags") || strings.HasPrefix(line, "Features") {
+			parts := strings.SplitN(line, ":", 2)
+			if len(parts) != 2 {
+				continue
+			}
+			var found []string
+			for _, f := range strings.Fields(parts[1]) {
+				if wanted[f] {
+					found = append(found, f)
+				}
+			}
+			sort.Strings(found)
+			return strings.Join(found, ",")
+		}
+	}
+	return ""
 }
 
 func gitRev(dir string) (string, error) {

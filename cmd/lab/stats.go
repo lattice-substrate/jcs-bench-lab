@@ -37,9 +37,11 @@ type statsComparison struct {
 	PValue           float64 `json:"p_value"`
 	EffectSizeCohenD float64 `json:"effect_size_cohen_d"`
 	Significant      bool    `json:"significant"`
-	PracticalWin     bool    `json:"practical_win"`
-	OraclePassRateA  float64 `json:"oracle_pass_rate_a"`
-	OraclePassRateB  float64 `json:"oracle_pass_rate_b"`
+	PracticalWin          bool    `json:"practical_win"`
+	NoiseFloorMS          float64 `json:"noise_floor_ms"`
+	MinObservableEffPct   float64 `json:"min_observable_effect_pct"`
+	OraclePassRateA       float64 `json:"oracle_pass_rate_a"`
+	OraclePassRateB       float64 `json:"oracle_pass_rate_b"`
 }
 
 type statsReport struct {
@@ -209,6 +211,22 @@ func buildStatsComparisons(runs []runRecord, alpha float64, resamples int) []sta
 		effect := cohenD(a.durations, b.durations)
 		practical := speedup >= 1.03
 
+		// Noise floor = CV × mean of faster impl.
+		// Min observable effect ≈ (2 × CV × 100) / sqrt(N) (approximate 80% power threshold).
+		fasterMean := meanA
+		fasterCV := coefficientOfVariation(a.durations)
+		fasterN := float64(len(a.durations))
+		if meanB < meanA {
+			fasterMean = meanB
+			fasterCV = coefficientOfVariation(b.durations)
+			fasterN = float64(len(b.durations))
+		}
+		noiseFloor := fasterCV * fasterMean
+		minObsEff := 0.0
+		if fasterN > 0 {
+			minObsEff = (2.0 * fasterCV * 100.0) / math.Sqrt(fasterN)
+		}
+
 		cmp = append(cmp, statsComparison{
 			Track:            parts[0],
 			Mode:             parts[1],
@@ -231,9 +249,11 @@ func buildStatsComparisons(runs []runRecord, alpha float64, resamples int) []sta
 			PValue:           pval,
 			EffectSizeCohenD: effect,
 			Significant:      pval < alpha,
-			PracticalWin:     practical,
-			OraclePassRateA:  safeRate(a.oraclePass, a.oracleTotal),
-			OraclePassRateB:  safeRate(b.oraclePass, b.oracleTotal),
+			PracticalWin:          practical,
+			NoiseFloorMS:          noiseFloor,
+			MinObservableEffPct:   minObsEff,
+			OraclePassRateA:       safeRate(a.oraclePass, a.oracleTotal),
+			OraclePassRateB:       safeRate(b.oraclePass, b.oracleTotal),
 		})
 	}
 	return cmp
@@ -345,11 +365,11 @@ func renderStatsMarkdown(report statsReport, runsPath string) string {
 	fmt.Fprintf(&b, "Generated at: %s\n\n", report.GeneratedAtUTC)
 	fmt.Fprintf(&b, "Source: `%s`\n\n", runsPath)
 	fmt.Fprintf(&b, "Protocol: permutation test + bootstrap 95%% CI, alpha=%.4f, resamples=%d\n\n", report.Alpha, report.Resamples)
-	fmt.Fprintf(&b, "| track | mode | workload | winner | speedup | ci95 | p-value | effect d | significant | practical |\n")
-	fmt.Fprintf(&b, "|---|---|---|---|---:|---|---:|---:|---|---|\n")
+	fmt.Fprintf(&b, "| track | mode | workload | winner | speedup | ci95 | p-value | effect d | significant | practical | noise floor (ms) | min obs effect (%%) |\n")
+	fmt.Fprintf(&b, "|---|---|---|---|---:|---|---:|---:|---|---|---:|---:|\n")
 	for _, c := range report.Comparisons {
-		fmt.Fprintf(&b, "| %s | %s | %s | %s | %.3fx | [%.3f, %.3f] | %.4f | %.3f | %t | %t |\n",
-			c.Track, c.Mode, c.Workload, c.Winner, c.Speedup, c.CI95Low, c.CI95High, c.PValue, c.EffectSizeCohenD, c.Significant, c.PracticalWin)
+		fmt.Fprintf(&b, "| %s | %s | %s | %s | %.3fx | [%.3f, %.3f] | %.4f | %.3f | %t | %t | %.4f | %.2f |\n",
+			c.Track, c.Mode, c.Workload, c.Winner, c.Speedup, c.CI95Low, c.CI95High, c.PValue, c.EffectSizeCohenD, c.Significant, c.PracticalWin, c.NoiseFloorMS, c.MinObservableEffPct)
 	}
 	return b.String()
 }
