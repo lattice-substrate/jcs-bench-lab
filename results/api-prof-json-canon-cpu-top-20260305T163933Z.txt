@@ -1,0 +1,39 @@
+File: apibench.test
+Build ID: a01b1d9d9bfe6ab0ebe10919939a94cadcc89ef7
+Type: cpu
+Time: 2026-03-05 10:40:47 CST
+Duration: 69.43s, Total samples = 87.28s (125.72%)
+Showing nodes accounting for 45.04s, 51.60% of 87.28s total
+Dropped 432 nodes (cum <= 0.44s)
+Showing top 30 nodes out of 175
+      flat  flat%   sum%        cum   cum%
+     4.30s  4.93%  4.93%      4.32s  4.95%  strconv.leftShift
+     3.61s  4.14%  9.06%      3.61s  4.14%  runtime.nextFreeFast (inline)
+     2.71s  3.10% 12.17%      5.75s  6.59%  github.com/lattice-substrate/json-canon/jcs.serializeString
+     2.56s  2.93% 15.10%      2.56s  2.93%  runtime.memmove
+     2.48s  2.84% 17.94%      2.48s  2.84%  runtime.memclrNoHeapPointers
+     2.21s  2.53% 20.47%      8.88s 10.17%  github.com/lattice-substrate/json-canon/jcstoken.(*parser).parseString
+     2.03s  2.33% 22.80%        14s 16.04%  runtime.mallocgcSmallScanNoHeader
+     1.82s  2.09% 24.89%      1.95s  2.23%  runtime.(*mspan).writeHeapBitsSmall
+     1.69s  1.94% 26.82%      1.69s  1.94%  aeshashbody
+     1.66s  1.90% 28.72%      6.04s  6.92%  runtime.scanobject
+     1.48s  1.70% 30.42%     19.25s 22.06%  runtime.mallocgc
+     1.31s  1.50% 31.92%      1.31s  1.50%  github.com/lattice-substrate/json-canon/jcs.appendEscapedByte
+     1.18s  1.35% 33.27%     33.69s 38.60%  github.com/lattice-substrate/json-canon/jcs.serializeObject
+     1.18s  1.35% 34.62%      5.93s  6.79%  github.com/lattice-substrate/json-canon/jcs.validateValueTree
+     1.18s  1.35% 35.98%      1.18s  1.35%  runtime.duffcopy
+     1.18s  1.35% 37.33%      1.65s  1.89%  runtime.findObject
+     1.09s  1.25% 38.58%      1.09s  1.25%  math.archLog
+     1.06s  1.21% 39.79%      3.97s  4.55%  math/big.(*Int).mul
+     1.05s  1.20% 40.99%      1.71s  1.96%  runtime.mallocgcTiny
+     1.04s  1.19% 42.19%      6.04s  6.92%  runtime.growslice
+     1.03s  1.18% 43.37%      1.03s  1.18%  math/big.mulAddVWW
+     1.01s  1.16% 44.52%      2.13s  2.44%  github.com/lattice-substrate/json-canon/jcs.validateString
+     0.89s  1.02% 45.54%     28.94s 33.16%  github.com/lattice-substrate/json-canon/jcstoken.(*parser).parseObject
+     0.81s  0.93% 46.47%      3.08s  3.53%  runtime.mapassign_faststr
+     0.78s  0.89% 47.36%      0.79s  0.91%  math/big.nat.norm (inline)
+     0.77s  0.88% 48.25%      2.14s  2.45%  math/big.nat.mulAddWW
+     0.75s  0.86% 49.11%      0.75s  0.86%  runtime.(*mspan).base (inline)
+     0.75s  0.86% 49.97%      0.97s  1.11%  runtime.typePointers.next
+     0.72s  0.82% 50.79%      2.87s  3.29%  math/big.nat.mul
+     0.71s  0.81% 51.60%      0.71s  0.81%  runtime.futex

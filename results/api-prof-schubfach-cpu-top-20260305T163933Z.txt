@@ -1,0 +1,39 @@
+File: apibench.test
+Build ID: a01b1d9d9bfe6ab0ebe10919939a94cadcc89ef7
+Type: cpu
+Time: 2026-03-05 10:39:33 CST
+Duration: 73.94s, Total samples = 99.61s (134.72%)
+Showing nodes accounting for 57.56s, 57.79% of 99.61s total
+Dropped 428 nodes (cum <= 0.50s)
+Showing top 30 nodes out of 155
+      flat  flat%   sum%        cum   cum%
+     6.34s  6.36%  6.36%      6.39s  6.42%  strconv.leftShift
+     4.67s  4.69% 11.05%      4.67s  4.69%  runtime.nextFreeFast (inline)
+     3.73s  3.74% 14.80%      7.03s  7.06%  github.com/lattice-substrate/jcs-schubfach/jcs.serializeString
+     3.42s  3.43% 18.23%      3.42s  3.43%  runtime.memclrNoHeapPointers
+     2.96s  2.97% 21.20%     19.56s 19.64%  runtime.mallocgcSmallScanNoHeader
+     2.74s  2.75% 23.95%      2.74s  2.75%  runtime.memmove
+     2.67s  2.68% 26.63%     11.20s 11.24%  github.com/lattice-substrate/jcs-schubfach/jcstoken.(*parser).parseString
+     2.60s  2.61% 29.24%      2.81s  2.82%  runtime.(*mspan).writeHeapBitsSmall
+     2.38s  2.39% 31.63%      2.38s  2.39%  aeshashbody
+     2.09s  2.10% 33.73%      8.69s  8.72%  runtime.scanobject
+     1.82s  1.83% 35.56%     26.48s 26.58%  runtime.mallocgc
+     1.50s  1.51% 37.06%      2.15s  2.16%  runtime.findObject
+     1.45s  1.46% 38.52%      7.29s  7.32%  github.com/lattice-substrate/jcs-schubfach/jcs.validateValueTree
+     1.41s  1.42% 39.94%      2.51s  2.52%  github.com/lattice-substrate/jcs-schubfach/jcs.validateString
+     1.41s  1.42% 41.35%      1.41s  1.42%  runtime.(*mspan).base (inline)
+     1.35s  1.36% 42.71%     41.76s 41.92%  github.com/lattice-substrate/jcs-schubfach/jcstoken.(*parser).parseObject
+     1.34s  1.35% 44.05%      1.36s  1.37%  github.com/lattice-substrate/jcs-schubfach/jcs.appendEscapedByte
+     1.34s  1.35% 45.40%      9.03s  9.07%  runtime.growslice
+     1.31s  1.32% 46.71%      1.31s  1.32%  runtime.duffcopy
+     1.19s  1.19% 47.91%     24.38s 24.48%  github.com/lattice-substrate/jcs-schubfach/jcs.serializeObject
+     1.13s  1.13% 49.04%      1.29s  1.30%  runtime.typePointers.next
+     1.10s  1.10% 50.15%      1.10s  1.10%  runtime.acquirem (inline)
+     1.06s  1.06% 51.21%      2.40s  2.41%  runtime.mallocgcTiny
+     1.05s  1.05% 52.26%      1.05s  1.05%  runtime.futex
+     1.01s  1.01% 53.28%      1.01s  1.01%  strconv.readFloat
+     0.98s  0.98% 54.26%      0.98s  0.98%  github.com/lattice-substrate/jcs-schubfach/jcstoken.(*parser).skipWhitespace (inline)
+     0.95s  0.95% 55.22%         1s  1.00%  runtime.(*gcBits).bitp (inline)
+     0.89s  0.89% 56.11%      0.89s  0.89%  runtime.getMCache (inline)
+     0.85s  0.85% 56.96%      3.86s  3.88%  runtime.mapassign_faststr
+     0.82s  0.82% 57.79%      1.49s  1.50%  runtime.scanblock
