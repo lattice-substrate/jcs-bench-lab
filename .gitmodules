@@ -1,0 +1,6 @@
+[submodule "impl-schubfach"]
+	path = impl-schubfach
+	url = git@github.com:lattice-substrate/jcs-schubfach.git
+[submodule "impl-json-canon"]
+	path = impl-json-canon
+	url = git@github.com:lattice-substrate/json-canon.git

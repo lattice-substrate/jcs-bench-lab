@@ -1,0 +1,300 @@
+[
+  {
+    "name": "bad-literal",
+    "class": "invalid",
+    "path": "workloads/invalid/bad-literal.json",
+    "bytes": 9,
+    "tags": [
+      "syntax"
+    ]
+  },
+  {
+    "name": "bad-number-leading-zero",
+    "class": "invalid",
+    "path": "workloads/invalid/bad-number-leading-zero.json",
+    "bytes": 8,
+    "tags": [
+      "numeric"
+    ]
+  },
+  {
+    "name": "bad-unicode-escape",
+    "class": "invalid",
+    "path": "workloads/invalid/bad-unicode-escape.json",
+    "bytes": 14,
+    "tags": [
+      "escape",
+      "unicode"
+    ]
+  },
+  {
+    "name": "duplicate-decoded-key",
+    "class": "invalid",
+    "path": "workloads/invalid/duplicate-decoded-key.json",
+    "bytes": 18,
+    "tags": [
+      "ijson",
+      "duplicate",
+      "unicode"
+    ]
+  },
+  {
+    "name": "duplicate-key",
+    "class": "invalid",
+    "path": "workloads/invalid/duplicate-key.json",
+    "bytes": 13,
+    "tags": [
+      "ijson",
+      "duplicate"
+    ]
+  },
+  {
+    "name": "inf-literal",
+    "class": "invalid",
+    "path": "workloads/invalid/inf-literal.json",
+    "bytes": 14,
+    "tags": [
+      "numeric"
+    ]
+  },
+  {
+    "name": "invalid-escape",
+    "class": "invalid",
+    "path": "workloads/invalid/invalid-escape.json",
+    "bytes": 12,
+    "tags": [
+      "escape"
+    ]
+  },
+  {
+    "name": "lone-high-surrogate",
+    "class": "invalid",
+    "path": "workloads/invalid/lone-high-surrogate.json",
+    "bytes": 14,
+    "tags": [
+      "unicode",
+      "surrogate"
+    ]
+  },
+  {
+    "name": "lone-low-surrogate",
+    "class": "invalid",
+    "path": "workloads/invalid/lone-low-surrogate.json",
+    "bytes": 14,
+    "tags": [
+      "unicode",
+      "surrogate"
+    ]
+  },
+  {
+    "name": "nan-literal",
+    "class": "invalid",
+    "path": "workloads/invalid/nan-literal.json",
+    "bytes": 9,
+    "tags": [
+      "numeric"
+    ]
+  },
+  {
+    "name": "negative-zero",
+    "class": "invalid",
+    "path": "workloads/invalid/negative-zero.json",
+    "bytes": 10,
+    "tags": [
+      "numeric",
+      "ijson"
+    ]
+  },
+  {
+    "name": "raw-control-char",
+    "class": "invalid",
+    "path": "workloads/invalid/raw-control-char.json",
+    "bytes": 9,
+    "tags": [
+      "unicode",
+      "control"
+    ]
+  },
+  {
+    "name": "single-quote",
+    "class": "invalid",
+    "path": "workloads/invalid/single-quote.json",
+    "bytes": 7,
+    "tags": [
+      "syntax"
+    ]
+  },
+  {
+    "name": "trailing-comma",
+    "class": "invalid",
+    "path": "workloads/invalid/trailing-comma.json",
+    "bytes": 8,
+    "tags": [
+      "syntax"
+    ]
+  },
+  {
+    "name": "truncated",
+    "class": "invalid",
+    "path": "workloads/invalid/truncated.json",
+    "bytes": 12,
+    "tags": [
+      "syntax"
+    ]
+  },
+  {
+    "name": "array-2048",
+    "class": "valid",
+    "path": "workloads/valid/array-2048.json",
+    "canonical_path": "workloads/canonical/array-2048.json",
+    "bytes": 98901,
+    "tags": [
+      "large",
+      "array",
+      "stress"
+    ]
+  },
+  {
+    "name": "array-256",
+    "class": "valid",
+    "path": "workloads/valid/array-256.json",
+    "canonical_path": "workloads/canonical/array-256.json",
+    "bytes": 11914,
+    "tags": [
+      "large",
+      "array"
+    ]
+  },
+  {
+    "name": "canonical-minimal",
+    "class": "valid",
+    "path": "workloads/valid/canonical-minimal.json",
+    "canonical_path": "workloads/canonical/canonical-minimal.json",
+    "bytes": 7,
+    "tags": [
+      "baseline"
+    ]
+  },
+  {
+    "name": "control-escapes",
+    "class": "valid",
+    "path": "workloads/valid/control-escapes.json",
+    "canonical_path": "workloads/canonical/control-escapes.json",
+    "bytes": 59,
+    "tags": [
+      "unicode",
+      "escape"
+    ]
+  },
+  {
+    "name": "deep-64",
+    "class": "valid",
+    "path": "workloads/valid/deep-64.json",
+    "canonical_path": "workloads/canonical/deep-64.json",
+    "bytes": 510,
+    "tags": [
+      "depth"
+    ]
+  },
+  {
+    "name": "escaped-key-order",
+    "class": "valid",
+    "path": "workloads/valid/escaped-key-order.json",
+    "canonical_path": "workloads/canonical/escaped-key-order.json",
+    "bytes": 18,
+    "tags": [
+      "ordering",
+      "escape"
+    ]
+  },
+  {
+    "name": "long-string",
+    "class": "valid",
+    "path": "workloads/valid/long-string.json",
+    "canonical_path": "workloads/canonical/long-string.json",
+    "bytes": 16403,
+    "tags": [
+      "unicode",
+      "long-string",
+      "stress"
+    ]
+  },
+  {
+    "name": "nested-mixed",
+    "class": "valid",
+    "path": "workloads/valid/nested-mixed.json",
+    "canonical_path": "workloads/canonical/nested-mixed.json",
+    "bytes": 49,
+    "tags": [
+      "nested",
+      "ordering"
+    ]
+  },
+  {
+    "name": "numeric-boundary",
+    "class": "valid",
+    "path": "workloads/valid/numeric-boundary.json",
+    "canonical_path": "workloads/canonical/numeric-boundary.json",
+    "bytes": 98,
+    "tags": [
+      "numeric",
+      "ieee754"
+    ]
+  },
+  {
+    "name": "rfc-key-sorting",
+    "class": "valid",
+    "path": "workloads/valid/rfc-key-sorting.json",
+    "canonical_path": "workloads/canonical/rfc-key-sorting.json",
+    "bytes": 202,
+    "tags": [
+      "rfc8785",
+      "ordering",
+      "unicode"
+    ]
+  },
+  {
+    "name": "small",
+    "class": "valid",
+    "path": "workloads/valid/small.json",
+    "canonical_path": "workloads/canonical/small.json",
+    "bytes": 45,
+    "tags": [
+      "baseline",
+      "ordering"
+    ]
+  },
+  {
+    "name": "surrogate-pair",
+    "class": "valid",
+    "path": "workloads/valid/surrogate-pair.json",
+    "canonical_path": "workloads/canonical/surrogate-pair.json",
+    "bytes": 29,
+    "tags": [
+      "unicode",
+      "surrogate"
+    ]
+  },
+  {
+    "name": "unicode",
+    "class": "valid",
+    "path": "workloads/valid/unicode.json",
+    "canonical_path": "workloads/canonical/unicode.json",
+    "bytes": 98,
+    "tags": [
+      "unicode",
+      "multilingual"
+    ]
+  },
+  {
+    "name": "verify-whitespace",
+    "class": "valid",
+    "path": "workloads/valid/verify-whitespace.json",
+    "canonical_path": "workloads/canonical/verify-whitespace.json",
+    "bytes": 24,
+    "tags": [
+      "verify",
+      "whitespace"
+    ]
+  }
+]
