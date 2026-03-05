@@ -33,6 +33,13 @@ payloads may have different number density, nesting depth, and key
 length distributions.  However, the control group design (number-only
 and string-only workloads) bounds the expected range.
 
+\textbf{Endianness.}
+Both x86-64 and arm64 targets are little-endian; big-endian behavior is
+untested.  While the canonicalization algorithms do not depend on byte
+order (they operate on IEEE~754 binary64 values via language-level
+primitives), edge cases in binary representation parsing could
+theoretically differ on big-endian platforms.
+
 \textbf{sync.Pool mitigation.}
 The \burgerdybvig implementation uses \texttt{sync.Pool} to reuse
 big-integer buffers, reducing allocation cost.  Without pooling, the

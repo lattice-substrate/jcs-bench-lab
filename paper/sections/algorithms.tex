@@ -18,20 +18,18 @@ The \emph{minimal printed string} of $x$ is the output of \ecma
 formatted according to the \ecma branch table.
 \end{definition}
 
-\begin{proposition}
+\begin{remark}
 Definitions~\ref{def:minimal-significand} and
 \ref{def:minimal-printed-string} are not equivalent in string length.
-\end{proposition}
-
-\begin{proof}
-By counterexample.  Consider $x = 10^{20}$: the minimal significand is
+Consider $x = 10^{20}$: the minimal significand is
 $d = 1$ ($k = 1$, $n = 21$).  Since $n = 21 \leq 21$, \ecma uses fixed
 notation, yielding \texttt{100000000000000000000} (21~characters).  Now
 consider $x = 10^{21}$: again $d = 1$ ($k = 1$, $n = 22$), but $n > 21$
 triggers exponential notation, yielding \texttt{1e+21} (5~characters).
 The $n = 21$ boundary creates divergence between significand minimality
-and printed-string length.
-\end{proof}
+and printed-string length.  This means implementations cannot optimize
+for shorter output strings because the \ecma formatting is spec-mandated.
+\end{remark}
 
 \subsection{Burger--Dybvig (Multiprecision)}
 
@@ -63,5 +61,5 @@ operation and zero GC pressure.  The precomputed table is approximately
 
 Both algorithms share an identical formatting stage that converts the
 minimal significand $(d, k, n)$ triple into the final \ecma-compliant
-string.  This stage implements the branch table from \ecma \S7.1.12.1
+string.  This stage implements the branch table from \ecma \S6.1.6.1.20
 and is pure string manipulation with no arithmetic.

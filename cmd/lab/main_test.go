@@ -85,7 +85,7 @@ func TestRecommendationPolicy(t *testing.T) {
 	}
 
 	q.OracleMismatches = nil
-	stats.Comparisons = []statsComparison{{Winner: "schubfach", Significant: true, PracticalWin: true}}
+	stats.Comparisons = []statsComparison{{Winner: "schubfach", Significant: true, SignificantBH: true}}
 	msg = recommendation(q, conf, stats, fuzz)
 	if !strings.Contains(msg, "schubfach") {
 		t.Fatalf("expected schubfach recommendation, got %q", msg)

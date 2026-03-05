@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"hash/fnv"
 	"math"
 	"math/rand"
 	"os"
@@ -35,9 +36,10 @@ type statsComparison struct {
 	CI95Low          float64 `json:"ci95_low"`
 	CI95High         float64 `json:"ci95_high"`
 	PValue           float64 `json:"p_value"`
+	PValueAdjusted   float64 `json:"p_value_adjusted"`
 	EffectSizeCohenD float64 `json:"effect_size_cohen_d"`
 	Significant      bool    `json:"significant"`
-	PracticalWin          bool    `json:"practical_win"`
+	SignificantBH    bool    `json:"significant_bh"`
 	NoiseFloorMS          float64 `json:"noise_floor_ms"`
 	MinObservableEffPct   float64 `json:"min_observable_effect_pct"`
 	OraclePassRateA       float64 `json:"oracle_pass_rate_a"`
@@ -70,6 +72,8 @@ func runStats(runsPath string, alpha float64, resamples int) error {
 	}
 
 	comparisons := buildStatsComparisons(runs, alpha, resamples)
+	applyBenjaminiHochberg(comparisons, alpha)
+
 	report := statsReport{
 		GeneratedAtUTC: time.Now().UTC().Format(time.RFC3339),
 		Alpha:          alpha,
@@ -206,13 +210,13 @@ func buildStatsComparisons(runs []runRecord, alpha float64, resamples int) []sta
 			speedup = meanA / meanB
 		}
 
-		ciLo, ciHi := bootstrapSpeedupCI(a.durations, b.durations, winner, resamples)
-		pval := permutationPValue(a.durations, b.durations, resamples)
+		ciLo, ciHi := bootstrapSpeedupCI(a.durations, b.durations, winner, resamples, key)
+		pval := permutationPValue(a.durations, b.durations, resamples, key)
 		effect := cohenD(a.durations, b.durations)
-		practical := speedup >= 1.03
 
-		// Noise floor = CV × mean of faster impl.
-		// Min observable effect ≈ (2 × CV × 100) / sqrt(N) (approximate 80% power threshold).
+		// Noise floor = CV x mean of faster impl.
+		// Approximate minimum detectable effect for a two-sample z-test at 80% power;
+		// permutation test power may differ for small n.
 		fasterMean := meanA
 		fasterCV := coefficientOfVariation(a.durations)
 		fasterN := float64(len(a.durations))
@@ -249,7 +253,6 @@ func buildStatsComparisons(runs []runRecord, alpha float64, resamples int) []sta
 			PValue:           pval,
 			EffectSizeCohenD: effect,
 			Significant:      pval < alpha,
-			PracticalWin:          practical,
 			NoiseFloorMS:          noiseFloor,
 			MinObservableEffPct:   minObsEff,
 			OraclePassRateA:       safeRate(a.oraclePass, a.oracleTotal),
@@ -259,8 +262,69 @@ func buildStatsComparisons(runs []runRecord, alpha float64, resamples int) []sta
 	return cmp
 }
 
-func bootstrapSpeedupCI(a, b []float64, winner string, resamples int) (float64, float64) {
-	r := rand.New(rand.NewSource(int64(len(a)*1000003 + len(b))))
+// applyBenjaminiHochberg applies the Benjamini-Hochberg FDR correction
+// to all comparisons and sets PValueAdjusted and SignificantBH fields.
+func applyBenjaminiHochberg(comparisons []statsComparison, alpha float64) {
+	m := len(comparisons)
+	if m == 0 {
+		return
+	}
+
+	// Build index sorted by raw p-value ascending.
+	idx := make([]int, m)
+	for i := range idx {
+		idx[i] = i
+	}
+	sort.Slice(idx, func(i, j int) bool {
+		return comparisons[idx[i]].PValue < comparisons[idx[j]].PValue
+	})
+
+	// Compute adjusted p-values (step-up procedure).
+	adjP := make([]float64, m)
+	for rank, i := range idx {
+		k := rank + 1 // 1-based rank
+		adjP[rank] = comparisons[i].PValue * float64(m) / float64(k)
+	}
+
+	// Enforce monotonicity from the bottom up: adj_p[k] = min(adj_p[k], adj_p[k+1]).
+	for rank := m - 2; rank >= 0; rank-- {
+		if adjP[rank] > adjP[rank+1] {
+			adjP[rank] = adjP[rank+1]
+		}
+	}
+
+	// Clamp to [0, 1] and assign.
+	for rank, i := range idx {
+		p := adjP[rank]
+		if p > 1.0 {
+			p = 1.0
+		}
+		comparisons[i].PValueAdjusted = p
+		comparisons[i].SignificantBH = p < alpha
+	}
+}
+
+// comparisonSeed returns a deterministic seed unique to the comparison key and sample sizes.
+func comparisonSeed(comparisonKey string, lenA, lenB int) int64 {
+	h := fnv.New64a()
+	h.Write([]byte(comparisonKey))
+	return int64(h.Sum64()) ^ int64(lenA*1000003+lenB)
+}
+
+func bootstrapSpeedupCI(a, b []float64, winner string, resamples int, comparisonKey string) (float64, float64) {
+	r := rand.New(rand.NewSource(comparisonSeed(comparisonKey, len(a), len(b))))
+
+	// Compute observed statistic.
+	obsA := avg(a)
+	obsB := avg(b)
+	var observed float64
+	if winner == "json-canon" {
+		observed = obsA / obsB
+	} else {
+		observed = obsB / obsA
+	}
+
+	// Generate bootstrap samples.
 	samples := make([]float64, 0, resamples)
 	for i := 0; i < resamples; i++ {
 		ma := bootstrapMean(a, r)
@@ -278,9 +342,94 @@ func bootstrapSpeedupCI(a, b []float64, winner string, resamples int) (float64, 
 		return 1, 1
 	}
 	sort.Float64s(samples)
-	lo := samples[int(math.Floor(float64(len(samples)-1)*0.025))]
-	hi := samples[int(math.Floor(float64(len(samples)-1)*0.975))]
+
+	// BCa bias-correction constant z0: proportion of bootstrap samples below observed.
+	belowCount := 0
+	for _, s := range samples {
+		if s < observed {
+			belowCount++
+		}
+	}
+	z0 := normInv(float64(belowCount) / float64(len(samples)))
+
+	// BCa acceleration constant a: jackknife estimate of skewness.
+	acc := bcaAcceleration(a, b, winner)
+
+	// Adjusted percentile indices.
+	zAlpha := normInv(0.025)
+	adjLo := normCDF(z0 + (z0+zAlpha)/(1-acc*(z0+zAlpha)))
+	adjHi := normCDF(z0 + (z0-zAlpha)/(1-acc*(z0-zAlpha)))
+
+	// Clamp to valid range.
+	if adjLo < 0 {
+		adjLo = 0
+	}
+	if adjHi > 1 {
+		adjHi = 1
+	}
+	if adjLo >= adjHi {
+		adjLo = 0.025
+		adjHi = 0.975
+	}
+
+	lo := samples[int(math.Floor(float64(len(samples)-1)*adjLo))]
+	hi := samples[int(math.Floor(float64(len(samples)-1)*adjHi))]
 	return lo, hi
+}
+
+// bcaAcceleration computes the jackknife acceleration constant for the speedup ratio.
+func bcaAcceleration(a, b []float64, winner string) float64 {
+	n := len(a) + len(b)
+	if n < 3 {
+		return 0
+	}
+
+	// Compute leave-one-out speedup estimates.
+	jackknife := make([]float64, n)
+	for i := 0; i < len(a); i++ {
+		aLoo := make([]float64, 0, len(a)-1)
+		aLoo = append(aLoo, a[:i]...)
+		aLoo = append(aLoo, a[i+1:]...)
+		ma := avg(aLoo)
+		mb := avg(b)
+		if ma <= 0 || mb <= 0 {
+			jackknife[i] = 1
+			continue
+		}
+		if winner == "json-canon" {
+			jackknife[i] = ma / mb
+		} else {
+			jackknife[i] = mb / ma
+		}
+	}
+	for i := 0; i < len(b); i++ {
+		bLoo := make([]float64, 0, len(b)-1)
+		bLoo = append(bLoo, b[:i]...)
+		bLoo = append(bLoo, b[i+1:]...)
+		ma := avg(a)
+		mb := avg(bLoo)
+		if ma <= 0 || mb <= 0 {
+			jackknife[len(a)+i] = 1
+			continue
+		}
+		if winner == "json-canon" {
+			jackknife[len(a)+i] = ma / mb
+		} else {
+			jackknife[len(a)+i] = mb / ma
+		}
+	}
+
+	jMean := avg(jackknife)
+	var num, den float64
+	for _, j := range jackknife {
+		d := jMean - j
+		num += d * d * d
+		den += d * d
+	}
+	if den == 0 {
+		return 0
+	}
+	return num / (6.0 * math.Pow(den, 1.5))
 }
 
 func bootstrapMean(xs []float64, r *rand.Rand) float64 {
@@ -294,12 +443,12 @@ func bootstrapMean(xs []float64, r *rand.Rand) float64 {
 	return sum / float64(len(xs))
 }
 
-func permutationPValue(a, b []float64, resamples int) float64 {
+func permutationPValue(a, b []float64, resamples int, comparisonKey string) float64 {
 	obs := math.Abs(avg(a) - avg(b))
 	pooled := make([]float64, 0, len(a)+len(b))
 	pooled = append(pooled, a...)
 	pooled = append(pooled, b...)
-	r := rand.New(rand.NewSource(int64(len(a)*131 + len(b)*271 + 17)))
+	r := rand.New(rand.NewSource(comparisonSeed(comparisonKey, len(a), len(b)) + 1))
 	count := 0
 	for i := 0; i < resamples; i++ {
 		r.Shuffle(len(pooled), func(i, j int) {
@@ -359,17 +508,52 @@ func safeRate(pass, total int) float64 {
 	return float64(pass) / float64(total)
 }
 
+// normCDF returns the cumulative distribution function of the standard normal distribution.
+func normCDF(x float64) float64 {
+	return 0.5 * (1.0 + math.Erf(x/math.Sqrt2))
+}
+
+// normInv returns the inverse CDF (quantile function) of the standard normal distribution.
+// Uses the rational approximation by Abramowitz and Stegun.
+func normInv(p float64) float64 {
+	if p <= 0 {
+		return math.Inf(-1)
+	}
+	if p >= 1 {
+		return math.Inf(1)
+	}
+	if p == 0.5 {
+		return 0
+	}
+	if p > 0.5 {
+		return -normInv(1 - p)
+	}
+	// Rational approximation for 0 < p <= 0.5.
+	t := math.Sqrt(-2.0 * math.Log(p))
+	// Coefficients from Abramowitz and Stegun formula 26.2.23.
+	c0 := 2.515517
+	c1 := 0.802853
+	c2 := 0.010328
+	d1 := 1.432788
+	d2 := 0.189269
+	d3 := 0.001308
+	return -(t - (c0+c1*t+c2*t*t)/(1.0+d1*t+d2*t*t+d3*t*t*t))
+}
+
 func renderStatsMarkdown(report statsReport, runsPath string) string {
 	var b strings.Builder
 	fmt.Fprintf(&b, "# Statistical Comparison\n\n")
 	fmt.Fprintf(&b, "Generated at: %s\n\n", report.GeneratedAtUTC)
 	fmt.Fprintf(&b, "Source: `%s`\n\n", runsPath)
-	fmt.Fprintf(&b, "Protocol: permutation test + bootstrap 95%% CI, alpha=%.4f, resamples=%d\n\n", report.Alpha, report.Resamples)
-	fmt.Fprintf(&b, "| track | mode | workload | winner | speedup | ci95 | p-value | effect d | significant | practical | noise floor (ms) | min obs effect (%%) |\n")
-	fmt.Fprintf(&b, "|---|---|---|---|---:|---|---:|---:|---|---|---:|---:|\n")
+	fmt.Fprintf(&b, "Protocol: permutation test + BCa bootstrap 95%% CI, alpha=%.4f, resamples=%d\n\n", report.Alpha, report.Resamples)
+	fmt.Fprintf(&b, "Benjamini-Hochberg FDR correction applied across %d comparisons.\n\n", len(report.Comparisons))
+	fmt.Fprintf(&b, "| track | mode | workload | winner | speedup | ci95 | p-value | p-adj | effect d | sig | sig-BH | noise floor (ms) | min obs effect (%%) |\n")
+	fmt.Fprintf(&b, "|---|---|---|---|---:|---|---:|---:|---:|---|---|---:|---:|\n")
 	for _, c := range report.Comparisons {
-		fmt.Fprintf(&b, "| %s | %s | %s | %s | %.3fx | [%.3f, %.3f] | %.4f | %.3f | %t | %t | %.4f | %.2f |\n",
-			c.Track, c.Mode, c.Workload, c.Winner, c.Speedup, c.CI95Low, c.CI95High, c.PValue, c.EffectSizeCohenD, c.Significant, c.PracticalWin, c.NoiseFloorMS, c.MinObservableEffPct)
+		fmt.Fprintf(&b, "| %s | %s | %s | %s | %.3fx | [%.3f, %.3f] | %.4f | %.4f | %.3f | %t | %t | %.4f | %.2f |\n",
+			c.Track, c.Mode, c.Workload, c.Winner, c.Speedup, c.CI95Low, c.CI95High,
+			c.PValue, c.PValueAdjusted, c.EffectSizeCohenD, c.Significant, c.SignificantBH,
+			c.NoiseFloorMS, c.MinObservableEffPct)
 	}
 	return b.String()
 }

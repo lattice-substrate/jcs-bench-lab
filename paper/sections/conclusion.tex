@@ -9,8 +9,9 @@ measurements are only meaningful for correct implementations.
 
 Key findings:
 \begin{itemize}
-\item \schubfach achieves 1.4--2.1$\times$ speedup on number-heavy
-      workloads due to zero heap allocation.
+\item \schubfach achieves 1.3--1.7$\times$ speedup on number-heavy
+      workloads in API benchmarks (1.1--1.3$\times$ end-to-end CLI)
+      due to zero heap allocation.
 \item The advantage narrows to $<$5\% on string-dominant inputs.
 \item Both implementations produce byte-identical output across x86-64
       and arm64.

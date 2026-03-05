@@ -40,12 +40,16 @@ All comparisons use:
 \begin{itemize}
 \item Permutation tests (5{,}000 resamples) for significance at
       $\alpha = 0.05$.
-\item Bootstrap 95\% confidence intervals (5{,}000 resamples) for
-      speedup ratios.
+\item BCa (bias-corrected and accelerated) bootstrap 95\% confidence
+      intervals (5{,}000 resamples) for speedup ratios.
 \item Cohen's $d$ for effect size.
 \item Noise floor documentation: $\text{CV} \times \bar{x}_\text{faster}$.
 \item Minimum observable effect: $\frac{2 \times \text{CV} \times 100}{\sqrt{N}}$
-      (approximate 80\% power threshold).
+      (approximate minimum detectable effect for a two-sample $z$-test at
+      80\% power; permutation test power may differ for small $n$).
+\item Benjamini-Hochberg false discovery rate (FDR) control at $q = 0.05$
+      across all $N$ comparisons.  We report both raw and BH-adjusted
+      $p$-values.
 \end{itemize}
 
 \subsection{Environment}

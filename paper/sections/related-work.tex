@@ -14,10 +14,21 @@ compression.  Giulietti~\cite{giulietti2022schubfach} presented
 Lemire~\cite{champagnegareau2026} provide a comprehensive survey of
 these algorithms.
 
+Gay's \texttt{dtoa.c}~\cite{gay1990dtoa} is the foundational practical
+implementation of float-to-string conversion and remains widely used in
+language runtimes as a reference or fallback.
+
 All prior work focuses on the algorithms in isolation.  Our contribution
 is the first comparison \emph{inside a specification-constrained pipeline}
 where the formatting stage and surrounding canonicalization logic are
 non-trivial.
+
+\textbf{Deterministic serialization standards.}
+Beyond JSON, deterministic encoding is required by other serialization
+formats.  CBOR (RFC~8949)~\cite{rfc8949} specifies deterministic encoding
+rules (\S4.2) for binary data, addressing analogous concerns about
+canonical representation.  Our conformance-gated methodology could be
+adapted to other deterministic serialization benchmarks.
 
 \textbf{JSON canonicalization.}
 \rfcjcs~\cite{rfc8785} is the primary standard.  Prior to RFC~8785,

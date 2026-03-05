@@ -41,6 +41,7 @@ go run ./cmd/lab bench-api -count 10
 go run ./cmd/lab bench-cli -repeats 15 -warmup 3
 go run ./cmd/lab fuzz -cases 2000
 go run ./cmd/lab stats -resamples 5000
+go run ./cmd/lab arm64-determinism  # requires qemu-aarch64-static
 go run ./cmd/lab benchstat
 go run ./cmd/lab profile-api
 go run ./cmd/lab report
@@ -62,13 +63,14 @@ All results are written to `results/` with timestamped filenames and
 | `latest-stats.json` | Statistical comparisons with p-values and CIs |
 | `latest-stats.md` | Human-readable statistical summary |
 | `latest-fuzz.json` | Differential fuzz results |
+| `latest-arm64-determinism.json` | Cross-architecture determinism results |
 | `latest-benchstat.md` | benchstat comparative analysis |
 
 ## Oracle Vector Provenance
 
 See `impl-schubfach/jcsfloat/testdata/PROVENANCE.json` for full details.
 
-- **Oracle function**: ECMA-262 `String(x)` (§7.1.12.1) via V8
+- **Oracle function**: ECMA-262 `String(x)` (§6.1.6.1.20, formerly §7.1.12.1) via V8
 - **Verified Node.js**: v23.3.0 (V8 12.9.202.28-node.11)
 - **Total vectors**: 286,362 (54,445 primary + 231,917 stress)
 - **Coverage**: subnormals, powers of two, RFC 8785 Appendix B, boundary neighborhoods, pseudorandom

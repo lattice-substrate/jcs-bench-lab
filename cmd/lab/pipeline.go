@@ -752,7 +752,7 @@ func renderReportMarkdown(apiSamples []apiBenchSample, cliSamples []cliSummarySa
 	fmt.Fprintf(&b, "- Conformance failures: %d\n", conf.FailureCount)
 	fmt.Fprintf(&b, "- Quality oracle mismatches: %d\n", len(quality.OracleMismatches))
 	fmt.Fprintf(&b, "- Differential fuzz failures: %d\n", len(fuzz.Failures))
-	fmt.Fprintf(&b, "- Statistically significant practical wins: %d\n", countSignificantPractical(stats.Comparisons))
+	fmt.Fprintf(&b, "- Statistically significant wins (BH-corrected): %d\n", countSignificantBH(stats.Comparisons))
 	fmt.Fprintf(&b, "- Recommendation status: %s\n\n", status)
 
 	fmt.Fprintf(&b, "## Conformance Evidence\n\n")
@@ -787,10 +787,10 @@ func renderReportMarkdown(apiSamples []apiBenchSample, cliSamples []cliSummarySa
 	b.WriteString("\n")
 
 	fmt.Fprintf(&b, "## Statistical Inference\n\n")
-	fmt.Fprintf(&b, "| track | mode | workload | winner | speedup | ci95 | p-value | practical |\n")
-	fmt.Fprintf(&b, "|---|---|---|---|---:|---|---:|---|\n")
+	fmt.Fprintf(&b, "| track | mode | workload | winner | speedup | ci95 | p-value | p-adj | sig-BH |\n")
+	fmt.Fprintf(&b, "|---|---|---|---|---:|---|---:|---:|---|\n")
 	for _, c := range stats.Comparisons {
-		fmt.Fprintf(&b, "| %s | %s | %s | %s | %.3fx | [%.3f, %.3f] | %.4f | %t |\n", c.Track, c.Mode, c.Workload, c.Winner, c.Speedup, c.CI95Low, c.CI95High, c.PValue, c.PracticalWin)
+		fmt.Fprintf(&b, "| %s | %s | %s | %s | %.3fx | [%.3f, %.3f] | %.4f | %.4f | %t |\n", c.Track, c.Mode, c.Workload, c.Winner, c.Speedup, c.CI95Low, c.CI95High, c.PValue, c.PValueAdjusted, c.SignificantBH)
 	}
 	b.WriteString("\n")
 
@@ -817,10 +817,10 @@ func writeIssueList(b *strings.Builder, label string, issues []string) {
 	}
 }
 
-func countSignificantPractical(rows []statsComparison) int {
+func countSignificantBH(rows []statsComparison) int {
 	n := 0
 	for _, r := range rows {
-		if r.Significant && r.PracticalWin {
+		if r.SignificantBH {
 			n++
 		}
 	}
@@ -859,18 +859,18 @@ func recommendation(q qualityReport, conf conformanceReport, stats statsReport, 
 	}
 	score := map[string]int{"schubfach": 0, "json-canon": 0}
 	for _, c := range stats.Comparisons {
-		if c.Significant && c.PracticalWin {
+		if c.SignificantBH {
 			score[c.Winner]++
 		}
 	}
 	if score["schubfach"] == 0 && score["json-canon"] == 0 {
-		return "No statistically significant practical winner. Keep dual-track evaluation and expand workload representativeness."
+		return "No statistically significant winner (BH-corrected). Keep dual-track evaluation and expand workload representativeness."
 	}
 	if score["schubfach"] > score["json-canon"] {
-		return "Recommend `schubfach` based on statistically significant practical wins with conformance/oracle gates passing."
+		return "Recommend `schubfach` based on BH-significant wins with conformance/oracle gates passing."
 	}
 	if score["json-canon"] > score["schubfach"] {
-		return "Recommend `json-canon` based on statistically significant practical wins with conformance/oracle gates passing."
+		return "Recommend `json-canon` based on BH-significant wins with conformance/oracle gates passing."
 	}
 	return "Tie under statistical decision policy. Keep dual-track deployment and collect additional workload evidence."
 }
