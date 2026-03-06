@@ -40,43 +40,42 @@
 \maketitle
 
 \begin{abstract}
-Benchmarks that measure only speed are insufficient when the code
-under test must satisfy a formatting specification: a fast but
-non-conformant implementation is unusable.  We introduce
-\emph{conformance-gated benchmarking}, a methodology that treats
-specification correctness as a binary prerequisite for performance
-measurement.  The methodology gates every candidate on an oracle
-vector suite, documents noise floors and minimum detectable effect
-sizes for every comparison, and controls false-discovery rate across
-the full comparison matrix.  It is general, applicable wherever
-correctness is a hard prerequisite, and was developed from the
-practical discovery that existing JSON Canonicalization Scheme
-(RFC~8785) implementations delegate number formatting to language
-runtimes that silently violate the required ECMA-262
-\texttt{Number::toString} policy.
+We introduce \emph{conformance-gated benchmarking}, a methodology
+that treats specification correctness as a binary prerequisite for
+performance measurement, and characterize how Amdahl's Law attenuates
+isolation-level algorithm speedups inside a real formatting pipeline.
+The methodology was developed from a practical discovery: existing
+JSON Canonicalization Scheme (RFC~8785) implementations delegate
+number formatting to language runtimes that silently violate the
+required ECMA-262 \texttt{Number::toString} policy, so benchmarking
+them without first establishing conformance produces meaningless
+speed comparisons.  Each candidate is gated on an oracle vector suite,
+noise floors and minimum detectable effect sizes are documented for
+every comparison, and false-discovery rate is controlled across the
+full comparison matrix.  The methodology is general, applicable
+wherever correctness is a hard prerequisite.
 
-We apply the methodology to a case study comparing four
-digit-generation algorithms (three fixed-width: \schubfach, \ryualg,
-\dragonbox; one multiprecision: \burgerdybvig) inside an
-RFC~8785 canonicalization pipeline, with cross-language validation in
-Go and Rust (8~implementations, 1{,}644 statistical comparisons).
-Conformance is verified against 286{,}362 oracle vectors generated
-from V8 and validated against SpiderMonkey and JavaScriptCore.
-All three fixed-width algorithms perform within 1--8\% of each other
-across both languages, while each is 1.4--1.8$\times$ faster than
-\burgerdybvig on number-dense workloads ($\nu(D) \geq 40\%$) in Go
-API benchmarks; these pipeline-level ratios are consistent with
-larger isolation-level speedups attenuated by Amdahl's Law, since
-digit generation accounts for approximately 15--40\% of total
-pipeline cost; the advantage replicates at 2.3--3.0$\times$ in Rust
-(excluding two pure-numeric workloads producing 8--9$\times$ ratios
-discussed in \S\ref{sec:discussion}).
-On string-dominant and deeply-nested inputs the difference narrows to
-$<$5\%.
-All eight implementations produce byte-identical output; Go binaries are
-additionally verified under cross-compilation for x86-64 and arm64.
-We release the benchmark infrastructure, oracle vectors, and all raw
-data as a reproducibility artifact.
+We apply it to a case study comparing four digit-generation algorithms
+(three fixed-width: \schubfach, \ryualg, \dragonbox; one
+multiprecision: \burgerdybvig) inside an RFC~8785 canonicalization
+pipeline, with cross-language validation in Go and Rust
+(8~implementations, 1{,}644 statistical comparisons).  Conformance is
+verified against 286{,}362 oracle vectors generated from V8 and
+validated against SpiderMonkey and JavaScriptCore.  The three
+fixed-width algorithms perform within 1--8\% of each other across
+both languages.  Each is 1.4--1.8$\times$ faster than \burgerdybvig
+on number-dense workloads ($\nu(D) \geq 40\%$) in Go API benchmarks,
+replicating at 2.3--3.0$\times$ in Rust (excluding two pure-numeric
+outliers discussed in \S\ref{sec:discussion}).  Profiling shows digit
+generation accounts for 15--40\% of total pipeline cost; the observed
+ratios match the Amdahl's Law prediction at these pipeline fractions,
+demonstrating that fixed-width algorithms have largely exhausted the
+available improvement from optimizing digit generation alone.  On
+string-dominant and deeply-nested inputs the difference narrows to
+$<$5\%.  All eight implementations produce byte-identical output; Go
+binaries are additionally verified under cross-compilation for x86-64
+and arm64.  We release the benchmark infrastructure, oracle vectors,
+and all raw data as a reproducibility artifact.
 \end{abstract}
 
 \noindent\textbf{Keywords:} JSON canonicalization, floating-point formatting, Schubfach,
