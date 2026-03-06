@@ -1,24 +1,41 @@
 \section{Discussion}
 \label{sec:discussion}
 
+\subsection{Fixed-Width Algorithm Equivalence}
+
+The most striking finding is that the three fixed-width algorithms
+(\schubfach, \ryualg, \dragonbox) perform within 1--8\% of each other
+across both languages.  In Go API benchmarks, pairwise comparisons among
+fixed-width algorithms yield speedups of ${\leq}1.02\times$, with only
+6~of~89 go:ryu-vs-dragonbox comparisons reaching BH significance.
+In Rust, the pattern is similar: 9--12 BH-significant comparisons
+out of 76 per pair, with speedups of ${\leq}1.13\times$ and no
+consistent winner.
+
+This equivalence has a mechanistic explanation: all three algorithms
+share the same computational core---128-bit multiply against a
+precomputed power-of-ten table, followed by digit trimming.  The
+differences (\ryualg's lastRemovedDigit heuristic, \dragonbox's
+two-digit-at-a-time extraction, \schubfach's bound computation) affect
+branch structure but not the dominant cost: the 64$\times$128-bit
+multiplication and table lookup.  On modern x86-64 hardware with fast
+\texttt{MUL} throughput, the branch differences are below measurement
+noise in the pipeline context where parsing and serialization dominate.
+
 \subsection{Workload-Dependent Behavior}
 
-The performance advantage of \schubfach over \burgerdybvig is strongly
-workload-dependent.  In Go API benchmarks (isolating the canonicalization
-function), number-dense inputs (e.g., \texttt{array-2048},
-\texttt{large}, \texttt{medium}) show 1.3--1.7$\times$ speedup due
-to zero heap allocation in the digit-generation path.  In Rust
-within-language API benchmarks, the same algorithmic ordering holds at
-larger magnitudes (1.7--3.4$\times$ on the same workloads, excluding the
-two extreme outliers discussed in \S\ref{sec:discussion}), confirming
-the advantage is algorithmic.  Deeply-nested
+The performance advantage of fixed-width algorithms over \burgerdybvig is
+strongly workload-dependent.  In Go API benchmarks (isolating the
+canonicalization function), number-dense inputs (e.g.,
+\texttt{array-2048}, \texttt{large}, \texttt{medium}) show
+1.4--1.8$\times$ speedup due to zero heap allocation in the
+digit-generation path.  In Rust within-language API benchmarks, the same
+algorithmic ordering holds at larger magnitudes (2.3--3.0$\times$ on the
+same workloads, excluding the two extreme outliers discussed below),
+confirming the advantage is algorithmic.  Deeply-nested
 workloads (\texttt{deep}, \texttt{deep-64}) contain numbers but show
 ${\approx}1.0\times$ because JSON structural parsing and key sorting
-dominate, diluting the digit-generation signal.  On a small number of
-non-number workloads (\texttt{control-escapes}, \texttt{rfc-key-sorting},
-\texttt{surrogate-pair}), \burgerdybvig is marginally faster
-(${\approx}1$--6\%) in Go API benchmarks, likely due to differences in
-non-numeric code paths.  The speedup therefore
+dominate, diluting the digit-generation signal.  The speedup therefore
 correlates with number \emph{density} (fraction of total cost attributable
 to digit generation), not merely number presence.
 Figure~\ref{fig:density-speedup} visualizes this relationship: workloads
@@ -26,17 +43,6 @@ with zero number content cluster near 1.0$\times$, while number-dense
 workloads ($>$70\% number values) show the full algorithmic advantage.
 
 \input{figures/number-density-speedup}
-
-In end-to-end Go CLI measurement, 12 of 38 within-Go comparisons
-(19~canonicalize + 19~verify) reach BH-corrected significance, with
-speedups of 1.2--1.5$\times$.
-The remaining 26~comparisons show no
-statistically significant difference because estimated process startup
-overhead (approximately 1.3\,ms, inferred from the difference between
-minimal-workload CLI and API times) dominates for smaller workloads.
-On string-dominant inputs (e.g., \texttt{long-string}, \texttt{unicode}),
-the advantage narrows to $<$5\% because formatting cost is dominated by string
-processing and key sorting, amortizing the digit-generation difference.
 
 \subsection{Process Startup Dominance}
 
@@ -48,10 +54,7 @@ algorithmic signal in end-to-end measurement.  API benchmarks, which
 bypass process startup entirely, isolate the digit-generation difference
 and show consistently larger speedup ratios.  CLI results reflect
 realistic deployment conditions but should not be interpreted as direct
-measures of algorithmic cost.  Note that the 26~non-significant Go CLI
-comparisons may include both true nulls and effects below the MDE
-threshold (14--24\%); the current sample size cannot distinguish these
-cases.
+measures of algorithmic cost.
 
 \subsection{Allocation Cost Attribution}
 
@@ -62,7 +65,8 @@ under concurrent use and the inherent cost of multiprecision arithmetic
 operations.
 
 API benchmark allocation data directly attributes the speedup:
-on \texttt{array-2048}, \schubfach performs 49{,}134 allocs/op vs.\
+on \texttt{array-2048}, fixed-width algorithms (\schubfach, \ryualg,
+\dragonbox) perform ${\approx}$49{,}134 allocs/op vs.\
 json-canon's 57{,}343 allocs/op ($\Delta$4.0 per number, 91\,B per
 number).  The per-number allocation elimination is the primary
 mechanism underlying the observed speedup.
@@ -70,21 +74,24 @@ mechanism underlying the observed speedup.
 \subsection{Extreme Outliers: \texttt{numeric-boundary} and \texttt{number-heavy}}
 
 Two workloads show unusually large speedup ratios in Rust API
-benchmarks: \texttt{numeric-boundary} (9.3$\times$ within-Rust, CI
-[9.2, 9.4]) and \texttt{number-heavy} (8.3$\times$, CI [8.2, 8.4]),
-compared to ${\approx}1.5\times$ in Go for both.  Because these are
-\emph{within-Rust} comparisons (same harness on both sides), they are
-unaffected by the cross-language measurement granularity asymmetry
-discussed in \S\ref{sec:methodology}.  These workloads consist
+benchmarks: \texttt{numeric-boundary} (${\approx}9.3\times$ within-Rust,
+CI [9.1, 9.5]) and \texttt{number-heavy} (${\approx}8.2\times$,
+CI [8.1, 8.4]), compared to ${\approx}1.5\times$ in Go for both.
+All three fixed-width algorithms show similar outlier ratios against
+\burgerdybvig on these workloads, further confirming that the effect
+is a fixed-width vs.\ multiprecision phenomenon.
+Because these are \emph{within-Rust} comparisons (same harness on both
+sides), they are unaffected by the cross-language measurement granularity
+asymmetry discussed in \S\ref{sec:methodology}.  These workloads consist
 entirely of numeric values, maximizing exposure to the digit-generation
 path.  The Rust \burgerdybvig implementation uses a lazily-initialized
 power-of-ten cache (\texttt{OnceLock<Vec<BigUint>>}); although the
 harness discards 3~warmup iterations to amortize first-invocation
 costs, the cache-warmed steady-state cost of
 \texttt{BigUint} schoolbook multiprecision arithmetic remains
-substantially higher than the Rust \schubfach implementation's
+substantially higher than the fixed-width implementations'
 compile-time constant lookup table.  The tight confidence intervals
-and low MDEs (2.3\% and 2.1\%) confirm these are genuine algorithmic
+and low MDEs (2--3\%) confirm these are genuine algorithmic
 cost differences, not measurement noise.  The Go within-language
 comparisons at ${\approx}1.5\times$ are smaller because Go's
 \texttt{sync.Pool} amortizes allocation cost and Go's less aggressive
@@ -113,29 +120,27 @@ per-workload profiling breakdowns are deferred to future work.
 
 For applications where canonicalization throughput is critical (e.g.,
 high-frequency signature verification of number-heavy payloads),
-\schubfach offers meaningful improvement.  On the \texttt{medium}
-workload (13.7\,KB, $\nu = 40\%$), the Go API difference between
-\schubfach (${\approx}342\,\mu$s/op) and \burgerdybvig
+any of the three fixed-width algorithms offers meaningful improvement
+over \burgerdybvig.  On the \texttt{medium} workload (13.7\,KB,
+$\nu = 40\%$), the Go API difference between fixed-width algorithms
+(${\approx}342\,\mu$s/op) and \burgerdybvig
 (${\approx}581\,\mu$s/op) is approximately 239\,$\mu$s per
 canonicalization.  A service verifying 1{,}000 signed JSON
 documents per second at this payload size would reclaim roughly
 0.24~seconds of CPU time per second---freeing approximately 24\% of
 a core compared to the \burgerdybvig path.
 
-Real-world JSON canonicalization use cases span a range of number
-densities: JOSE/JWS payloads are typically string-dominant (low~$\nu$),
-Verifiable Credentials often contain timestamps and amounts (moderate~$\nu$),
-and scientific or financial data payloads can be number-heavy
-(high~$\nu$).  For workloads with $\nu < 10\%$, the digit-generation
-algorithm choice has no measurable impact on end-to-end latency; the
-practical benefit concentrates in number-dense payloads where
-digit generation accounts for a meaningful fraction of total cost.
+Since the three fixed-width algorithms are performance-equivalent,
+implementors can choose based on other criteria: code simplicity
+(\schubfach has the smallest implementation), ecosystem momentum
+(\dragonbox was adopted by Go~1.26's \texttt{strconv}), or theoretical
+interest (\ryualg as the first full-coverage fixed-width algorithm).
 
 \subsection{Cross-Language Interpretation}
 
 Adding Rust implementations enables attribution of performance deltas to
 either algorithm choice or language/runtime effects.  The within-language
-comparisons test whether the \schubfach advantage persists independent of
+comparisons test whether the fixed-width advantage persists independent of
 Go's allocator and garbage collector behavior, while same-algorithm
 cross-language comparisons quantify language overhead (startup and
 steady-state) directly.
@@ -150,41 +155,35 @@ variance characteristics.
 lower process startup cost than Go binaries (roughly 2--3$\times$ faster
 in CLI wall time), because they avoid Go runtime initialization (scheduler
 bootstrap, GC metadata setup, goroutine stack allocation).  This
-amplifies the startup-dominance effect discussed in
-\S\ref{sec:discussion}: for small workloads the language runtime overhead
-is the primary differentiator, not the digit-generation algorithm.
+amplifies the startup-dominance effect: for small workloads the language
+runtime overhead is the primary differentiator, not the digit-generation
+algorithm.
 
 \textbf{Algorithmic ordering is language-independent.}  The key finding
 from the cross-language design is that within-Rust comparisons replicate
-the within-Go ordering: \schubfach outperforms \burgerdybvig on
-number-dense workloads in both languages.  This provides evidence that
-the performance advantage derives from the fixed-width digit-generation
-algorithm itself (zero heap allocation, no multiprecision arithmetic),
-not from Go-specific runtime characteristics such as garbage collection
-pressure or \texttt{sync.Pool} contention.
+the within-Go ordering: all three fixed-width algorithms outperform
+\burgerdybvig on number-dense workloads in both languages, and the three
+fixed-width algorithms are equivalent in both languages.  This provides
+evidence that the performance advantage derives from the fixed-width
+approach itself (zero heap allocation, no multiprecision arithmetic),
+not from language-specific runtime characteristics.
 
-\textbf{Interaction analysis.}  The four implementations form
-a $2 \times 2$ structure (algorithm $\times$ language).  While we do not
-perform a formal factorial interaction test (e.g., two-way ANOVA or
-aligned rank transform) due to measurement granularity asymmetry between
-harnesses, Table~\ref{tab:interaction-analysis} reports a ratio-of-ratios
-(RoR) analysis: for each canonicalize workload, $R_\text{Go}$ and
-$R_\text{Rust}$ are the within-language \schubfach/\burgerdybvig speedup
-ratios, and $\text{RoR} = R_\text{Rust}/R_\text{Go}$.
+\textbf{Interaction analysis.}  The eight implementations form
+a $4 \times 2$ structure (algorithm $\times$ language).  While we do not
+perform a formal factorial interaction test due to measurement granularity
+asymmetry between harnesses, Table~\ref{tab:interaction-analysis} reports
+a ratio-of-ratios (RoR) analysis for the \schubfach vs.\ \burgerdybvig
+pair: for each canonicalize workload, $R_\text{Go}$ and $R_\text{Rust}$
+are the within-language speedup ratios, and
+$\text{RoR} = R_\text{Rust}/R_\text{Go}$.
 
 \input{tables/interaction-analysis}
 
-$\text{RoR} > 1$ indicates that the \schubfach advantage is amplified in
+$\text{RoR} > 1$ indicates that the fixed-width advantage is amplified in
 Rust.  On number-dense workloads, $\text{RoR}$ consistently exceeds 1
 (typically 1.3--2.0$\times$), reflecting the larger allocation cost
 differential in Rust where the custom \texttt{BigUint} lacks Go's
-\texttt{sync.Pool} amortization.  The sole exception is
-\texttt{escaped-key-order} ($\text{RoR} = 0.97$), a very small workload
-(18~bytes, 3~values) where non-numeric overhead dominates in both
-languages, leaving little room for differential amplification.  This is consistent with the
-mechanistic explanation: both languages show the algorithmic advantage,
-but Rust amplifies it because its multiprecision path has higher
-per-operation allocation cost.  Readers should interpret the RoR as
+\texttt{sync.Pool} amortization.  Readers should interpret the RoR as
 descriptive evidence of interaction magnitude, not a formal statistical
 test of interaction significance.
 
@@ -207,24 +206,10 @@ counting global allocator (\texttt{std::alloc::GlobalAlloc}) that
 increments atomic counters on each allocation, reporting per-operation
 byte and allocation counts in the same format as Go's
 \texttt{testing.B}.  This confirms the mechanistic explanation:
-Rust-\schubfach allocates minimally (e.g., 1{,}036~B/op, 24~allocs/op
-on \texttt{numeric-boundary}) while Rust-\burgerdybvig allocates
-substantially more (25{,}204~B/op, 470~allocs/op on the same workload)
-due to \texttt{BigUint} multiprecision arithmetic.  The
-$24.3\times$ allocation byte ratio directly explains the 9.3$\times$
-speedup: allocation and initialization cost dominates the
-multiprecision path.
-
-\textbf{Unicode workload anomaly.}  The \texttt{unicode} workload is
-the only API-level case where Go outperforms Rust for both algorithms:
-schubfach:go-vs-rs shows Go 1.08$\times$ faster, and bd:go-vs-rs shows
-Go 1.27$\times$ faster.  This reverses the general 2--4$\times$ Rust
-advantage observed on all other workloads.  A likely explanation is that
-Go's \texttt{unicode/utf8} package benefits from tight inlining of
-short-string fast paths in the Go compiler, whereas Rust's UTF-8
-validation and string escaping may involve additional bounds checks or
-iterator overhead for the particular character distributions in this
-workload.  The effect is small (both within measurement noise for the
-within-language comparisons, where both Go implementations and both Rust
-implementations use the same string-processing code) and does not affect
-the algorithmic conclusions.
+Rust fixed-width implementations allocate minimally (e.g., 1{,}036~B/op,
+24~allocs/op on \texttt{numeric-boundary}) while Rust-\burgerdybvig
+allocates substantially more (25{,}204~B/op, 470~allocs/op on the same
+workload) due to \texttt{BigUint} multiprecision arithmetic.  The
+$24.3\times$ allocation byte ratio directly explains the
+${\approx}9\times$ speedup: allocation and initialization cost dominates
+the multiprecision path.

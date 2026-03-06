@@ -7,14 +7,22 @@
 \toprule
 Impl & Workload & $n$ & Mean (ns/op) & Std Dev & CV (\%) \\
 \midrule
-schubfach & number-heavy & 10 & 13776 & 147 & 1.1 \\
-schubfach & numeric-boundary & 10 & 12564 & 109 & 0.9 \\
-json-canon & number-heavy & 10 & 21508 & 207 & 1.0 \\
-json-canon & numeric-boundary & 10 & 18754 & 146 & 0.8 \\
-schubfach-rs & number-heavy & 10 & 1417 & 23 & 1.7 \\
-schubfach-rs & numeric-boundary & 10 & 954 & 18 & 1.8 \\
-json-canon-rs & number-heavy & 10 & 11729 & 130 & 1.1 \\
-json-canon-rs & numeric-boundary & 10 & 8888 & 66 & 0.7 \\
+schubfach & number-heavy & 10 & 13860 & 162 & 1.2 \\
+schubfach & numeric-boundary & 10 & 12714 & 103 & 0.8 \\
+json-canon & number-heavy & 10 & 21718 & 198 & 0.9 \\
+json-canon & numeric-boundary & 10 & 19052 & 191 & 1.0 \\
+ryu & number-heavy & 10 & 13898 & 140 & 1.0 \\
+ryu & numeric-boundary & 10 & 12702 & 159 & 1.3 \\
+dragonbox & number-heavy & 10 & 13771 & 118 & 0.9 \\
+dragonbox & numeric-boundary & 10 & 12666 & 77 & 0.6 \\
+schubfach-rs & number-heavy & 10 & 1437 & 31 & 2.1 \\
+schubfach-rs & numeric-boundary & 10 & 980 & 32 & 3.3 \\
+json-canon-rs & number-heavy & 10 & 11822 & 134 & 1.1 \\
+json-canon-rs & numeric-boundary & 10 & 9141 & 56 & 0.6 \\
+ryu-rs & number-heavy & 10 & 1480 & 52 & 3.5 \\
+ryu-rs & numeric-boundary & 10 & 1000 & 44 & 4.4 \\
+dragonbox-rs & number-heavy & 10 & 1433 & 32 & 2.2 \\
+dragonbox-rs & numeric-boundary & 10 & 966 & 31 & 3.2 \\
 \bottomrule
 \multicolumn{6}{l}{\footnotesize Low CV on most rows confirms steady-state measurement. Higher CV on very fast Rust rows} \\
 \multicolumn{6}{l}{\footnotesize reflects nanosecond-scale measurement granularity, not warmup instability.} \\

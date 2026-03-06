@@ -12,31 +12,33 @@ semantics.
 Two families of algorithms can satisfy this requirement: multiprecision
 arithmetic approaches exemplified by \burgerdybvig~\cite{burger1996printing},
 and fixed-width integer approaches exemplified by
-\schubfach~\cite{giulietti2022schubfach}.  While these algorithms are
-individually well-studied, no prior work has empirically compared them
-\emph{inside a specification-constrained canonicalization pipeline} where
-conformance is a hard prerequisite and the formatting stage is only one
-component of the total cost.
+\schubfach~\cite{giulietti2022schubfach},
+\ryualg~\cite{adams2018ryu}, and \dragonbox~\cite{jeon2021dragonbox}.
+While these algorithms are individually well-studied, no prior work has
+empirically compared them \emph{inside a specification-constrained
+canonicalization pipeline} where conformance is a hard prerequisite and
+the formatting stage is only one component of the total cost.
 
 This paper makes three contributions:
 
 \begin{enumerate}
-\item The first empirical comparison of multiprecision vs.\ fixed-width
-      digit generation under \ecma/\rfcjcs constraints, showing that
-      \schubfach achieves 1.3--1.7$\times$ speedup on number-dense
-      workloads ($\nu(D) \geq 40\%$) in API benchmarks; in end-to-end CLI
-      measurement, the BH-significant comparisons show 1.2--1.5$\times$
-      speedup.
-      String-dominant
-      and deeply-nested inputs show $<$5\% difference.
+\item The first empirical comparison of four digit-generation algorithms
+      (three fixed-width: \schubfach, \ryualg, \dragonbox; one
+      multiprecision: \burgerdybvig) under \ecma/\rfcjcs constraints,
+      showing that all three fixed-width algorithms perform within
+      1--8\% of each other while each achieves 1.4--1.8$\times$ speedup
+      over \burgerdybvig on number-dense workloads ($\nu(D) \geq 40\%$)
+      in Go API benchmarks; the advantage replicates at
+      2.3--3.0$\times$ in Rust.
+      String-dominant and deeply-nested inputs show $<$5\% difference.
 
 \item A benchmark methodology that gates performance measurement on
       conformance verification: implementations must pass 286{,}362
-      oracle vectors and 348 structural conformance cases before timing
+      oracle vectors and 696 structural conformance cases before timing
       data is collected.  We document noise floors and minimum observable
       effect sizes for all comparisons.
 
-\item A cross-language validation design (2$\times$2 matrix of
+\item A cross-language validation design (4$\times$2 matrix of
       algorithm $\times$ language) that separates algorithmic effects from
       language/runtime effects, with Go cross-compilation determinism
       verified for x86-64 and arm64 via QEMU user-mode emulation.

@@ -111,12 +111,13 @@
 \node[font=\scriptsize, red!80] at (axis cs:1.363, 19) {$*$};
 \end{axis}
 \end{tikzpicture}
-\caption{CLI end-to-end speedup of \schubfach over \burgerdybvig by
-workload (canonicalize mode, 15~repetitions each).  Asterisks ($*$) mark
-BH-significant comparisons ($q < 0.05$).  The Rust within-language pair
-achieves significance on 15 of 19~workloads; the Go pair on 7 of
-19~workloads (canonicalize mode).  Process startup overhead
-(${\approx}$1.3\,ms Go, ${\approx}$0.5\,ms Rust) attenuates the
-algorithmic signal more strongly in Go.}
+\caption{CLI end-to-end speedup of fixed-width over \burgerdybvig by
+workload (canonicalize mode, 15~repetitions each; \schubfach shown as
+representative).  Asterisks ($*$) mark BH-significant comparisons
+($q < 0.05$).  The Rust within-language pair achieves significance on
+15 of 19~workloads; the Go pair on 7 of 19~workloads (canonicalize
+mode).  Process startup overhead (${\approx}$1.3\,ms Go,
+${\approx}$0.5\,ms Rust) attenuates the algorithmic signal more
+strongly in Go.}
 \label{fig:cli-significance}
 \end{figure*}

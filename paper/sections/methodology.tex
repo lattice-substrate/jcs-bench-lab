@@ -8,7 +8,7 @@ must pass before any performance data is collected.  This prevents
 measuring the speed of incorrect implementations.
 
 \textbf{Conformance gate:} 87 structural test cases per implementation
-(348 total across 4~implementations) covering key ordering, Unicode
+(696 total across 8~implementations) covering key ordering, Unicode
 handling, numeric formatting, escape sequences, depth limits, and
 invalid input rejection.  All implementations must produce byte-identical
 output (verified via SHA-256) and identical error classification.
@@ -31,18 +31,23 @@ time, CPU time (user + system), and peak RSS.  15~repetitions per
 implementation/mode/workload combination, with 3~warmup runs discarded.
 Task order is randomized with a fixed seed for reproducibility.
 
-\textbf{Cross-language comparison pairs:} each algorithm is implemented
-in Go and Rust, yielding four implementations: Go-\schubfach,
-Go-\burgerdybvig, Rust-\schubfach, Rust-\burgerdybvig.  These are
-compared via four pairwise tests: two within-language pairs
-(go:schubfach-vs-bd, rs:schubfach-vs-bd) and two cross-language pairs
-(schubfach:go-vs-rs, bd:go-vs-rs).  The within-language pairs test the
-algorithmic effect while controlling for language/runtime; the
-cross-language pairs test language/runtime effects while controlling for
-algorithm.  Directional consistency across both within-language pairs
-provides evidence that the algorithmic advantage is not
-language-specific, though this is not a formal interaction test (see
-\S\ref{sec:discussion}).  The Rust
+\textbf{Cross-language comparison pairs:} each of the four algorithms is
+implemented in Go and Rust, yielding eight implementations.  These are
+compared via 16~pairwise tests:
+\begin{itemize}
+\item 6~within-Go algorithm pairs (e.g., go:schubfach-vs-ryu,
+      go:dragonbox-vs-bd),
+\item 6~within-Rust algorithm pairs (e.g., rs:schubfach-vs-ryu,
+      rs:dragonbox-vs-bd),
+\item 4~cross-language same-algorithm pairs (e.g., schubfach:go-vs-rs,
+      ryu:go-vs-rs).
+\end{itemize}
+The within-language pairs test the algorithmic effect while controlling
+for language/runtime; the cross-language pairs test language/runtime
+effects while controlling for algorithm.  Directional consistency across
+within-language pairs in both Go and Rust provides evidence that
+algorithmic differences are not language-specific, though this is not a
+formal interaction test (see \S\ref{sec:discussion}).  The Rust
 \burgerdybvig implementation uses a custom \texttt{BigUint} (schoolbook
 multiprecision arithmetic, approximately 350~lines of Rust with zero
 external dependencies, heap-allocated with RAII lifecycle), making
@@ -104,9 +109,7 @@ All comparisons use:
 \item Cohen's $d$ for effect size.\footnote{Computed as
       $(\bar{x}_A - \bar{x}_B) / s_p$ where $A$ and $B$ are the first
       and second implementation in each pair; negative values indicate
-      implementation $A$ is faster.  For within-language pairs
-      (go:schubfach-vs-bd, rs:schubfach-vs-bd), $A$ is the \schubfach
-      variant.  For cross-language pairs, $A$ is the Go implementation.}
+      implementation $A$ is faster.}
 \item Noise floor documentation: standard deviation of the faster
       implementation ($\sigma = \text{CV} \times \bar{x}_\text{faster}$),
       quantifying measurement noise in the same units as the metric.
@@ -119,7 +122,7 @@ All comparisons use:
       the true MDE for small $N$ (by ${\approx}3$--6\% compared to a
       $t$-based calculation at $N{=}10$--15).
 \item Benjamini-Hochberg false discovery rate (FDR) control at $q = 0.05$
-      across all 317~comparisons (152~CLI end-to-end + 165~API).  BH requires independence or positive
+      across all 1{,}294~comparisons (608~CLI end-to-end + 686~API).  BH requires independence or positive
       regression dependency (PRDS); comparisons on the same workload across
       different pairs are positively correlated, satisfying PRDS.  We report
       both raw and BH-adjusted $p$-values.

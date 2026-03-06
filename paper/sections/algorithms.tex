@@ -58,9 +58,32 @@ The key advantage is constant-time (with respect to exponent magnitude)
 operation and zero GC pressure.  The precomputed table is approximately
 5~KiB.
 
+\subsection{Ry\=u (Fixed-Width)}
+
+The \ryualg algorithm~\cite{adams2018ryu} was the first to achieve full
+coverage shortest-output generation using only fixed-width 128-bit
+arithmetic and precomputed lookup tables.  Like \schubfach, it computes
+a rounding interval around the input value and converts it to decimal
+via table-based 128-bit multiplication.  \ryualg uses a
+\texttt{lastRemovedDigit} heuristic for digit trimming: digits are
+removed one at a time from both ends of the interval, tracking the last
+removed digit for round-to-even tie-breaking.  Our implementation shares
+the same interval computation as \schubfach (symmetric for regular
+values, asymmetric at power-of-two boundaries).
+
+\subsection{Dragonbox (Fixed-Width)}
+
+The \dragonbox algorithm~\cite{jeon2021dragonbox} extends the
+fixed-width approach with two key optimizations: a \emph{shorter
+interval} case for power-of-two boundaries (where the lower half of the
+rounding interval is narrower), and \emph{two-digit-at-a-time} trimming
+(dividing by 100 instead of 10 in the digit extraction loop).  Our
+implementation separates the shorter-interval and general cases into
+distinct functions, preserving the algorithm's structural innovation.
+
 \subsection{ECMA-262 Formatting Stage}
 
-Both algorithms share an identical formatting stage that converts the
+All four algorithms share an identical formatting stage that converts the
 minimal significand $(d, k, n)$ triple into the final \ecma-compliant
 string.  This stage implements the branch table from \ecma \S6.1.6.1.20
 and is pure string manipulation with no arithmetic.

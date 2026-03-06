@@ -8,6 +8,8 @@ import (
 	"strings"
 	"testing"
 
+	dragonbox "github.com/lattice-substrate/jcs-dragonbox/jcs"
+	ryu "github.com/lattice-substrate/jcs-ryu/jcs"
 	schubfach "github.com/lattice-substrate/jcs-schubfach/jcs"
 	jsoncanon "github.com/lattice-substrate/json-canon/jcs"
 )
@@ -220,6 +222,132 @@ func BenchmarkAPIVerifyJSONCanon(b *testing.B) {
 				b.SetBytes(int64(len(w.Data)))
 				for i := 0; i < b.N; i++ {
 					ok, err := verifyViaCanonicalize(jsoncanon.Canonicalize, w.Data)
+					if err != nil {
+						b.Fatalf("verify canonicalize: %v", err)
+					}
+					if ok {
+						b.Fatal("noncanonical input unexpectedly passed verify")
+					}
+				}
+			})
+		}
+	})
+}
+
+func BenchmarkAPICanonicalizeRyu(b *testing.B) {
+	workloads := loadValidWorkloads(b)
+	for _, w := range workloads {
+		w := w
+		b.Run(w.Name, func(b *testing.B) {
+			b.ReportAllocs()
+			b.SetBytes(int64(len(w.Data)))
+			for i := 0; i < b.N; i++ {
+				out, err := ryu.Canonicalize(w.Data)
+				if err != nil {
+					b.Fatalf("canonicalize: %v", err)
+				}
+				if len(out) == 0 {
+					b.Fatal("empty output")
+				}
+			}
+		})
+	}
+}
+
+func BenchmarkAPICanonicalizeDragonbox(b *testing.B) {
+	workloads := loadValidWorkloads(b)
+	for _, w := range workloads {
+		w := w
+		b.Run(w.Name, func(b *testing.B) {
+			b.ReportAllocs()
+			b.SetBytes(int64(len(w.Data)))
+			for i := 0; i < b.N; i++ {
+				out, err := dragonbox.Canonicalize(w.Data)
+				if err != nil {
+					b.Fatalf("canonicalize: %v", err)
+				}
+				if len(out) == 0 {
+					b.Fatal("empty output")
+				}
+			}
+		})
+	}
+}
+
+func BenchmarkAPIVerifyRyu(b *testing.B) {
+	canonical := loadCanonicalWorkloads(b)
+	noncanonical := loadNonCanonicalWorkloads(b)
+
+	b.Run("canonical", func(b *testing.B) {
+		for _, w := range canonical {
+			w := w
+			b.Run(w.Name, func(b *testing.B) {
+				b.ReportAllocs()
+				b.SetBytes(int64(len(w.Data)))
+				for i := 0; i < b.N; i++ {
+					ok, err := verifyViaCanonicalize(ryu.Canonicalize, w.Data)
+					if err != nil {
+						b.Fatalf("verify canonicalize: %v", err)
+					}
+					if !ok {
+						b.Fatal("canonical input unexpectedly failed verify")
+					}
+				}
+			})
+		}
+	})
+
+	b.Run("noncanonical", func(b *testing.B) {
+		for _, w := range noncanonical {
+			w := w
+			b.Run(w.Name, func(b *testing.B) {
+				b.ReportAllocs()
+				b.SetBytes(int64(len(w.Data)))
+				for i := 0; i < b.N; i++ {
+					ok, err := verifyViaCanonicalize(ryu.Canonicalize, w.Data)
+					if err != nil {
+						b.Fatalf("verify canonicalize: %v", err)
+					}
+					if ok {
+						b.Fatal("noncanonical input unexpectedly passed verify")
+					}
+				}
+			})
+		}
+	})
+}
+
+func BenchmarkAPIVerifyDragonbox(b *testing.B) {
+	canonical := loadCanonicalWorkloads(b)
+	noncanonical := loadNonCanonicalWorkloads(b)
+
+	b.Run("canonical", func(b *testing.B) {
+		for _, w := range canonical {
+			w := w
+			b.Run(w.Name, func(b *testing.B) {
+				b.ReportAllocs()
+				b.SetBytes(int64(len(w.Data)))
+				for i := 0; i < b.N; i++ {
+					ok, err := verifyViaCanonicalize(dragonbox.Canonicalize, w.Data)
+					if err != nil {
+						b.Fatalf("verify canonicalize: %v", err)
+					}
+					if !ok {
+						b.Fatal("canonical input unexpectedly failed verify")
+					}
+				}
+			})
+		}
+	})
+
+	b.Run("noncanonical", func(b *testing.B) {
+		for _, w := range noncanonical {
+			w := w
+			b.Run(w.Name, func(b *testing.B) {
+				b.ReportAllocs()
+				b.SetBytes(int64(len(w.Data)))
+				for i := 0; i < b.N; i++ {
+					ok, err := verifyViaCanonicalize(dragonbox.Canonicalize, w.Data)
 					if err != nil {
 						b.Fatalf("verify canonicalize: %v", err)
 					}

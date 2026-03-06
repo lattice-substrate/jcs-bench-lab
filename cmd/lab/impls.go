@@ -54,6 +54,40 @@ func allImplSpecs(root string) []implSpec {
 			BuildKind:    "rust",
 			APIBenchStem: "JSONCanonRs",
 		},
+		{
+			Name:         "ryu",
+			Lang:         "go",
+			RepoDir:      filepath.Join(root, "impl-ryu"),
+			BinName:      "ryu-jcs-canon",
+			BuildKind:    "go",
+			GoBuildPkg:   "./cmd/jcs-canon",
+			APIBenchStem: "Ryu",
+		},
+		{
+			Name:         "dragonbox",
+			Lang:         "go",
+			RepoDir:      filepath.Join(root, "impl-dragonbox"),
+			BinName:      "dragonbox-jcs-canon",
+			BuildKind:    "go",
+			GoBuildPkg:   "./cmd/jcs-canon",
+			APIBenchStem: "Dragonbox",
+		},
+		{
+			Name:         "ryu-rs",
+			Lang:         "rust",
+			RepoDir:      filepath.Join(root, "impl-ryu-rs"),
+			BinName:      "ryu-rs-jcs-canon",
+			BuildKind:    "rust",
+			APIBenchStem: "RyuRs",
+		},
+		{
+			Name:         "dragonbox-rs",
+			Lang:         "rust",
+			RepoDir:      filepath.Join(root, "impl-dragonbox-rs"),
+			BinName:      "dragonbox-rs-jcs-canon",
+			BuildKind:    "rust",
+			APIBenchStem: "DragonboxRs",
+		},
 	}
 }
 
@@ -155,10 +189,25 @@ type implPair struct {
 
 func comparisonPairs() []implPair {
 	return []implPair{
+		// Within-language algorithm pairs (Go)
 		{A: "schubfach", B: "json-canon", Label: "go:schubfach-vs-bd"},
+		{A: "schubfach", B: "ryu", Label: "go:schubfach-vs-ryu"},
+		{A: "schubfach", B: "dragonbox", Label: "go:schubfach-vs-dragonbox"},
+		{A: "ryu", B: "dragonbox", Label: "go:ryu-vs-dragonbox"},
+		{A: "ryu", B: "json-canon", Label: "go:ryu-vs-bd"},
+		{A: "dragonbox", B: "json-canon", Label: "go:dragonbox-vs-bd"},
+		// Within-language algorithm pairs (Rust)
 		{A: "schubfach-rs", B: "json-canon-rs", Label: "rs:schubfach-vs-bd"},
+		{A: "schubfach-rs", B: "ryu-rs", Label: "rs:schubfach-vs-ryu"},
+		{A: "schubfach-rs", B: "dragonbox-rs", Label: "rs:schubfach-vs-dragonbox"},
+		{A: "ryu-rs", B: "dragonbox-rs", Label: "rs:ryu-vs-dragonbox"},
+		{A: "ryu-rs", B: "json-canon-rs", Label: "rs:ryu-vs-bd"},
+		{A: "dragonbox-rs", B: "json-canon-rs", Label: "rs:dragonbox-vs-bd"},
+		// Cross-language same-algorithm pairs
 		{A: "schubfach", B: "schubfach-rs", Label: "schubfach:go-vs-rs"},
 		{A: "json-canon", B: "json-canon-rs", Label: "bd:go-vs-rs"},
+		{A: "ryu", B: "ryu-rs", Label: "ryu:go-vs-rs"},
+		{A: "dragonbox", B: "dragonbox-rs", Label: "dragonbox:go-vs-rs"},
 	}
 }
 
@@ -185,6 +234,14 @@ func parseAPIPrefix(prefix string) (impl, mode string, ok bool) {
 		return "schubfach-rs", mode, true
 	case "JSONCanonRs":
 		return "json-canon-rs", mode, true
+	case "Ryu":
+		return "ryu", mode, true
+	case "Dragonbox":
+		return "dragonbox", mode, true
+	case "RyuRs":
+		return "ryu-rs", mode, true
+	case "DragonboxRs":
+		return "dragonbox-rs", mode, true
 	default:
 		return "", "", false
 	}

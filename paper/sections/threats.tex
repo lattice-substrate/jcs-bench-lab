@@ -113,9 +113,9 @@ correctness.  Independent verification against a second JS engine
 \subsection{External Validity}
 
 \textbf{Language specificity (mitigated).}
-This threat is substantially mitigated by the $2 \times 2$
-cross-language comparison matrix: both algorithms are implemented in Go
-and Rust, and the \schubfach performance ordering holds in both
+This threat is substantially mitigated by the $4 \times 2$
+cross-language comparison matrix: all four algorithms are implemented in
+Go and Rust, and the fixed-width performance ordering holds in both
 languages.  Within-Rust
 comparisons replicate the within-Go algorithmic advantage, confirming
 that the result is not an artifact of Go's garbage collector or

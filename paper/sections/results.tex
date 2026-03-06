@@ -6,11 +6,11 @@
 
 \subsection{Conformance}
 
-All four implementations (Go and Rust $\times$ \schubfach and
-\burgerdybvig) pass the full conformance matrix: 348 total cases
-(87~structural tests $\times$ 4~implementations, 0~failures).  Output
-SHA-256 digests are byte-identical across all implementations for valid
-inputs.
+All eight implementations (Go and Rust $\times$ \schubfach, \ryualg,
+\dragonbox, and \burgerdybvig) pass the full conformance matrix: 696 total
+cases (87~structural tests $\times$ 8~implementations, 0~failures).
+Output SHA-256 digests are byte-identical across all implementations for
+valid inputs.
 
 \subsection{API Benchmarks}
 
@@ -35,6 +35,21 @@ effect sizes.
 
 \input{figures/api-speedup-comparison}
 
+\subsection{Fixed-Width Algorithm Equivalence}
+
+A central finding is that the three fixed-width algorithms (\schubfach,
+\ryualg, \dragonbox) perform within 1--8\% of each other across both
+languages and all workloads.  In Go API benchmarks, within-fixed-width
+comparisons (go:schubfach-vs-ryu, go:schubfach-vs-dragonbox,
+go:ryu-vs-dragonbox) show speedups of ${\leq}1.02\times$ with few
+BH-significant differences.  In Rust, the same pattern holds, with
+occasional small differences (${\leq}1.13\times$) reflecting
+compilation artifacts rather than algorithmic cost.
+
+This equivalence confirms that the dominant performance axis is
+\emph{fixed-width vs.\ multiprecision}, not the choice among
+fixed-width algorithms.
+
 \subsection{CLI Benchmarks}
 
 CLI benchmarks capture end-to-end pipeline cost including process
@@ -55,33 +70,35 @@ Appendix~\ref{sec:appendix-tables}.
 \subsection{Statistical Comparisons}
 
 Table~\ref{tab:stats-summary} presents the within-language CLI comparisons
-(canonicalize mode) with BH-corrected $p$-values.  The full 317-comparison
-statistical report appears in Appendix~\ref{sec:appendix-tables}.
+(canonicalize mode) with BH-corrected $p$-values.  The full
+1{,}294-comparison statistical report appears in
+Appendix~\ref{sec:appendix-tables}.
 
 \input{tables/stats-summary}
 
 \subsection{Cross-Language Validation}
 
-All four implementations pass the full conformance matrix (348 total
-cases: 87~structural tests $\times$ 4~implementations, 0~failures) and
+All eight implementations pass the full conformance matrix (696 total
+cases: 87~structural tests $\times$ 8~implementations, 0~failures) and
 produce byte-identical output on all oracle vectors.  2{,}000
 differential fuzz cases yield zero cross-implementation divergences.
 
-The statistical report includes four comparison classes:
+The statistical report includes 16 comparison classes organized into
+three groups:
 \begin{itemize}
-\item within-Go (\schubfach vs.\ \burgerdybvig),
-\item within-Rust (\schubfach-rs vs.\ \burgerdybvig-rs),
-\item same-algorithm Go-vs-Rust for \schubfach,
-\item same-algorithm Go-vs-Rust for \burgerdybvig.
+\item 6~within-Go algorithm pairs and 6~within-Rust algorithm pairs
+      (testing algorithmic effects within each language),
+\item 4~cross-language same-algorithm pairs (testing language/runtime
+      effects while controlling for algorithm).
 \end{itemize}
 
 In CLI end-to-end measurement, Rust implementations are approximately
 2--3$\times$ faster than their Go counterparts, primarily due to lower
 process startup overhead (Rust native binary vs.\ Go runtime
-initialization).  In API benchmarks, Rust-\schubfach is faster than
-Rust-\burgerdybvig on number-dense workloads, replicating the
-within-Go algorithmic ordering and confirming that the \schubfach
-advantage is not language-specific.
+initialization).  In API benchmarks, the within-Rust algorithmic ordering
+replicates the within-Go ordering: all three fixed-width algorithms
+outperform \burgerdybvig on number-dense workloads, confirming that the
+fixed-width advantage is not language-specific.
 
 This decomposition separates algorithmic effects from language/runtime
 effects and directly addresses language-specific performance threats.

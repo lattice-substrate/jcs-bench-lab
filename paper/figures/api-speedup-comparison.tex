@@ -82,7 +82,7 @@
     (18, 2.662)
     (19, 3.142)
 };
-\legend{Go (Schubfach/BD), Rust (Schubfach/BD)}
+\legend{Go (fixed-width/BD), Rust (fixed-width/BD)}
 % Arrows for truncated bars
 \draw[<-, thick] (axis cs:11.2,3.5) -- ++(0, 0.4)
     node[above, font=\footnotesize] {9.18$\times$};
@@ -92,13 +92,15 @@
 \draw[dashed, gray, thin] (axis cs:0.3,1.0) -- (axis cs:19.7,1.0);
 \end{axis}
 \end{tikzpicture}
-\caption{API benchmark speedup of \schubfach over \burgerdybvig by
-workload (canonicalize mode).  Workloads sorted by Go speedup.  Values
-above the dashed line indicate \schubfach is faster.  The Rust
-\texttt{numeric-boundary} and \texttt{number-heavy} bars are truncated
-at 3.5$\times$; actual values are 9.18$\times$ and 8.17$\times$
-respectively (see \S\ref{sec:discussion}).  Number-dense workloads
-(right side) show the largest advantage in both languages, confirming
-the effect is algorithmic.}
+\caption{API benchmark speedup of fixed-width over \burgerdybvig by
+workload (canonicalize mode, \schubfach shown as representative;
+\ryualg and \dragonbox produce equivalent ratios per
+\S\ref{sec:results}).  Workloads sorted by Go speedup.  Values
+above the dashed line indicate the fixed-width algorithm is faster.
+The Rust \texttt{numeric-boundary} and \texttt{number-heavy} bars are
+truncated at 3.5$\times$; actual values are 9.18$\times$ and
+8.17$\times$ respectively (see \S\ref{sec:discussion}).  Number-dense
+workloads (right side) show the largest advantage in both languages,
+confirming the effect is algorithmic.}
 \label{fig:api-speedup}
 \end{figure*}

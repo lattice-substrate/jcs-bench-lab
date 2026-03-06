@@ -1,27 +1,33 @@
 \section{Conclusion}
 \label{sec:conclusion}
 
-We presented the first empirical comparison of multiprecision
-(\burgerdybvig) and fixed-width (\schubfach) digit generation inside a
-\rfcjcs/\ecma-constrained JSON canonicalization pipeline, with
-cross-language validation in Go and Rust to separate algorithmic effects
-from language/runtime characteristics.  While prior work has compared
-float-to-string algorithms in isolation (e.g., Adams's comparison of
-Ry\=u against Grisu and Errol), our study is the first to evaluate these
-algorithms within a specification-constrained canonicalization pipeline
-using conformance-gated methodology.
+We presented the first empirical comparison of four digit-generation
+algorithms---\burgerdybvig (multiprecision), \schubfach, \ryualg, and
+\dragonbox (all fixed-width)---inside a \rfcjcs/\ecma-constrained JSON
+canonicalization pipeline, with cross-language validation in Go and Rust
+to separate algorithmic effects from language/runtime characteristics.
+While prior work has compared float-to-string algorithms in isolation
+(e.g., Adams's comparison of Ry\=u against Grisu and Errol; Champagne
+Gareau and Lemire's comprehensive C++ evaluation), our study is the
+first to evaluate these algorithms within a specification-constrained
+canonicalization pipeline using conformance-gated methodology.
 
 Key findings:
 \begin{itemize}
-\item \schubfach achieves 1.3--1.7$\times$ speedup on number-dense
-      workloads ($\nu(D) \geq 40\%$) in Go API benchmarks due to zero
-      heap allocation; the advantage replicates at 1.7--3.4$\times$ in
-      Rust, confirming it is algorithmic.  On a small number of API-level
-      non-number workloads, \burgerdybvig is marginally faster.
-\item In end-to-end Go CLI measurement, 12 of 38 comparisons reach
-      BH-corrected significance with speedups of 1.2--1.5$\times$.
+\item The three fixed-width algorithms (\schubfach, \ryualg, \dragonbox)
+      perform within 1--8\% of each other across both languages and all
+      workloads.  The dominant performance axis is fixed-width vs.\
+      multiprecision, not the choice among fixed-width algorithms.
+\item Fixed-width algorithms achieve 1.4--1.8$\times$ speedup on
+      number-dense workloads ($\nu(D) \geq 40\%$) in Go API benchmarks
+      due to zero heap allocation; the advantage replicates at
+      2.3--3.0$\times$ in Rust (excluding extreme outliers), confirming
+      it is algorithmic.
+\item In end-to-end CLI measurement, the advantage narrows due to
+      process startup dominance, but remains statistically significant
+      on number-dense workloads.
 \item The advantage narrows to $<$5\% on string-dominant and
-      deeply-nested inputs.
+      deeply-nested inputs, correlating with number density $\nu(D)$.
 \item Go implementations produce byte-identical output under
       cross-compilation for x86-64 and arm64 (arm64 binaries verified
       via QEMU user-mode emulation on x86-64 host).  Rust
@@ -36,7 +42,9 @@ are released as a reproducibility artifact.  Our findings align with the
 broader ecosystem direction: Go~1.26 adopted the Dragonbox fixed-width
 algorithm for \texttt{strconv}, corroborating our evidence that
 fixed-width approaches offer meaningful performance advantages in
-float-to-string formatting.
+float-to-string formatting.  Since the three fixed-width algorithms are
+performance-equivalent, implementors can choose based on other criteria:
+code simplicity, ecosystem momentum, or theoretical interest.
 
 \subsection*{Future Work}
 

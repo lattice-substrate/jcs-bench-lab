@@ -1,20 +1,30 @@
 \section{Implementation}
 \label{sec:implementation}
 
-We maintain four implementations with a common CLI ABI:
+We maintain eight implementations with a common CLI ABI:
 \begin{itemize}
 \item \texttt{impl-schubfach} (Go): \schubfach number formatting.
 \item \texttt{impl-json-canon} (Go): \burgerdybvig number formatting.
+\item \texttt{impl-ryu} (Go): \ryualg number formatting.
+\item \texttt{impl-dragonbox} (Go): \dragonbox number formatting.
 \item \texttt{impl-schubfach-rs} (Rust): \schubfach-aligned Rust path.
 \item \texttt{impl-json-canon-rs} (Rust): \burgerdybvig-aligned Rust path.
+\item \texttt{impl-ryu-rs} (Rust): \ryualg-aligned Rust path.
+\item \texttt{impl-dragonbox-rs} (Rust): \dragonbox-aligned Rust path.
 \end{itemize}
 
-All four implementations contain their own digit-generation code and do
+All eight implementations contain their own digit-generation code and do
 not delegate to the standard library's float-to-string routines (e.g.,
 Go's \texttt{strconv.FormatFloat} or Rust's \texttt{std::fmt}).  This is
 necessary because the standard routines do not implement \ecma formatting
 policy.  Consequently, Go~1.26's adoption of Dragonbox for \texttt{strconv}
 does not affect our measurements.
+
+Within each language, all four implementations share identical JSON
+parser, serializer, error taxonomy, and \ecma formatting code; only the
+\texttt{jcsfloat} digit-generation module differs.  This isolation
+ensures that performance differences are attributable to the
+digit-generation algorithm alone.
 
 The lab harness treats each implementation as a black-box canonicalizer
 with identical CLI contracts (\texttt{canonicalize}, \texttt{verify},
@@ -28,20 +38,21 @@ align optimization policy with production benchmarking practice.
 
 \subsection{Rust Implementation Notes}
 
-The Rust \schubfach implementation uses native \texttt{u128} arithmetic
-for the 128-bit intermediate products required by the algorithm,
-eliminating the need for compiler intrinsics or multi-word emulation.
+All four Rust implementations use native \texttt{u128} arithmetic
+for the 128-bit intermediate products required by the fixed-width
+algorithms, eliminating the need for compiler intrinsics or multi-word
+emulation.
 The Rust \burgerdybvig implementation uses a custom \texttt{BigUint}
 (approximately 350~lines of schoolbook multiprecision arithmetic with
 Knuth Algorithm~D division) with zero external dependencies; buffer
 lifecycle is managed by Rust's RAII ownership model (deterministic
 \texttt{Drop}), removing the need for explicit pooling strategies such
-as Go's \texttt{sync.Pool}.  Both Rust implementations have zero
+as Go's \texttt{sync.Pool}.  All Rust implementations have zero
 runtime crate dependencies, ensuring complete self-containment and
 reproducibility.
 
-Both Rust implementations share an identical JSON parser and serializer;
+All Rust implementations share an identical JSON parser and serializer;
 only the \texttt{jcsfloat} digit-generation module differs between them,
-mirroring the Go design.  Rust binaries are approximately 430--456\,KB
+mirroring the Go design.  Rust binaries are approximately 424--456\,KB
 (stripped), compared to 2.5--2.7\,MB for the statically-linked Go
 binaries.

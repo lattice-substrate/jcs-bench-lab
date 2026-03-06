@@ -46,12 +46,12 @@ Champagne Gareau and Lemire~\cite{champagnegareau2026} provide the most
 comprehensive experimental comparison of modern float-to-string
 algorithms, evaluating Dragon4, Grisu3, Ry\=u, \schubfach, Dragonbox,
 and \texttt{std::to\_chars} in C++.  Their work evaluates algorithms in
-isolation on microbenchmarks.  Our contribution differs: we evaluate two
-representatives (\burgerdybvig and \schubfach) inside a
-specification-constrained canonicalization pipeline where (a)~\ecma
-formatting policy is a hard constraint, (b)~correctness against
-286{,}362 oracle vectors is a binary gate, and (c)~digit generation is
-only one component of the total cost.
+isolation on microbenchmarks.  Our contribution differs: we evaluate all
+four principal algorithms (\burgerdybvig, \schubfach, \ryualg, and
+\dragonbox) inside a specification-constrained canonicalization pipeline
+where (a)~\ecma formatting policy is a hard constraint, (b)~correctness
+against 286{,}362 oracle vectors is a binary gate, and (c)~digit
+generation is only one component of the total cost.
 
 The complementary direction---fast string-to-float parsing---is addressed
 by Lemire~\cite{lemire2021number}, whose Eisel-Lemire algorithm achieves

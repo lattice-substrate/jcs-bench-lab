@@ -18,6 +18,8 @@
 
 \newcommand{\schubfach}{Schubfach\xspace}
 \newcommand{\burgerdybvig}{Burger--Dybvig\xspace}
+\newcommand{\ryualg}{Ry\=u\xspace}
+\newcommand{\dragonbox}{Dragonbox\xspace}
 \newcommand{\ecma}{ECMA-262\xspace}
 \newcommand{\rfcjcs}{RFC~8785\xspace}
 
@@ -28,7 +30,7 @@
 
 \begin{document}
 
-\title{Multiprecision vs.\ Fixed-Width Digit Generation\\for JSON Canonicalization: An Empirical Study}
+\title{Fixed-Width vs.\ Multiprecision Digit Generation\\for JSON Canonicalization: A Four-Algorithm Empirical Study}
 
 \author{Mark Lenhardt}
 \affil{Lattice Substrate}
@@ -39,41 +41,36 @@
 \begin{abstract}
 JSON Canonicalization Scheme (RFC~8785) requires deterministic
 floating-point formatting that matches ECMA-262 \texttt{Number::toString}.
-We present the first empirical comparison of multiprecision
-(\burgerdybvig) and fixed-width (\schubfach) digit generation inside a
-specification-constrained canonicalization pipeline, implemented in both
-Go and Rust to separate algorithmic effects from language/runtime effects.
+We present the first empirical comparison of four digit-generation
+algorithms---three fixed-width (\schubfach, \ryualg, \dragonbox) and one
+multiprecision (\burgerdybvig)---inside a specification-constrained
+canonicalization pipeline, implemented in both Go and Rust
+(8~implementations total) to separate algorithmic effects from
+language/runtime effects.
 Our methodology gates performance measurement on conformance: only
 implementations passing 286{,}362 oracle vectors (generated from the V8
-JavaScript engine) and 348 structural conformance cases (87 per
-implementation $\times$ 4~implementations) proceed to benchmarking.
+JavaScript engine) and 696 structural conformance cases (87 per
+implementation $\times$ 8~implementations) proceed to benchmarking.
 Using permutation tests, BCa bootstrap confidence intervals, and
-Benjamini--Hochberg FDR correction across 15 (CLI) and 10 (API) repeated
-measurements, we find that \schubfach is 1.3--1.7$\times$ faster than
-\burgerdybvig on number-dense workloads ($\nu(D) \geq 40\%$ numeric
-content) in Go API benchmarks due to zero heap allocation in the
-digit-generation path; the advantage replicates at 1.7--3.4$\times$ in
-Rust, confirming it is algorithmic rather than language-specific
-(excluding two extreme outliers, \texttt{numeric-boundary} at
-9.3$\times$ and \texttt{number-heavy} at 8.3$\times$ in Rust,
-discussed in \S\ref{sec:discussion}).
-In end-to-end CLI measurement, 12~of~38 within-Go
-comparisons (19~canonicalize + 19~verify) reach BH-corrected
-significance (1.2--1.5$\times$ speedup);
-the remainder are dominated by process startup overhead.  On
-string-dominant and deeply-nested inputs the difference narrows to
-$<$5\%, and on several API-level non-number workloads (e.g.,
-\texttt{control-escapes}, \texttt{rfc-key-sorting}) \burgerdybvig is
-marginally faster (${\leq}$7\%).
-All four implementations produce byte-identical output; Go binaries are
-additionally verified under cross-compilation for x86-64 and arm64
-(arm64 binaries verified via QEMU user-mode emulation on x86-64 host).
+Benjamini--Hochberg FDR correction across 1{,}294 comparisons
+(16~pairs $\times$ workloads/modes), we find that all three fixed-width
+algorithms perform within 1--8\% of each other across both languages,
+while each is 1.4--1.8$\times$ faster than \burgerdybvig on
+number-dense workloads ($\nu(D) \geq 40\%$) in Go API benchmarks;
+the advantage replicates at 2.3--3.0$\times$ in Rust, confirming it is
+algorithmic rather than language-specific (excluding extreme outliers on
+\texttt{numeric-boundary} and \texttt{number-heavy} in Rust at
+8--9$\times$, discussed in \S\ref{sec:discussion}).
+On string-dominant and deeply-nested inputs the difference narrows to
+$<$5\%.
+All eight implementations produce byte-identical output; Go binaries are
+additionally verified under cross-compilation for x86-64 and arm64.
 We release the benchmark infrastructure, oracle vectors, and all raw
 data as a reproducibility artifact.
 \end{abstract}
 
 \noindent\textbf{Keywords:} JSON canonicalization, floating-point formatting, Schubfach,
-Burger--Dybvig, RFC~8785, ECMA-262, benchmark methodology, cross-language validation
+Ry\=u, Dragonbox, Burger--Dybvig, RFC~8785, ECMA-262, benchmark methodology, cross-language validation
 
 \input{sections/introduction}
 \input{sections/background}
@@ -89,7 +86,7 @@ Burger--Dybvig, RFC~8785, ECMA-262, benchmark methodology, cross-language valida
 \section*{Data Availability Statement}
 
 All data, software, and oracle vectors are freely available online.
-The benchmark infrastructure, all four implementations, workload manifests,
+The benchmark infrastructure, all eight implementations, workload manifests,
 and oracle generation scripts are available at the accompanying
 repository.\footnote{Repository URL and Zenodo DOI to be inserted for
 camera-ready version.}  Oracle vector checksums (SHA-256) are documented in
