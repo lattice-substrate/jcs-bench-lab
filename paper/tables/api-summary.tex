@@ -7,31 +7,36 @@
 \toprule
 Pair & Workload & \schubfach (ns/op) & \burgerdybvig (ns/op) & Speedup \\
 \midrule
-go:schubfach-vs-bd & array-2048 & 2541752 & 4077596 & 1.60$\times$ \\
-go:schubfach-vs-bd & array-256 & 305467 & 473478 & 1.55$\times$ \\
-go:schubfach-vs-bd & control-escapes & 1339 & 1258 & 1.06$\times$ \\
-go:schubfach-vs-bd & deep & 36725 & 36749 & 1.00$\times$ \\
-go:schubfach-vs-bd & deep-64 & 16230 & 16231 & 1.00$\times$ \\
-go:schubfach-vs-bd & large & 11923743 & 20570122 & 1.73$\times$ \\
-go:schubfach-vs-bd & long-string & 75831 & 75639 & 1.00$\times$ \\
-go:schubfach-vs-bd & medium & 341106 & 582942 & 1.71$\times$ \\
-go:schubfach-vs-bd & mixed-prod & 136352 & 180492 & 1.32$\times$ \\
-go:schubfach-vs-bd & number-heavy & 13807 & 21412 & 1.55$\times$ \\
-go:schubfach-vs-bd & numeric-boundary & 12693 & 18815 & 1.48$\times$ \\
-go:schubfach-vs-bd & rfc-key-sorting & 3004 & 2973 & 1.01$\times$ \\
-go:schubfach-vs-bd & small & 1251 & 1675 & 1.34$\times$ \\
-go:schubfach-vs-bd & unicode & 1554 & 1551 & 1.00$\times$ \\
-go:schubfach-vs-bd & verify-whitespace & 910 & 1569 & 1.72$\times$ \\
-rs:schubfach-vs-bd & array-2048 & 1185768 & 2882258 & 2.43$\times$ \\
-rs:schubfach-vs-bd & array-256 & 157030 & 321394 & 2.05$\times$ \\
-rs:schubfach-vs-bd & control-escapes & 607 & 607 & 1.00$\times$ \\
-rs:schubfach-vs-bd & deep-64 & 9380 & 9185 & 1.02$\times$ \\
-rs:schubfach-vs-bd & long-string & 17259 & 17278 & 1.00$\times$ \\
-rs:schubfach-vs-bd & numeric-boundary & 976 & 8975 & 9.19$\times$ \\
-rs:schubfach-vs-bd & rfc-key-sorting & 1294 & 1250 & 1.04$\times$ \\
-rs:schubfach-vs-bd & small & 583 & 1000 & 1.71$\times$ \\
-rs:schubfach-vs-bd & unicode & 1676 & 1964 & 1.17$\times$ \\
-rs:schubfach-vs-bd & verify-whitespace & 347 & 980 & 2.83$\times$ \\
+go:schubfach-vs-bd & array-2048 & 2538189 & 4058559 & 1.60$\times$ \\
+go:schubfach-vs-bd & array-256 & 304201 & 472012 & 1.55$\times$ \\
+go:schubfach-vs-bd & control-escapes & 1333 & 1252 & 1.06$\times$ \\
+go:schubfach-vs-bd & deep & 36663 & 36648 & 1.00$\times$ \\
+go:schubfach-vs-bd & deep-64 & 16218 & 16221 & 1.00$\times$ \\
+go:schubfach-vs-bd & large & 11952645 & 20608504 & 1.72$\times$ \\
+go:schubfach-vs-bd & long-string & 75536 & 75430 & 1.00$\times$ \\
+go:schubfach-vs-bd & medium & 341381 & 579627 & 1.70$\times$ \\
+go:schubfach-vs-bd & mixed-prod & 135688 & 179064 & 1.32$\times$ \\
+go:schubfach-vs-bd & number-heavy & 13812 & 21307 & 1.54$\times$ \\
+go:schubfach-vs-bd & numeric-boundary & 12603 & 18700 & 1.48$\times$ \\
+go:schubfach-vs-bd & rfc-key-sorting & 2999 & 2963 & 1.01$\times$ \\
+go:schubfach-vs-bd & small & 1235 & 1685 & 1.36$\times$ \\
+go:schubfach-vs-bd & unicode & 1546 & 1541 & 1.00$\times$ \\
+go:schubfach-vs-bd & verify-whitespace & 906 & 1559 & 1.72$\times$ \\
+rs:schubfach-vs-bd & array-2048 & 1261394 & 2891090 & 2.29$\times$ \\
+rs:schubfach-vs-bd & array-256 & 147811 & 332147 & 2.25$\times$ \\
+rs:schubfach-vs-bd & control-escapes & 620 & 617 & 1.01$\times$ \\
+rs:schubfach-vs-bd & deep & 26488 & 25683 & 1.03$\times$ \\
+rs:schubfach-vs-bd & deep-64 & 9482 & 9174 & 1.03$\times$ \\
+rs:schubfach-vs-bd & large & 5132778 & 16125242 & 3.14$\times$ \\
+rs:schubfach-vs-bd & long-string & 17188 & 17328 & 1.01$\times$ \\
+rs:schubfach-vs-bd & medium & 166916 & 435894 & 2.61$\times$ \\
+rs:schubfach-vs-bd & mixed-prod & 65576 & 107081 & 1.63$\times$ \\
+rs:schubfach-vs-bd & number-heavy & 1403 & 11464 & 8.17$\times$ \\
+rs:schubfach-vs-bd & numeric-boundary & 955 & 8774 & 9.18$\times$ \\
+rs:schubfach-vs-bd & rfc-key-sorting & 1278 & 1263 & 1.01$\times$ \\
+rs:schubfach-vs-bd & small & 578 & 1026 & 1.78$\times$ \\
+rs:schubfach-vs-bd & unicode & 1686 & 1650 & 1.02$\times$ \\
+rs:schubfach-vs-bd & verify-whitespace & 369 & 983 & 2.66$\times$ \\
 \bottomrule
 \multicolumn{5}{l}{\footnotesize Full results for all pairs, modes, and workloads in Appendix~\ref{sec:appendix-tables}.} \\
 \end{tabular}

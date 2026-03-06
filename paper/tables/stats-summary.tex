@@ -7,37 +7,46 @@
 \toprule
 Pair & Workload & Winner & Speedup & CI$_{95}$ & $p_\text{adj}$ & $d$ & MDE (\%) \\
 \midrule
-go:schubfach-vs-bd & array-2048 & schubfach$^*$ & 1.29$\times$ & [1.210, 1.384] & 0.0003 & -2.67 & 11.5 \\
-rs:schubfach-vs-bd & array-2048 & schubfach-rs$^*$ & 1.76$\times$ & [1.578, 1.992] & 0.0003 & -3.22 & 16.9 \\
-go:schubfach-vs-bd & array-256 & schubfach & 1.13$\times$ & [0.991, 1.282] & 0.1072 & -0.63 & 20.8 \\
-rs:schubfach-vs-bd & array-256 & schubfach-rs$^*$ & 1.39$\times$ & [1.262, 1.515] & 0.0003 & -2.33 & 10.5 \\
-go:schubfach-vs-bd & canonical-minimal & schubfach & 1.04$\times$ & [0.917, 1.163] & 0.6046 & -0.21 & 14.8 \\
-rs:schubfach-vs-bd & canonical-minimal & schubfach-rs & 1.07$\times$ & [0.987, 1.159] & 0.1698 & -0.55 & 10.6 \\
-go:schubfach-vs-bd & control-escapes & schubfach$^*$ & 1.21$\times$ & [1.083, 1.369] & 0.0059 & -1.17 & 21.2 \\
-rs:schubfach-vs-bd & control-escapes & schubfach-rs$^*$ & 1.12$\times$ & [1.030, 1.199] & 0.0139 & -1.00 & 9.8 \\
-go:schubfach-vs-bd & deep-64 & schubfach & 1.12$\times$ & [0.997, 1.259] & 0.1021 & -0.65 & 18.2 \\
-rs:schubfach-vs-bd & deep-64 & schubfach-rs$^*$ & 1.15$\times$ & [1.067, 1.258] & 0.0016 & -1.21 & 13.9 \\
-go:schubfach-vs-bd & escaped-key-order & json-canon & 1.01$\times$ & [0.899, 1.138] & 0.8863 & 0.07 & 19.2 \\
-rs:schubfach-vs-bd & escaped-key-order & schubfach-rs$^*$ & 1.24$\times$ & [1.178, 1.302] & 0.0003 & -2.99 & 8.0 \\
-go:schubfach-vs-bd & long-string & schubfach$^*$ & 1.20$\times$ & [1.031, 1.394] & 0.0359 & -0.84 & 22.6 \\
-rs:schubfach-vs-bd & long-string & schubfach-rs & 1.05$\times$ & [0.958, 1.158] & 0.3516 & -0.37 & 13.1 \\
-go:schubfach-vs-bd & nested-mixed & json-canon & 1.01$\times$ & [0.894, 1.147] & 0.8943 & 0.05 & 22.4 \\
-rs:schubfach-vs-bd & nested-mixed & schubfach-rs$^*$ & 1.16$\times$ & [1.057, 1.253] & 0.0044 & -1.17 & 8.5 \\
-go:schubfach-vs-bd & numeric-boundary & schubfach & 1.11$\times$ & [0.985, 1.236] & 0.1093 & -0.63 & 14.5 \\
-rs:schubfach-vs-bd & numeric-boundary & schubfach-rs$^*$ & 1.36$\times$ & [1.295, 1.427] & 0.0003 & -4.45 & 8.3 \\
-go:schubfach-vs-bd & rfc-key-sorting & schubfach & 1.03$\times$ & [0.924, 1.142] & 0.6197 & -0.20 & 14.0 \\
-rs:schubfach-vs-bd & rfc-key-sorting & schubfach-rs$^*$ & 1.10$\times$ & [1.021, 1.180] & 0.0266 & -0.89 & 9.9 \\
-go:schubfach-vs-bd & small & json-canon & 1.00$\times$ & [0.877, 1.129] & 0.9942 & 0.00 & 19.3 \\
-rs:schubfach-vs-bd & small & schubfach-rs$^*$ & 1.21$\times$ & [1.098, 1.326] & 0.0018 & -1.31 & 11.1 \\
-go:schubfach-vs-bd & surrogate-pair & schubfach & 1.01$\times$ & [0.904, 1.133] & 0.8943 & -0.06 & 15.5 \\
-rs:schubfach-vs-bd & surrogate-pair & schubfach-rs$^*$ & 1.12$\times$ & [1.034, 1.233] & 0.0262 & -0.91 & 12.6 \\
-go:schubfach-vs-bd & unicode & json-canon & 1.09$\times$ & [0.964, 1.213] & 0.1776 & 0.52 & 19.1 \\
-rs:schubfach-vs-bd & unicode & schubfach-rs$^*$ & 1.15$\times$ & [1.059, 1.245] & 0.0044 & -1.15 & 12.2 \\
-go:schubfach-vs-bd & verify-whitespace & schubfach & 1.11$\times$ & [0.961, 1.267] & 0.1885 & -0.51 & 18.6 \\
-rs:schubfach-vs-bd & verify-whitespace & schubfach-rs$^*$ & 1.24$\times$ & [1.132, 1.334] & 0.0005 & -1.67 & 9.7 \\
+go:schubfach-vs-bd & array-2048 & schubfach$^*$ & 1.28$\times$ & [1.198, 1.350] & 0.0003 & -2.92 & 10.1 \\
+rs:schubfach-vs-bd & array-2048 & schubfach-rs$^*$ & 1.73$\times$ & [1.594, 1.909] & 0.0003 & -4.14 & 14.8 \\
+go:schubfach-vs-bd & array-256 & schubfach$^*$ & 1.30$\times$ & [1.125, 1.481] & 0.0035 & -1.27 & 20.8 \\
+rs:schubfach-vs-bd & array-256 & schubfach-rs$^*$ & 1.33$\times$ & [1.217, 1.444] & 0.0003 & -2.07 & 8.9 \\
+go:schubfach-vs-bd & canonical-minimal & schubfach$^*$ & 1.20$\times$ & [1.058, 1.346] & 0.0138 & -1.04 & 17.6 \\
+rs:schubfach-vs-bd & canonical-minimal & schubfach-rs & 1.08$\times$ & [1.002, 1.176] & 0.0641 & -0.71 & 6.0 \\
+go:schubfach-vs-bd & control-escapes & schubfach & 1.05$\times$ & [0.914, 1.208] & 0.5684 & -0.22 & 20.1 \\
+rs:schubfach-vs-bd & control-escapes & schubfach-rs$^*$ & 1.15$\times$ & [1.089, 1.245] & 0.0005 & -1.50 & 11.0 \\
+go:schubfach-vs-bd & deep-64 & schubfach$^*$ & 1.27$\times$ & [1.118, 1.428] & 0.0022 & -1.31 & 18.5 \\
+rs:schubfach-vs-bd & deep-64 & schubfach-rs & 1.03$\times$ & [0.951, 1.114] & 0.5444 & -0.25 & 12.8 \\
+go:schubfach-vs-bd & deep & schubfach & 1.05$\times$ & [0.926, 1.197] & 0.5148 & -0.26 & 21.3 \\
+rs:schubfach-vs-bd & deep & schubfach-rs$^*$ & 1.13$\times$ & [1.048, 1.212] & 0.0083 & -1.11 & 11.2 \\
+go:schubfach-vs-bd & escaped-key-order & schubfach & 1.04$\times$ & [0.920, 1.193] & 0.5631 & -0.22 & 21.2 \\
+rs:schubfach-vs-bd & escaped-key-order & schubfach-rs$^*$ & 1.23$\times$ & [1.149, 1.344] & 0.0003 & -1.75 & 7.5 \\
+go:schubfach-vs-bd & large & schubfach$^*$ & 1.51$\times$ & [1.461, 1.563] & 0.0003 & -8.81 & 5.9 \\
+rs:schubfach-vs-bd & large & schubfach-rs$^*$ & 2.35$\times$ & [2.189, 2.468] & 0.0003 & -12.19 & 11.2 \\
+go:schubfach-vs-bd & long-string & schubfach$^*$ & 1.16$\times$ & [1.027, 1.319] & 0.0376 & -0.84 & 20.7 \\
+rs:schubfach-vs-bd & long-string & schubfach-rs$^*$ & 1.14$\times$ & [1.088, 1.232] & 0.0003 & -1.62 & 10.2 \\
+go:schubfach-vs-bd & medium & schubfach$^*$ & 1.34$\times$ & [1.182, 1.492] & 0.0005 & -1.79 & 18.8 \\
+rs:schubfach-vs-bd & medium & schubfach-rs$^*$ & 1.54$\times$ & [1.404, 1.689] & 0.0003 & -2.87 & 11.4 \\
+go:schubfach-vs-bd & mixed-prod & schubfach & 1.03$\times$ & [0.921, 1.156] & 0.6394 & -0.18 & 16.1 \\
+rs:schubfach-vs-bd & mixed-prod & schubfach-rs$^*$ & 1.27$\times$ & [1.175, 1.384] & 0.0003 & -1.81 & 3.9 \\
+go:schubfach-vs-bd & nested-mixed & schubfach & 1.09$\times$ & [0.956, 1.230] & 0.2403 & -0.48 & 21.1 \\
+rs:schubfach-vs-bd & nested-mixed & schubfach-rs$^*$ & 1.23$\times$ & [1.147, 1.313] & 0.0005 & -2.07 & 8.7 \\
+go:schubfach-vs-bd & number-heavy & schubfach & 1.12$\times$ & [1.004, 1.235] & 0.0694 & -0.72 & 15.6 \\
+rs:schubfach-vs-bd & number-heavy & schubfach-rs$^*$ & 1.29$\times$ & [1.204, 1.405] & 0.0003 & -2.18 & 8.2 \\
+go:schubfach-vs-bd & numeric-boundary & json-canon & 1.01$\times$ & [0.897, 1.132] & 0.8348 & 0.08 & 19.1 \\
+rs:schubfach-vs-bd & numeric-boundary & schubfach-rs$^*$ & 1.31$\times$ & [1.209, 1.380] & 0.0003 & -2.81 & 7.1 \\
+go:schubfach-vs-bd & rfc-key-sorting & schubfach & 1.08$\times$ & [0.941, 1.250] & 0.3084 & -0.39 & 19.9 \\
+rs:schubfach-vs-bd & rfc-key-sorting & schubfach-rs$^*$ & 1.09$\times$ & [1.027, 1.183] & 0.0215 & -0.87 & 12.0 \\
+go:schubfach-vs-bd & small & schubfach & 1.09$\times$ & [0.970, 1.230] & 0.1863 & -0.53 & 21.2 \\
+rs:schubfach-vs-bd & small & schubfach-rs$^*$ & 1.23$\times$ & [1.109, 1.391] & 0.0020 & -1.24 & 15.5 \\
+go:schubfach-vs-bd & surrogate-pair & schubfach & 1.09$\times$ & [0.926, 1.271] & 0.3354 & -0.37 & 21.4 \\
+rs:schubfach-vs-bd & surrogate-pair & schubfach-rs & 1.09$\times$ & [0.990, 1.187] & 0.0940 & -0.66 & 10.6 \\
+go:schubfach-vs-bd & unicode & json-canon & 1.23$\times$ & [1.002, 1.902] & 0.2435 & 0.45 & 22.2 \\
+rs:schubfach-vs-bd & unicode & schubfach-rs & 1.09$\times$ & [1.001, 1.190] & 0.0683 & -0.72 & 16.0 \\
+go:schubfach-vs-bd & verify-whitespace & schubfach & 1.11$\times$ & [0.962, 1.263] & 0.1972 & -0.50 & 20.1 \\
+rs:schubfach-vs-bd & verify-whitespace & schubfach-rs$^*$ & 1.31$\times$ & [1.207, 1.461] & 0.0003 & -2.07 & 14.8 \\
 \bottomrule
 \multicolumn{8}{l}{\footnotesize $^*$BH-significant at $q = 0.05$. $d$ = Cohen's $d$ ($\bar{x}_A - \bar{x}_B$)/$s_p$; negative = impl A faster.} \\
-\multicolumn{8}{l}{\footnotesize MDE = minimum detectable effect at 80\% power ($z$-approximation; underestimates by ${\approx}$3--6\% at $N{=}10$--15).} \\
-\multicolumn{8}{l}{\footnotesize $p_\text{adj} = 0.0003$ is the BH-adjusted floor ($p < 0.0002$ raw). Full 247-comparison report in Appendix~\ref{sec:appendix-tables}.} \\
+\multicolumn{8}{l}{\footnotesize MDE = minimum detectable effect at 80\% power. Full 247-comparison report in Appendix~\ref{sec:appendix-tables}.} \\
 \end{tabular}
 \end{table*}
