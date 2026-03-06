@@ -17,12 +17,20 @@ All eight implementations contain their own digit-generation code and do
 not delegate to the standard library's float-to-string routines (e.g.,
 Go's \texttt{strconv.FormatFloat} or Rust's \texttt{std::fmt}).  This is
 necessary because the standard routines do not implement \ecma formatting
-policy.  Consequently, Go~1.26's adoption of Dragonbox for \texttt{strconv}
-does not affect our measurements.
+policy.  Consequently, Go~1.26's adoption of Dragonbox for
+\texttt{strconv}~\cite{godragonboxcl} does not affect our measurements.
 
 Within each language, all four implementations share identical JSON
 parser, serializer, error taxonomy, and \ecma formatting code; only the
-\texttt{jcsfloat} digit-generation module differs.  This isolation
+\texttt{jcsfloat} digit-generation module differs.\footnote{A
+\texttt{c0}-tracking correction in the \dragonbox two-digit trimming
+loop (\texttt{removed~/~10} $\to$ \texttt{removed~\%~10}) was
+identified during a pre-submission audit and corrected in both the Go
+and Rust implementations.  A related variable-ordering fix was applied
+to the three Rust fixed-width implementations.  Both corrections are
+correctness-neutral for IEEE~754 inputs (all 286{,}362 oracle vectors
+pass identically before and after the fix) but restore logical
+consistency with the algorithm specification.}  This isolation
 ensures that performance differences are attributable to the
 digit-generation algorithm alone.
 

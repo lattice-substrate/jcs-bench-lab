@@ -76,16 +76,23 @@ comparable to the Go \texttt{math/big}-based path.  Rust builds use release conf
 align optimization policy with production benchmarking practice.
 
 \textbf{API benchmarks:} Go \texttt{testing.B} microbenchmarks (Go
-implementations) and a Rust native benchmark harness (Rust
-implementations) measuring canonicalization and verify paths directly,
-10~iterations per benchmark.  Go's \texttt{testing.B} auto-calibrates
-the number of inner iterations per sample (typically hundreds to
-millions), whereas the Rust harness times each function call
-individually ($N{=}1$); both report ns/op.  The Rust harness includes
-3~warmup iterations (discarded) before measurement to stabilize caches
-and lazy-initialized data structures.  The Rust harness emits
-Go-compatible \texttt{Benchmark... ns/op} lines so the same statistical
-pipeline can be applied uniformly.
+implementations) and a custom Rust benchmark harness
+(\texttt{src/bin/bench.rs} in each Rust implementation) measuring
+canonicalization and verify paths directly, 10~iterations per benchmark.
+Go's \texttt{testing.B} auto-calibrates the number of inner iterations
+per sample (typically hundreds to millions), whereas the Rust harness
+times each function call individually ($N{=}1$) using
+\texttt{std::time::Instant}; both report ns/op.  The Rust harness
+includes 3~warmup iterations (discarded) before measurement to stabilize
+caches and lazy-initialized data structures (e.g., the
+\texttt{OnceLock}-based power-of-ten cache in the \burgerdybvig path).
+The harness uses a counting global allocator
+(\texttt{std::alloc::GlobalAlloc} with atomic counters) to report
+per-operation allocation bytes and counts, and emits Go-compatible
+\texttt{Benchmark... ns/op} lines so the same statistical pipeline can
+be applied uniformly.  Low coefficients of variation ($<$5\%) are
+achieved despite $N{=}1$ because the workload payloads are large enough
+(0.1--14\,KB) that per-call latency is well above timer resolution.
 
 \textbf{Measurement granularity note:} The Go and Rust API harnesses
 differ in measurement granularity.  Go's \texttt{testing.B} averages
@@ -148,7 +155,9 @@ All comparisons use:
 \item Benjamini-Hochberg false discovery rate (FDR) control at $q = 0.05$
       across all 1{,}644~comparisons.  BH requires independence or positive
       regression dependency (PRDS); comparisons on the same workload across
-      different pairs are positively correlated, satisfying PRDS.  We report
+      different pairs share one common implementation (e.g.,
+      go:schubfach-vs-bd and go:ryu-vs-bd both include the BD
+      implementation), inducing positive correlation and satisfying PRDS.  We report
       both raw and BH-adjusted $p$-values.
 \item No outlier exclusion.  Permutation tests are nonparametric and
       robust to non-normality; BCa bootstrap accounts for skewness via the

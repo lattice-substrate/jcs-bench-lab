@@ -9,12 +9,14 @@ the problem dimension each addresses.
 
 \subsection{Multiprecision Foundations}
 
-Burger and Dybvig~\cite{burger1996printing} establish the theoretical
-framework for shortest-representation printing using arbitrary-precision
-rational arithmetic.  Their algorithm is our multiprecision baseline.
+Steele and White~\cite{steele1990how} established the foundational
+framework for accurate float-to-string conversion.
+Burger and Dybvig~\cite{burger1996printing} extended this to
+shortest-representation printing using arbitrary-precision
+rational arithmetic; their algorithm is our multiprecision baseline.
 Gay's \texttt{dtoa.c}~\cite{gay1990dtoa} provides the foundational
 practical implementation and remains widely used in language runtimes as
-a reference or fallback.  Both works evaluate algorithms in isolation and
+a reference or fallback.  All three works evaluate algorithms in isolation and
 do not consider performance inside a pipeline where formatting policy is
 externally constrained.
 
@@ -36,9 +38,9 @@ Giulietti~\cite{giulietti2022schubfach} introduced the \schubfach
 algorithm, which we implement and evaluate within the \rfcjcs pipeline.
 Jeon~\cite{jeon2021dragonbox} extends and refines the \schubfach approach
 with Dragonbox, improving table compression and branch structure.  Go~1.26
-adopted Dragonbox for \texttt{strconv}, providing additional motivation
-for evaluating fixed-width approaches in specification-constrained
-contexts.
+adopted Dragonbox for \texttt{strconv}~\cite{godragonboxcl}, providing
+additional motivation for evaluating fixed-width approaches in
+specification-constrained contexts.
 
 \subsection{Comprehensive Experimental Review}
 

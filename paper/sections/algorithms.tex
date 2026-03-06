@@ -74,9 +74,12 @@ a rounding interval around the input value and converts it to decimal
 via table-based 128-bit multiplication.  \ryualg uses a
 \texttt{lastRemovedDigit} heuristic for digit trimming: digits are
 removed one at a time from both ends of the interval, tracking the last
-removed digit for round-to-even tie-breaking.  Our implementation shares
+removed digit for round-to-even tie-breaking.  Our implementation uses
 the same interval computation as \schubfach (symmetric for regular
-values, asymmetric at power-of-two boundaries).
+values, asymmetric at power-of-two boundaries); Adams's original
+formulation uses a slightly different interval setup, but the
+shortest-output guarantee and round-to-even tie-breaking are
+preserved.
 
 \subsection{Dragonbox (Fixed-Width)}
 

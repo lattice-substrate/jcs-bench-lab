@@ -29,8 +29,8 @@ choices at key boundaries: \texttt{1e20} vs.\ the required
 \texttt{100000000000000000000}; \texttt{1e-06} vs.\ the required
 \texttt{0.000001}) and whose underlying algorithms have changed across
 versions.  Conformance verification against 286{,}362 oracle vectors
-generated from three independent JavaScript engines confirmed these
-gaps.  A correct \burgerdybvig~\cite{burger1996printing}
+generated from V8 and independently validated against SpiderMonkey and
+JavaScriptCore confirmed these gaps.  A correct \burgerdybvig~\cite{burger1996printing}
 implementation with exact multiprecision arithmetic was built, validated
 against the full vector suite, and deployed; profiling then revealed
 its heap allocation as a bottleneck on number-dense workloads.

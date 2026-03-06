@@ -47,8 +47,10 @@ workloads ($>$70\% number values) show the full algorithmic advantage.
 
 \subsection{Process Startup Dominance}
 
-For small workloads, estimated process startup overhead (approximately
-1.3\,ms) accounts for roughly 87--93\% of CLI execution time (e.g.,
+For small workloads, estimated process startup overhead (measured as
+the CLI wall time on the minimal workload \texttt{canonical-minimal},
+approximately 1.3\,ms for Go and 0.5\,ms for Rust) accounts for
+roughly 87--93\% of CLI execution time (e.g.,
 \texttt{canonical-minimal} total $\approx$1.47\,ms in canonicalize
 mode).  This limits the observable
 algorithmic signal in end-to-end measurement.  API benchmarks, which
@@ -76,7 +78,7 @@ mechanism underlying the observed speedup.
 
 \input{figures/outlier-speedup}
 
-Two workloads show unusually large speedup ratios in Rust API
+Figure~\ref{fig:outlier-speedup} highlights the two workloads that show unusually large speedup ratios in Rust API
 benchmarks: \texttt{numeric-boundary} (${\approx}9.3\times$ within-Rust,
 CI [9.1, 9.5]) and \texttt{number-heavy} (${\approx}8.2\times$,
 CI [8.1, 8.4]), compared to ${\approx}1.5\times$ in Go for both.
@@ -114,7 +116,8 @@ speedup ratios.
 
 \subsection{Profile-Level Analysis}
 
-Preliminary CPU profiling (via Go's \texttt{pprof}) suggests that digit
+Preliminary CPU profiling (via Go's \texttt{pprof}; Rust profiling is
+deferred to future work) suggests that digit
 generation accounts for approximately 15--40\% of total canonicalization
 time depending on workload number density.  On \texttt{array-2048}
 ($\nu = 40\%$), digit generation accounts for $\approx$35\% of CPU time
@@ -247,7 +250,12 @@ allocator with digit generation) and cache effects absent from
 isolation benchmarks.  Moreover, the pipeline-level speedup on these
 workloads is bounded by $1/(1-P) \approx 1.54\times$, the Amdahl
 ceiling when $P \approx 0.35$.  The observed Go API ratios of
-1.4--1.8$\times$ already approach this ceiling, indicating that the
+1.4--1.8$\times$ approach and occasionally exceed this ceiling;
+observed ratios above 1.54$\times$ indicate that the effective $P$
+varies by workload (profiling shows 15--40\% depending on number
+density) and that allocation overhead, which is shared between digit
+generation and JSON infrastructure, inflates the effective $P$ beyond
+the CPU-time-only estimate.  These ratios indicate that the
 fixed-width algorithms have largely exhausted the available improvement
 from optimizing digit generation alone; further gains require reducing
 parsing or serialization cost.  This convergence is consistent with the conclusion that our
