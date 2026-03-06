@@ -47,6 +47,13 @@ Raffaello Giulietti.
 \newblock Technical report; reference implementation in OpenJDK
   (\url{https://github.com/openjdk/jdk/blob/master/src/java.base/share/classes/jdk/internal/math/DoubleToDecimal.java}).
 
+\bibitem{go17895}
+{Go Project}.
+\newblock cmd/compile: consider using fmadd on s390x and arm, 2016.
+\newblock Go issue \#17895; resolved in Go~1.9, establishing that
+  fused-multiply-add is permitted for any multiply-add expression unless an
+  explicit \texttt{float64()} cast forces intermediate rounding.
+
 \bibitem{ieee754}
 {IEEE}.
 \newblock {\em {IEEE Standard for Floating-Point Arithmetic}}.

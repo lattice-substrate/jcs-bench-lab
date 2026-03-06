@@ -9,6 +9,43 @@ identically to the output of \ecma \texttt{Number::toString}~\cite{ecma262},
 which specifies shortest-representation formatting under roundTiesToEven
 semantics.
 
+This research originated in an engineering problem: the need for a
+correct \rfcjcs primitive whose output could be verified against the
+\ecma specification.  Existing \rfcjcs implementations delegate number
+formatting to language runtimes---for example, Go's
+\texttt{strconv.FormatFloat}---which do not implement the \ecma
+formatting policy (they make different notation choices at key
+boundaries: \texttt{1e20} vs.\ the required
+\texttt{100000000000000000000}; \texttt{1e-06} vs.\ the required
+\texttt{0.000001}) and whose underlying algorithms have changed across
+versions.  Conformance verification against 286{,}362 oracle vectors
+generated from three independent JavaScript engines confirmed these
+gaps.
+
+A correct implementation was built from scratch using
+\burgerdybvig~\cite{burger1996printing} with exact multiprecision
+arithmetic (\texttt{math/big.Int}).  This approach provides a provably
+correct baseline and is immune to fused-multiply-add (FMA) platform
+divergence by construction, since \texttt{big.Int} operations execute on
+the CPU's integer ALU where floating-point fusion is inapplicable by
+type~\cite{go17895}.  The implementation was validated against the full
+oracle vector suite.  Profiling inside the canonicalization pipeline then
+revealed multiprecision heap allocation as a bottleneck on number-dense
+workloads due to 4--6 allocations per formatted number.  Replacing
+\burgerdybvig with \schubfach~\cite{giulietti2022schubfach}---a
+fixed-width algorithm using 64/128-bit integer arithmetic with a
+precomputed lookup table---eliminated digit-generation allocation
+entirely while producing byte-identical output on all vectors.
+
+The natural question that emerged was: \emph{is \schubfach specifically
+the right choice, or would \ryualg~\cite{adams2018ryu} or
+\dragonbox~\cite{jeon2021dragonbox} perform equivalently?}  That
+question, asked with statistical rigor inside a pipeline context, is
+this paper.  The \rfcjcs canonicalization pipeline serves as a case study
+for a more general contribution: a conformance-gated benchmarking
+methodology applicable to any specification-constrained formatting
+evaluation.
+
 Several deployment contexts place canonicalization on the critical path.
 In high-frequency signature verification, every document must be
 canonicalized before its signature can be checked, making formatting
@@ -40,33 +77,32 @@ performance characterization reported here directly relevant to
 infrastructure where canonicalization is not optional but
 load-bearing~\cite{rfc8785}.
 
-Two families of algorithms can satisfy this requirement: multiprecision
-arithmetic approaches exemplified by \burgerdybvig~\cite{burger1996printing},
-and fixed-width integer approaches exemplified by
-\schubfach~\cite{giulietti2022schubfach},
-\ryualg~\cite{adams2018ryu}, and \dragonbox~\cite{jeon2021dragonbox}.
-While these algorithms are individually well-studied, no prior work has
-empirically compared them \emph{inside a specification-constrained
-canonicalization pipeline} where conformance is a hard prerequisite and
-the formatting stage is only one component of the total cost.
-
 This paper makes three contributions:
 
 \begin{enumerate}
-\item A benchmark methodology that gates performance measurement on
-      conformance verification: implementations must pass 286{,}362
-      oracle vectors and 776 structural conformance cases before timing
-      data is collected.  We document noise floors and minimum observable
-      effect sizes for all comparisons.
+\item A conformance-gated benchmark methodology, developed from the
+      practical experience that delegating to standard library formatters
+      produces output that passes casual testing but fails
+      specification-level verification.  The methodology gates
+      performance measurement on correctness: implementations must pass
+      286{,}362 oracle vectors and 776 structural conformance cases
+      before timing data is collected.  We document noise floors and
+      minimum observable effect sizes for all comparisons.  The
+      methodology is general and reusable for any
+      specification-constrained formatting evaluation.
 
 \item The first empirical comparison of four digit-generation algorithms
       (three fixed-width: \schubfach, \ryualg, \dragonbox; one
-      multiprecision: \burgerdybvig) under \ecma/\rfcjcs constraints,
-      showing that all three fixed-width algorithms perform within
-      1--8\% of each other while each achieves 1.4--1.8$\times$ speedup
-      over \burgerdybvig on number-dense workloads ($\nu(D) \geq 40\%$)
-      in Go API benchmarks; the advantage replicates at
-      2.3--3.0$\times$ in Rust.
+      multiprecision: \burgerdybvig) under \ecma/\rfcjcs constraints
+      inside a canonicalization pipeline, showing that all three
+      fixed-width algorithms perform within 1--8\% of each other while
+      each achieves 1.4--1.8$\times$ speedup over \burgerdybvig on
+      number-dense workloads ($\nu(D) \geq 40\%$) in Go API benchmarks;
+      the advantage replicates at 2.3--3.0$\times$ in Rust.  The
+      fixed-width equivalence is confirmatory---consistent with Adams
+      and Champagne Gareau \& Lemire---but the pipeline context and
+      Amdahl's Law characterization showing how isolation-level
+      speedups attenuate at the system level are new.
       String-dominant and deeply-nested inputs show $<$5\% difference.
 
 \item A cross-language validation design (4$\times$2 matrix of

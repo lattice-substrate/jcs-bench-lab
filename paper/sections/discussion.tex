@@ -135,11 +135,17 @@ documents per second at this payload size would reclaim roughly
 0.24~seconds of CPU time per second---freeing approximately 24\% of
 a core compared to the \burgerdybvig path.
 
-Since the three fixed-width algorithms are performance-equivalent,
-implementors can choose based on other criteria: code simplicity
-(\schubfach has the smallest implementation), ecosystem momentum
-(\dragonbox was adopted by Go~1.26's \texttt{strconv}), or theoretical
-interest (\ryualg as the first full-coverage fixed-width algorithm).
+The engineering context that produced these results is illustrative.
+The \burgerdybvig implementation was replaced with \schubfach in a
+production canonicalization library, and the predicted improvement
+materialized.  The question of whether the choice \emph{among}
+fixed-width algorithms mattered then motivated this study.  It does
+not: all three are equivalent within 1--8\%.  Implementors can
+therefore choose based on code simplicity (\schubfach has the smallest
+implementation), ecosystem momentum (\dragonbox was adopted by
+Go~1.26's \texttt{strconv}), or historical priority (\ryualg as the
+first full-coverage fixed-width algorithm), confident they are not
+leaving performance on the table.
 
 \subsection{Cross-Language Interpretation}
 
@@ -243,16 +249,24 @@ algorithmic advantage at different levels of system integration.
 \subsection{Methodological Contribution}
 
 The conformance-gated methodology introduced in this paper is
-independent of the specific algorithms compared.  The core design---gate
-timing on correctness, validate against multiple independent oracles,
-document noise floors and minimum detectable effects for every
-comparison---is reusable for any specification-constrained formatting
-evaluation.  The methodology addresses a gap in the float-to-string
-literature, where prior benchmarks (including Adams's Ry\=u evaluation
-and Champagne Gareau and Lemire's comprehensive C++ study) measure
-performance in isolation without first establishing conformance to a
-target specification.  In domains where correctness is a hard
-prerequisite---canonicalization, serialization standards,
-interoperability testing---measuring the speed of a non-conformant
-implementation is meaningless.  The benchmark infrastructure released
-with this paper implements this methodology as a reusable pipeline.
+independent of the specific algorithms compared.  The \rfcjcs
+canonicalization pipeline serves as the case study in which the
+methodology was developed and validated; the methodology itself is
+general, applicable to any specification-constrained formatting
+evaluation where correctness is a binary prerequisite.  The core
+design---gate timing on correctness, validate against multiple
+independent oracles, document noise floors and minimum detectable
+effects for every comparison---was not adopted as an academic
+principle but developed from the practical discovery that the standard
+ecosystem pattern (delegating number formatting to a language runtime)
+produces implementations that pass casual testing while failing
+specification-level verification.  The methodology addresses a gap in
+the float-to-string literature, where prior benchmarks (including
+Adams's Ry\=u evaluation and Champagne Gareau and Lemire's
+comprehensive C++ study) measure performance in isolation without
+first establishing conformance to a target specification.  In domains
+where correctness is a hard prerequisite---canonicalization,
+serialization standards, interoperability testing---measuring the
+speed of a non-conformant implementation is meaningless.  The
+benchmark infrastructure released with this paper implements this
+methodology as a reusable pipeline.

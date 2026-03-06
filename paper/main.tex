@@ -39,34 +39,38 @@
 \maketitle
 
 \begin{abstract}
-JSON Canonicalization Scheme (RFC~8785) requires deterministic
-floating-point formatting that matches ECMA-262 \texttt{Number::toString}.
-We present the first empirical comparison of four digit-generation
-algorithms---three fixed-width (\schubfach, \ryualg, \dragonbox) and one
-multiprecision (\burgerdybvig)---inside a specification-constrained
-canonicalization pipeline, implemented in both Go and Rust
-(8~implementations total) to separate algorithmic effects from
-language/runtime effects.
-Our methodology gates performance measurement on conformance: only
-implementations passing 286{,}362 oracle vectors (generated from V8
-and validated against SpiderMonkey and JavaScriptCore) and 776
-structural conformance cases (97 per
-implementation $\times$ 8~implementations) proceed to benchmarking.
-Using permutation tests, BCa bootstrap confidence intervals, and
-Benjamini--Hochberg FDR correction across 1{,}644 comparisons
-(16~pairs $\times$ workloads/modes), we find that all three fixed-width
-algorithms perform within 1--8\% of each other across both languages,
-while each is 1.4--1.8$\times$ faster than \burgerdybvig on
-number-dense workloads ($\nu(D) \geq 40\%$) in Go API benchmarks;
-these pipeline-level ratios are consistent with larger
-isolation-level speedups attenuated by Amdahl's Law, since digit
-generation accounts for approximately 15--40\% of total pipeline cost;
-the advantage replicates at 2.3--3.0$\times$ in Rust, providing
-evidence that it is not solely attributable to language-specific
-runtime characteristics (excluding two
-pure-numeric workloads in Rust where digit generation accounts for
-${>}$95\% of pipeline cost, producing 8--9$\times$ ratios discussed in
-\S\ref{sec:discussion}).
+Specification-constrained formatting benchmarks face a problem that
+isolation benchmarks do not: an implementation that is fast but
+non-conformant is worse than useless.  We introduce a
+\emph{conformance-gated} benchmarking methodology that enforces
+correctness as a binary prerequisite for performance measurement,
+and apply it inside a JSON Canonicalization Scheme (RFC~8785) pipeline
+serving as a case study.
+Existing RFC~8785 implementations delegate number formatting to
+language runtimes that do not implement the required ECMA-262
+\texttt{Number::toString} formatting policy and whose internals
+have changed across versions---a gap discovered during conformance
+verification against 286{,}362 oracle vectors generated from V8 and
+validated against SpiderMonkey and JavaScriptCore.  A correct
+\burgerdybvig implementation, immune to platform-dependent
+fused-multiply-add divergence by construction, was built and validated
+against these vectors; profiling revealed its multiprecision
+arithmetic as a bottleneck on number-dense workloads.
+We evaluate four digit-generation algorithms---three fixed-width
+(\schubfach, \ryualg, \dragonbox) and one multiprecision
+(\burgerdybvig)---in both Go and Rust (8~implementations total),
+using permutation tests, BCa bootstrap confidence intervals, and
+Benjamini--Hochberg FDR correction across 1{,}644 comparisons.
+All three fixed-width algorithms perform within 1--8\% of each other
+across both languages, while each is 1.4--1.8$\times$ faster than
+\burgerdybvig on number-dense workloads ($\nu(D) \geq 40\%$) in Go
+API benchmarks; these pipeline-level ratios are consistent with
+larger isolation-level speedups attenuated by Amdahl's Law, since
+digit generation accounts for approximately 15--40\% of total
+pipeline cost; the advantage replicates at 2.3--3.0$\times$ in Rust
+(excluding two pure-numeric workloads where digit generation accounts
+for ${>}$95\% of pipeline cost, producing 8--9$\times$ ratios
+discussed in \S\ref{sec:discussion}).
 On string-dominant and deeply-nested inputs the difference narrows to
 $<$5\%.
 All eight implementations produce byte-identical output; Go binaries are

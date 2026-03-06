@@ -142,6 +142,16 @@
   doi       = {10.1145/2555670.2466542},
 }
 
+@misc{go17895,
+  author    = {{Go Project}},
+  title     = {cmd/compile: consider using FMADD on s390x and ARM},
+  year      = {2016},
+  url       = {https://github.com/golang/go/issues/17895},
+  note      = {Go issue \#17895; resolved in Go~1.9, establishing that
+               fused-multiply-add is permitted for any multiply-add expression
+               unless an explicit \texttt{float64()} cast forces intermediate rounding},
+}
+
 @misc{w3c2024rdf,
   author    = {{W3C}},
   title     = {{RDF Dataset Canonicalization}},

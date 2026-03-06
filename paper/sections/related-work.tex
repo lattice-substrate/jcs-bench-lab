@@ -79,6 +79,20 @@ JSON-LD canonicalization, OLPC canonical JSON).  None specify the
 floating-point formatting requirement with the precision of
 \ecma~\cite{ecma262}.
 
+Prior to this work, conformance verification against \ecma oracle
+vectors revealed that existing \rfcjcs implementations couple number
+formatting to language runtime internals without implementing the \ecma
+formatting policy directly.  The standard pattern---delegating to the
+runtime's float-to-string function and post-processing the result---is
+fragile: Go's \texttt{strconv.FormatFloat}, the dependency in the most
+widely referenced Go \rfcjcs implementation, has undergone three
+algorithm changes (Grisu3 through Go~1.13, Ry\=u from Go~1.14,
+Dragonbox from Go~1.26) and had a confirmed rounding bug (Go
+issue~\#29491, filed by the \rfcjcs author, where \texttt{FormatFloat}
+returned wrong digits for specific values on certain platforms).  This
+ecosystem gap motivated both the custom implementation and the
+conformance-gated methodology presented here.
+
 \subsection{Benchmark Methodology}
 
 Our conformance-before-performance approach draws on the principle that
