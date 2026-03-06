@@ -1,6 +1,13 @@
 \section{Algorithms}
 \label{sec:algorithms}
 
+We evaluate only full-coverage algorithms that produce shortest-representation
+output for all IEEE~754 binary64 inputs without fallback to arbitrary
+precision.  This excludes Grisu3~\cite{loitsch2010grisu}, which falls back
+to multiprecision arithmetic for approximately 0.5\% of inputs,
+confounding the algorithmic comparison in a specification-constrained
+context where every input must be handled by the same code path.
+
 \subsection{Definitions}
 
 \begin{definition}[Minimal Significand]

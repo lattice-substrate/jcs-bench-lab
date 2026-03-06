@@ -55,3 +55,30 @@ only the \texttt{jcsfloat} digit-generation module differs between them,
 mirroring the Go design.  Rust binaries are approximately 424--456\,KB
 (stripped), compared to 2.5--2.7\,MB for the statically-linked Go
 binaries.
+
+\subsection{Platform Independence and Fused-Multiply-Add}
+
+IEEE~754 compliance guarantees that each floating-point result is
+correctly rounded to destination precision, but it does not guarantee
+that the same source expression produces identical bits on all
+platforms.  Fused-multiply-add (FMA) instructions compute $a \times b +
+c$ with a single rounding rather than two, producing results that can
+differ by one ULP from the unfused sequence.  Go's compiler permits FMA
+for any multiply-add expression~\cite{go17895}; the opt-out is an
+explicit \texttt{float64()} cast forcing intermediate rounding.  A
+real-world consequence was observed in December 2025, when a Go database
+(DoltHub) produced different query plans on ARM vs.\ x86 because the
+compiler emitted FMA on ARM but not x86, causing a one-ULP difference
+that flipped a cost comparison.
+
+For digit-generation algorithms used in canonicalization---where the
+formatted bytes are cryptographically bound---platform-dependent output
+is unacceptable.  The \burgerdybvig implementation with
+\texttt{math/big.Int} is immune by construction: all operations execute
+on the CPU's integer ALU, where floating-point fusion is inapplicable by
+type.  The three fixed-width algorithms (\schubfach, \ryualg,
+\dragonbox) use \texttt{math/bits.Mul64} and \texttt{u128} arithmetic
+for their core computations; we verified that no floating-point
+expressions in the digit-generation path are fusible.  All eight
+implementations therefore satisfy the integer-arithmetic-only property
+required for cross-platform determinism.

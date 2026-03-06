@@ -74,6 +74,8 @@ mechanism underlying the observed speedup.
 
 \subsection{Extreme Outliers: \texttt{numeric-boundary} and \texttt{number-heavy}}
 
+\input{figures/outlier-speedup}
+
 Two workloads show unusually large speedup ratios in Rust API
 benchmarks: \texttt{numeric-boundary} (${\approx}9.3\times$ within-Rust,
 CI [9.1, 9.5]) and \texttt{number-heavy} (${\approx}8.2\times$,
@@ -242,8 +244,14 @@ $1/(0.65 + 0.07) = 1.39\times$, consistent with our observed
 and observation reflects differences in allocation overhead (our
 pipeline includes JSON parsing and serialization, which share the
 allocator with digit generation) and cache effects absent from
-isolation benchmarks.  This convergence confirms that our pipeline
-results and their isolation results measure the same underlying
+isolation benchmarks.  Moreover, the pipeline-level speedup on these
+workloads is bounded by $1/(1-P) \approx 1.54\times$---the Amdahl
+ceiling when $P \approx 0.35$.  The observed Go API ratios of
+1.4--1.8$\times$ already approach this ceiling, indicating that the
+fixed-width algorithms have largely exhausted the available improvement
+from optimizing digit generation alone; further gains require reducing
+parsing or serialization cost.  This convergence confirms that our
+pipeline results and their isolation results measure the same underlying
 algorithmic advantage at different levels of system integration.
 
 \subsection{Methodological Contribution}
@@ -267,6 +275,13 @@ comprehensive C++ study) measure performance in isolation without
 first establishing conformance to a target specification.  In domains
 where correctness is a hard prerequisite---canonicalization,
 serialization standards, interoperability testing---measuring the
-speed of a non-conformant implementation is meaningless.  The
-benchmark infrastructure released with this paper implements this
-methodology as a reusable pipeline.
+speed of a non-conformant implementation is meaningless.
+
+As a concrete example of generalizability, consider CBOR deterministic
+encoding (RFC~8949 \S4.2)~\cite{rfc8949}: the specification requires a
+specific integer-to-bytes mapping and canonical map key ordering.  The
+conformance-gated approach applies directly---oracle vectors would be
+generated from a reference CBOR encoder, and candidate implementations
+would be gated on byte-identical output before timing comparison of
+encoding strategies.  The benchmark infrastructure released with this
+paper implements this methodology as a reusable pipeline.

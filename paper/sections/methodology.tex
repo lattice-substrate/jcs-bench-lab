@@ -34,10 +34,14 @@ semantics.
 coverage; the total counts file lines, with 284{,}209 unique values.)
 Coverage includes all subnormals
 with bit patterns $\leq 2^{12}$ (4{,}096 of approximately $4.5 \times 10^{15}$
-positive subnormals, providing dense coverage near zero where formatting
-edge cases concentrate), subnormal/normal boundary ($\pm128$ around the transition),
-all powers of two in the binary64 exponent range, \rfcjcs Appendix~B
-examples with $\pm2$ neighbors, and pseudorandom fill.
+positive subnormals; these provide dense coverage near zero where
+notation-switch boundaries and leading-zero sequences create formatting
+edge cases), subnormal/normal boundary ($\pm128$ around the transition),
+all powers of two in the binary64 exponent range (binade boundaries
+where the digit-generation algorithm must activate asymmetric interval
+margins), \rfcjcs Appendix~B examples with $\pm2$ neighbors (catching
+off-by-one errors in boundary comparisons against the specification's
+own test values), and pseudorandom fill.
 
 \subsection{Benchmark Design}
 
@@ -98,14 +102,12 @@ processed by all implementations, verifying byte-identical output.
 
 \subsection{Workload Characterization}
 
-\begin{definition}[Number value fraction]
-For a JSON document $D$, define $\nu(D)$ as the fraction of JSON values
-that are numbers.  Array and object containers are counted as values;
-their elements and members are counted separately.  Formally,
-$\nu(D) = |\{v \in V(D) : v \text{ is a JSON number}\}| / |V(D)|$,
-where $V(D)$ is the multiset of all JSON values in $D$ (including
-containers).
-\end{definition}
+For a JSON document $D$, we define $\nu(D)$ as the fraction of JSON
+values that are numbers.  Every JSON value is counted once: primitives
+(strings, numbers, booleans, null) and containers (arrays, objects);
+container elements are counted separately.  For example,
+\texttt{[1, "x", [2, 3]]} contains six values (two arrays, one string,
+three numbers), so $\nu = 3/6 = 0.50$.
 
 Table~\ref{tab:workload-characteristics} reports the structural
 properties of each benchmark workload, including $\nu(D)$, total value

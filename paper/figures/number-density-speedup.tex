@@ -63,11 +63,8 @@
     (100.0, 2.903)
 };
 \legend{Go, Rust}
-% Annotations for off-chart outliers
-\node[anchor=south west, font=\footnotesize, red!70] at (axis cs:82,3.28)
-    {\texttt{num-bdy}: 9.3$\times$ $\uparrow$};
-\node[anchor=south west, font=\footnotesize, red!70] at (axis cs:62,3.05)
-    {\texttt{num-hvy}: 8.3$\times$ $\uparrow$};
+% Pure-numeric outliers (numeric-boundary 9.3x, number-heavy 8.3x)
+% shown separately in §8.5; excluded from this figure.
 % Reference line at 1.0x (no effect)
 \draw[dashed, gray, thin] (axis cs:-5,1.0) -- (axis cs:105,1.0);
 \end{axis}
@@ -77,8 +74,8 @@ speedup of fixed-width over \burgerdybvig (canonicalize mode; \schubfach
 shown as representative).  Workloads with zero number content cluster
 near 1.0$\times$ (no algorithmic difference); number-dense workloads
 ($\nu \geq 40\%$) show 1.4--1.8$\times$ in Go and 1.7--3.4$\times$ in
-Rust.  The Rust \texttt{numeric-boundary} (9.3$\times$) and
-\texttt{number-heavy} (8.3$\times$) outliers are annotated but excluded
-from the $y$-axis range.}
+Rust.  Two pure-numeric outliers (\texttt{numeric-boundary}
+9.3$\times$, \texttt{number-heavy} 8.3$\times$) are excluded from this
+figure and presented separately in \S\ref{sec:discussion}.}
 \label{fig:density-speedup}
 \end{figure}
