@@ -22,9 +22,10 @@ Key findings:
 \item Fixed-width algorithms achieve 1.4--1.8$\times$ speedup on
       number-dense workloads ($\nu(D) \geq 40\%$) in Go API benchmarks
       due to zero heap allocation; the advantage replicates at
-      2.3--3.0$\times$ in Rust (excluding extreme outliers), providing
-      evidence that the advantage is algorithmic rather than
-      language-specific.
+      2.3--3.0$\times$ in Rust (excluding extreme outliers); the
+      replication of within-language ordering across both languages
+      provides evidence that the advantage is not solely attributable
+      to language-specific runtime characteristics.
 \item In end-to-end CLI measurement, the advantage narrows due to
       process startup dominance, but remains statistically significant
       on number-dense workloads.

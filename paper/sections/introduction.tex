@@ -25,11 +25,12 @@ second on a representative 14\,KB workload.
 
 Beyond throughput, the choice of digit-generation algorithm is a
 correctness concern in systems where canonicalized bytes are hashed and
-signed at every layer of a processing pipeline.  In deterministic
-infrastructure---where data-processing steps execute in sandboxed
-isolation and every governed artifact is schema-validated, canonically
-serialized, and cryptographically bound---a formatting divergence at the
-number-rendering layer does not produce one wrong document: it
+signed at every layer of a processing pipeline.  In deployment contexts
+such as deterministic infrastructure---where data-processing steps
+execute in sandboxed isolation and every governed artifact is
+schema-validated, canonically serialized, and cryptographically
+bound---a formatting divergence at the number-rendering layer does not
+produce one wrong document: it
 invalidates every hash computed over those bytes, every signature
 computed over those hashes, and every audit trail that chains those
 signatures.  The digit-generation algorithm sits at the foundation of a

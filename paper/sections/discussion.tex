@@ -32,7 +32,8 @@ canonicalization function), number-dense inputs (e.g.,
 digit-generation path.  In Rust within-language API benchmarks, the same
 algorithmic ordering holds at larger magnitudes (2.3--3.0$\times$ on the
 same workloads, excluding the two extreme outliers discussed below),
-providing evidence that the advantage is algorithmic.  Deeply-nested
+providing evidence that the advantage is not solely attributable to
+language-specific runtime characteristics.  Deeply-nested
 workloads (\texttt{deep}, \texttt{deep-64}) contain numbers but show
 ${\approx}1.0\times$ because JSON structural parsing and key sorting
 dominate, diluting the digit-generation signal.  The speedup therefore

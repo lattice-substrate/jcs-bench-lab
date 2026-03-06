@@ -51,7 +51,8 @@ The within-language pairs test the algorithmic effect while controlling
 for language/runtime; the cross-language pairs test language/runtime
 effects while controlling for algorithm.  Directional consistency across
 within-language pairs in both Go and Rust provides evidence that
-algorithmic differences are not language-specific, though this is not a
+algorithmic differences are not solely attributable to language-specific
+runtime characteristics, though this is not a
 formal interaction test (see \S\ref{sec:discussion}).  The Rust
 \burgerdybvig implementation uses the \texttt{num-bigint} crate (v0.4,
 Karatsuba multiplication for large operands, heap-allocated with RAII

@@ -1,15 +1,19 @@
 \section{Benchmark Data}
 \label{sec:appendix-tables}
 
-This appendix contains an exemplar subset of the statistical comparisons.
-The representative pair \schubfach vs.\ \burgerdybvig (Go) is shown
-across all workloads and modes.  Complete data for all 16~pairs
-(1{,}644 comparisons), full API benchmarks, and full CLI benchmarks
-are available in the supplementary materials accompanying this paper.
+This appendix contains the within-language CLI statistical comparisons
+and an exemplar subset of the full report.
+Complete data for all 16~pairs (1{,}644 comparisons), full API
+benchmarks, and full CLI benchmarks are available in the supplementary
+materials accompanying this paper.
 
 \emph{Note:} Rust allocation data (B/op, allocs/op) is measured via a
 counting global allocator that intercepts all heap allocations (see
 \S\ref{sec:discussion}).
+
+\subsection{Within-Language CLI Comparisons}
+
+\input{tables/stats-summary}
 
 \begin{landscape}
 

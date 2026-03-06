@@ -61,8 +61,9 @@ number-dense workloads ($\nu(D) \geq 40\%$) in Go API benchmarks;
 these pipeline-level ratios are consistent with larger
 isolation-level speedups attenuated by Amdahl's Law, since digit
 generation accounts for approximately 15--40\% of total pipeline cost;
-the advantage replicates at 2.3--3.0$\times$ in Rust, consistent with
-an algorithmic rather than language-specific explanation (excluding two
+the advantage replicates at 2.3--3.0$\times$ in Rust, providing
+evidence that it is not solely attributable to language-specific
+runtime characteristics (excluding two
 pure-numeric workloads in Rust where digit generation accounts for
 ${>}$95\% of pipeline cost, producing 8--9$\times$ ratios discussed in
 \S\ref{sec:discussion}).

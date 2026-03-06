@@ -69,12 +69,13 @@ Appendix~\ref{sec:appendix-tables}.
 
 \subsection{Statistical Comparisons}
 
-Table~\ref{tab:stats-summary} presents the within-language CLI comparisons
-(canonicalize mode) with BH-corrected $p$-values.  The full
-1{,}644-comparison statistical report appears in
-Appendix~\ref{sec:appendix-tables} (exemplar) and the supplementary materials (complete).
-
-\input{tables/stats-summary}
+Within-language CLI comparisons (canonicalize mode) with BH-corrected
+$p$-values, confidence intervals, and effect sizes are reported in
+Table~\ref{tab:stats-summary} (Appendix~\ref{sec:appendix-tables}).
+The patterns mirror the API results: fixed-width algorithms outperform
+\burgerdybvig on number-dense workloads, with smaller effect sizes due
+to process startup dilution.  The full 1{,}644-comparison statistical
+report appears in the supplementary materials.
 
 \subsection{Cross-Language Validation}
 
@@ -97,8 +98,10 @@ In CLI end-to-end measurement, Rust implementations are approximately
 process startup overhead (Rust native binary vs.\ Go runtime
 initialization).  In API benchmarks, the within-Rust algorithmic ordering
 replicates the within-Go ordering: all three fixed-width algorithms
-outperform \burgerdybvig on number-dense workloads, providing evidence
-that the fixed-width advantage is not language-specific.
+outperform \burgerdybvig on number-dense workloads; this replication
+of within-language ordering provides evidence that the fixed-width
+advantage is not solely attributable to language-specific runtime
+characteristics.
 
 This decomposition separates algorithmic effects from language/runtime
 effects and directly addresses language-specific performance threats.
