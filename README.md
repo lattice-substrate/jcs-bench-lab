@@ -1,5 +1,7 @@
 # jcs-bench-lab
 
+[![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.18890836.svg)](https://doi.org/10.5281/zenodo.18890836)
+
 Go-native benchmarking lab for comparing:
 - `impl-schubfach` (`lattice-substrate/jcs-schubfach`)
 - `impl-json-canon` (`lattice-substrate/json-canon`)
