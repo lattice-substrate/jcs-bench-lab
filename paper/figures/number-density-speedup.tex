@@ -22,52 +22,52 @@
 % number-heavy(100%), numeric-boundary(100%), canonical-minimal(100%),
 % escaped-key-order(100%), verify-whitespace(100%)
 \addplot[only marks, mark=*, blue!70, thick] coordinates {
-    (0.0, 1.000)
-    (0.0, 1.000)
-    (0.0, 1.001)
-    (0.0, 1.003)
-    (0.0, 1.012)
-    (0.0, 1.012)
-    (0.0, 1.065)
-    (49.2, 1.320)
-    (74.9, 1.552)
-    (74.9, 1.698)
-    (75.0, 1.364)
-    (75.0, 1.599)
-    (75.0, 1.724)
-    (80.0, 1.408)
-    (100.0, 1.543)
-    (100.0, 1.484)
-    (100.0, 1.509)
-    (100.0, 1.595)
-    (100.0, 1.721)
+    (0.0, 1.002)
+    (0.0, 1.002)
+    (0.0, 1.010)
+    (0.0, 1.004)
+    (0.0, 1.014)
+    (0.0, 1.017)
+    (0.0, 1.056)
+    (49.2, 1.310)
+    (74.9, 1.558)
+    (74.9, 1.691)
+    (75.0, 1.337)
+    (75.0, 1.575)
+    (75.0, 1.716)
+    (80.0, 1.406)
+    (100.0, 1.561)
+    (100.0, 1.493)
+    (100.0, 1.541)
+    (100.0, 1.599)
+    (100.0, 1.712)
 };
-% Rust API speedups (excluding numeric-boundary 9.18x and number-heavy 8.17x)
+% Rust API speedups (excluding numeric-boundary 9.3x and number-heavy 8.3x)
 \addplot[only marks, mark=triangle*, red!70, thick] coordinates {
-    (0.0, 1.031)
-    (0.0, 1.034)
-    (0.0, 1.008)
+    (0.0, 1.048)
+    (0.0, 1.000)
+    (0.0, 1.005)
+    (0.0, 1.027)
+    (0.0, 1.005)
+    (0.0, 1.007)
     (0.0, 1.022)
-    (0.0, 1.011)
-    (0.0, 1.012)
-    (0.0, 1.006)
-    (49.2, 1.633)
-    (74.9, 2.247)
-    (74.9, 2.611)
-    (75.0, 1.776)
-    (75.0, 2.292)
-    (75.0, 3.142)
-    (80.0, 1.933)
-    (100.0, 2.281)
-    (100.0, 2.450)
-    (100.0, 2.662)
+    (49.2, 1.830)
+    (74.9, 2.205)
+    (74.9, 2.970)
+    (75.0, 1.748)
+    (75.0, 2.515)
+    (75.0, 3.391)
+    (80.0, 1.918)
+    (100.0, 2.101)
+    (100.0, 2.493)
+    (100.0, 2.903)
 };
 \legend{Go, Rust}
 % Annotations for off-chart outliers
 \node[anchor=south west, font=\footnotesize, red!70] at (axis cs:82,3.28)
-    {\texttt{num-bdy}: 11.5$\times$ $\uparrow$};
+    {\texttt{num-bdy}: 9.3$\times$ $\uparrow$};
 \node[anchor=south west, font=\footnotesize, red!70] at (axis cs:62,3.05)
-    {\texttt{num-hvy}: 9.1$\times$ $\uparrow$};
+    {\texttt{num-hvy}: 8.3$\times$ $\uparrow$};
 % Reference line at 1.0x (no effect)
 \draw[dashed, gray, thin] (axis cs:-5,1.0) -- (axis cs:105,1.0);
 \end{axis}
@@ -76,9 +76,9 @@
 speedup of \schubfach over \burgerdybvig (canonicalize mode).  Workloads
 with zero number content cluster near 1.0$\times$ (no algorithmic
 difference); number-dense workloads ($\nu \geq 40\%$) show 1.3--1.7$\times$ in
-Go and 1.6--4.2$\times$ in Rust.  The Rust
-\texttt{numeric-boundary} (11.5$\times$) and \texttt{number-heavy}
-(9.1$\times$) outliers are annotated but excluded from the $y$-axis
+Go and 1.7--3.4$\times$ in Rust.  The Rust
+\texttt{numeric-boundary} (9.3$\times$) and \texttt{number-heavy}
+(8.3$\times$) outliers are annotated but excluded from the $y$-axis
 range.}
 \label{fig:density-speedup}
 \end{figure}

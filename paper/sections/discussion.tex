@@ -9,7 +9,7 @@ function), number-dense inputs (e.g., \texttt{array-2048},
 \texttt{large}, \texttt{medium}) show 1.3--1.7$\times$ speedup due
 to zero heap allocation in the digit-generation path.  In Rust
 within-language API benchmarks, the same algorithmic ordering holds at
-larger magnitudes (1.6--4.2$\times$ on the same workloads, excluding the
+larger magnitudes (1.7--3.4$\times$ on the same workloads, excluding the
 two extreme outliers discussed in \S\ref{sec:discussion}), confirming
 the advantage is algorithmic.  Deeply-nested
 workloads (\texttt{deep}, \texttt{deep-64}) contain numbers but show
@@ -70,21 +70,21 @@ mechanism underlying the observed speedup.
 \subsection{Extreme Outliers: \texttt{numeric-boundary} and \texttt{number-heavy}}
 
 Two workloads show unusually large speedup ratios in Rust API
-benchmarks: \texttt{numeric-boundary} (11.5$\times$ within-Rust, CI
-[11.4, 11.8]) and \texttt{number-heavy} (9.1$\times$, CI [7.9, 9.9]),
-compared to 1.5$\times$ in Go for both.  Because these are
+benchmarks: \texttt{numeric-boundary} (9.3$\times$ within-Rust, CI
+[9.2, 9.4]) and \texttt{number-heavy} (8.3$\times$, CI [8.2, 8.4]),
+compared to ${\approx}1.5\times$ in Go for both.  Because these are
 \emph{within-Rust} comparisons (same harness on both sides), they are
 unaffected by the cross-language measurement granularity asymmetry
 discussed in \S\ref{sec:methodology}.  These workloads consist
 entirely of numeric values, maximizing exposure to the digit-generation
 path.  The Rust \burgerdybvig implementation uses a lazily-initialized
-power-of-ten cache (\texttt{OnceLock<Vec<BigInt>>}); although the
+power-of-ten cache (\texttt{OnceLock<Vec<BigUint>>}); although the
 harness discards 3~warmup iterations to amortize first-invocation
 costs, the cache-warmed steady-state cost of
-\texttt{num-bigint::BigInt} multiprecision arithmetic remains
+\texttt{BigUint} schoolbook multiprecision arithmetic remains
 substantially higher than the Rust \schubfach implementation's
 compile-time constant lookup table.  The tight confidence intervals
-and low MDEs (1.6\% and 2.2\%) confirm these are genuine algorithmic
+and low MDEs (2.3\% and 2.1\%) confirm these are genuine algorithmic
 cost differences, not measurement noise.  The Go within-language
 comparisons at ${\approx}1.5\times$ are smaller because Go's
 \texttt{sync.Pool} amortizes allocation cost and Go's less aggressive
@@ -113,9 +113,23 @@ per-workload profiling breakdowns are deferred to future work.
 
 For applications where canonicalization throughput is critical (e.g.,
 high-frequency signature verification of number-heavy payloads),
-\schubfach offers meaningful improvement.  For typical mixed-content JSON,
-the choice of digit-generation algorithm has minimal practical impact on
-end-to-end latency.
+\schubfach offers meaningful improvement.  On the \texttt{medium}
+workload (13.7\,KB, $\nu = 40\%$), the Go API difference between
+\schubfach (${\approx}342\,\mu$s/op) and \burgerdybvig
+(${\approx}581\,\mu$s/op) is approximately 239\,$\mu$s per
+canonicalization.  A service verifying 1{,}000 signed JSON
+documents per second at this payload size would reclaim roughly
+0.24~seconds of CPU time per second---freeing approximately 24\% of
+a core compared to the \burgerdybvig path.
+
+Real-world JSON canonicalization use cases span a range of number
+densities: JOSE/JWS payloads are typically string-dominant (low~$\nu$),
+Verifiable Credentials often contain timestamps and amounts (moderate~$\nu$),
+and scientific or financial data payloads can be number-heavy
+(high~$\nu$).  For workloads with $\nu < 10\%$, the digit-generation
+algorithm choice has no measurable impact on end-to-end latency; the
+practical benefit concentrates in number-dense payloads where
+digit generation accounts for a meaningful fraction of total cost.
 
 \subsection{Cross-Language Interpretation}
 
@@ -163,7 +177,7 @@ ratios, and $\text{RoR} = R_\text{Rust}/R_\text{Go}$.
 $\text{RoR} > 1$ indicates that the \schubfach advantage is amplified in
 Rust.  On number-dense workloads, $\text{RoR}$ consistently exceeds 1
 (typically 1.3--2.0$\times$), reflecting the larger allocation cost
-differential in Rust where \texttt{num-bigint} lacks Go's
+differential in Rust where the custom \texttt{BigUint} lacks Go's
 \texttt{sync.Pool} amortization.  The sole exception is
 \texttt{escaped-key-order} ($\text{RoR} = 0.97$), a very small workload
 (18~bytes, 3~values) where non-numeric overhead dominates in both
@@ -195,9 +209,9 @@ byte and allocation counts in the same format as Go's
 \texttt{testing.B}.  This confirms the mechanistic explanation:
 Rust-\schubfach allocates minimally (e.g., 1{,}036~B/op, 24~allocs/op
 on \texttt{numeric-boundary}) while Rust-\burgerdybvig allocates
-substantially more (27{,}652~B/op, 471~allocs/op on the same workload)
-due to \texttt{num-bigint::BigInt} multiprecision arithmetic.  The
-$26.7\times$ allocation byte ratio directly explains the 11.5$\times$
+substantially more (25{,}204~B/op, 470~allocs/op on the same workload)
+due to \texttt{BigUint} multiprecision arithmetic.  The
+$24.3\times$ allocation byte ratio directly explains the 9.3$\times$
 speedup: allocation and initialization cost dominates the
 multiprecision path.
 

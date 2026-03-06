@@ -83,6 +83,28 @@ differences could affect cross-language comparisons.  Within-language
 comparisons are unaffected since both implementations share the same
 allocator.
 
+\textbf{Multiprecision implementation quality.}
+The Rust \burgerdybvig implementation uses a purpose-built
+\texttt{BigUint} with schoolbook arithmetic (approximately 350~lines),
+not an optimized library such as GMP or Go's \texttt{math/big}.
+Go's \texttt{math/big.Int} benefits from assembly-accelerated inner
+loops on x86-64, potentially giving it lower per-operation cost than
+our schoolbook Rust implementation.  This means the absolute Rust
+\burgerdybvig timings may be higher than they would be with a
+production-grade multiprecision library, and within-Rust speedup ratios
+correspondingly larger.  Within-language comparisons still isolate the
+algorithmic difference (both implementations share the same allocator
+and compiler), but readers should note that the Rust \burgerdybvig
+absolute performance reflects a research-grade bigint.
+
+\textbf{Go toolchain version.}
+Benchmarks use Go~1.25.6.  Since neither implementation uses
+\texttt{strconv.FormatFloat}, Go~1.26's adoption of Dragonbox for
+\texttt{strconv} does not affect the digit-generation paths under test.
+The Go compiler version affects only runtime infrastructure (allocator,
+scheduler, garbage collector), which is shared identically between
+both implementations within each pair.
+
 \textbf{Oracle SHA-256 circularity.}
 SHA-256 checksums verify vector integrity but cannot verify oracle
 correctness.  Independent verification against a second JS engine

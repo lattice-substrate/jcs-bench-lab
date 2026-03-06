@@ -31,12 +31,14 @@ align optimization policy with production benchmarking practice.
 The Rust \schubfach implementation uses native \texttt{u128} arithmetic
 for the 128-bit intermediate products required by the algorithm,
 eliminating the need for compiler intrinsics or multi-word emulation.
-The Rust \burgerdybvig implementation uses \texttt{num-bigint::BigInt}
-v0.4.6 for multiprecision arithmetic; buffer lifecycle is managed by
-Rust's RAII ownership model (deterministic \texttt{Drop}), removing the
-need for explicit pooling strategies such as Go's \texttt{sync.Pool}.
-Cargo.lock files are committed for both Rust implementations to ensure
-reproducible dependency resolution.
+The Rust \burgerdybvig implementation uses a custom \texttt{BigUint}
+(approximately 350~lines of schoolbook multiprecision arithmetic with
+Knuth Algorithm~D division) with zero external dependencies; buffer
+lifecycle is managed by Rust's RAII ownership model (deterministic
+\texttt{Drop}), removing the need for explicit pooling strategies such
+as Go's \texttt{sync.Pool}.  Both Rust implementations have zero
+runtime crate dependencies, ensuring complete self-containment and
+reproducibility.
 
 Both Rust implementations share an identical JSON parser and serializer;
 only the \texttt{jcsfloat} digit-generation module differs between them,
