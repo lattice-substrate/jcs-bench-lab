@@ -34,10 +34,18 @@ David~M. Gay.
   1990.
 \newblock AT\&T Bell Laboratories Numerical Analysis Manuscript 90-10.
 
+\bibitem{georges2007statistically}
+Andy Georges, Dries Buytaert, and Lieven Eeckhout.
+\newblock Statistically rigorous java performance evaluation.
+\newblock In {\em Proceedings of the 22nd Annual ACM SIGPLAN Conference on
+  Object-Oriented Programming, Systems, Languages, and Applications (OOPSLA)},
+  pages 57--76. ACM, 2007.
+
 \bibitem{giulietti2022schubfach}
 Raffaello Giulietti.
 \newblock The schubfach way to render doubles, 2022.
-\newblock Technical report.
+\newblock Technical report; reference implementation in OpenJDK
+  (\url{https://github.com/openjdk/jdk/blob/master/src/java.base/share/classes/jdk/internal/math/DoubleToDecimal.java}).
 
 \bibitem{ieee754}
 {IEEE}.
@@ -51,6 +59,11 @@ Junekey Jeon.
 \newblock arXiv preprint; reference implementation and technical report at
   \url{https://github.com/jk-jeon/dragonbox}.
 
+\bibitem{kalibera2013rigorous}
+Tomas Kalibera and Richard Jones.
+\newblock Rigorous benchmarking in reasonable time.
+\newblock {\em ACM SIGPLAN Notices}, 48(11):63--74, 2013.
+
 \bibitem{lemire2021number}
 Daniel Lemire.
 \newblock Number parsing at a gigabyte per second.
@@ -61,6 +74,13 @@ Florian Loitsch.
 \newblock Printing floating-point numbers quickly and accurately with integers.
 \newblock In {\em Proceedings of the ACM SIGPLAN 2010 Conference on Programming
   Language Design and Implementation (PLDI)}, pages 233--243. ACM, 2010.
+
+\bibitem{mytkowicz2009producing}
+Todd Mytkowicz, Amer Diwan, Matthias Hauswirth, and Peter~F. Sweeney.
+\newblock Producing wrong data without doing anything obviously wrong!
+\newblock In {\em Proceedings of the 14th International Conference on
+  Architectural Support for Programming Languages and Operating Systems
+  (ASPLOS)}, pages 265--276. ACM, 2009.
 
 \bibitem{rfc8785}
 Anders Rundgren, Bret Jordan, and Samuel Erdtman.

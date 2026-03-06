@@ -36,11 +36,14 @@
 \end{tikzpicture}
 \caption{Per-iteration latency for \texttt{array-2048} (Rust API
 canonicalize, $n{=}20$ measured iterations after 3~discarded warmup
-iterations).  \schubfach-rs shows residual cache stabilization in
-iterations 1--4; \burgerdybvig-rs is stable from iteration~1.  Both
-reach steady state by iteration~5, confirming that 3~warmup iterations
-are sufficient for most workloads and any residual warmup effect in the
-first few measured iterations does not bias the within-language
-comparison (both implementations share the same harness).}
+iterations).  \texttt{array-2048} is the largest number-dense workload
+in the standard set (98{,}901~bytes, $\nu{=}40\%$); if warmup stabilizes
+here, smaller workloads will stabilize at least as fast.
+\schubfach-rs shows residual cache stabilization in iterations 1--4;
+\burgerdybvig-rs is stable from iteration~1.  Both reach steady state by
+iteration~5, confirming that 3~warmup iterations are sufficient and any
+residual warmup effect in the first few measured iterations does not bias
+the within-language comparison (both implementations share the same
+harness).}
 \label{fig:warmup-validation}
 \end{figure}

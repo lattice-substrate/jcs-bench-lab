@@ -27,8 +27,8 @@ a two-stage process (formerly \S7.1.12.1 in older editions):
 \item \textbf{Formatting}: apply branch logic based on the relationship
       between $k$ (digit count) and $n$ (decimal exponent position) to
       produce the final string.  Key thresholds: $n \geq 1 \land n \leq
-      21$ produces fixed notation; $n > 21$ or $n \leq 0$ with $|n| <
-      certain bounds$ produces exponential notation.
+      21$ produces fixed notation; $n \leq 0$ or $n > 21$ produces
+      exponential notation.
 \end{enumerate}
 
 \subsection{IEEE 754 and Shortest Representation}

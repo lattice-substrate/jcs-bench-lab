@@ -82,7 +82,14 @@ floating-point formatting requirement with the precision of
 \subsection{Benchmark Methodology}
 
 Our conformance-before-performance approach draws on the principle that
-correctness is a prerequisite for meaningful performance comparison, as
-advocated in systems benchmarking methodology literature.  The use of
-permutation tests and bootstrap confidence intervals follows modern
-statistical practice for performance evaluation.
+correctness is a prerequisite for meaningful performance comparison.
+Georges et al.~\cite{georges2007statistically} established rigorous
+statistical methods for Java performance evaluation, advocating
+confidence intervals and effect sizes over single-point estimates.
+Mytkowicz et al.~\cite{mytkowicz2009producing} demonstrated that
+measurement bias (link order, environment size) can reverse performance
+conclusions, motivating our randomized task ordering and environment
+documentation.  Kalibera and Jones~\cite{kalibera2013rigorous} formalized
+the analysis of multi-level experimental designs in benchmarking.  Our
+use of permutation tests and BCa bootstrap confidence intervals follows
+this modern statistical practice for performance evaluation.

@@ -9,7 +9,8 @@ function), number-dense inputs (e.g., \texttt{array-2048},
 \texttt{large}, \texttt{medium}) show 1.3--1.7$\times$ speedup due
 to zero heap allocation in the digit-generation path.  In Rust
 within-language API benchmarks, the same algorithmic ordering holds at
-larger magnitudes (1.9--4.1$\times$ on the same workloads), confirming
+larger magnitudes (1.6--4.2$\times$ on the same workloads, excluding the
+two extreme outliers discussed in \S\ref{sec:discussion}), confirming
 the advantage is algorithmic.  Deeply-nested
 workloads (\texttt{deep}, \texttt{deep-64}) contain numbers but show
 ${\approx}1.0\times$ because JSON structural parsing and key sorting
@@ -26,9 +27,10 @@ workloads ($>$70\% number values) show the full algorithmic advantage.
 
 \input{figures/number-density-speedup}
 
-In end-to-end Go CLI measurement, 14 of 38 within-Go comparisons reach
-BH-corrected significance, with speedups of 1.2--1.6$\times$.
-The remaining 24~comparisons show no
+In end-to-end Go CLI measurement, 12 of 38 within-Go comparisons
+(19~canonicalize + 19~verify) reach BH-corrected significance, with
+speedups of 1.2--1.5$\times$.
+The remaining 26~comparisons show no
 statistically significant difference because estimated process startup
 overhead (approximately 1.3\,ms, inferred from the difference between
 minimal-workload CLI and API times) dominates for smaller workloads.
@@ -46,7 +48,7 @@ algorithmic signal in end-to-end measurement.  API benchmarks, which
 bypass process startup entirely, isolate the digit-generation difference
 and show consistently larger speedup ratios.  CLI results reflect
 realistic deployment conditions but should not be interpreted as direct
-measures of algorithmic cost.  Note that the 24~non-significant Go CLI
+measures of algorithmic cost.  Note that the 26~non-significant Go CLI
 comparisons may include both true nulls and effects below the MDE
 threshold (14--24\%); the current sample size cannot distinguish these
 cases.
@@ -70,7 +72,10 @@ mechanism underlying the observed speedup.
 Two workloads show unusually large speedup ratios in Rust API
 benchmarks: \texttt{numeric-boundary} (11.5$\times$ within-Rust, CI
 [11.4, 11.8]) and \texttt{number-heavy} (9.1$\times$, CI [7.9, 9.9]),
-compared to 1.5$\times$ in Go for both.  These workloads consist
+compared to 1.5$\times$ in Go for both.  Because these are
+\emph{within-Rust} comparisons (same harness on both sides), they are
+unaffected by the cross-language measurement granularity asymmetry
+discussed in \S\ref{sec:methodology}.  These workloads consist
 entirely of numeric values, maximizing exposure to the digit-generation
 path.  The Rust \burgerdybvig implementation uses a lazily-initialized
 power-of-ten cache (\texttt{OnceLock<Vec<BigInt>>}); although the
@@ -95,10 +100,14 @@ speedup ratios.
 
 \subsection{Profile-Level Analysis}
 
-CPU profiling confirms that digit generation consumes 15--40\% of total
-canonicalization time depending on workload number density.  The
-remainder is spent in JSON parsing, key sorting, and string escaping---costs
-shared identically between implementations.
+Preliminary CPU profiling (via Go's \texttt{pprof}) suggests that digit
+generation accounts for approximately 15--40\% of total canonicalization
+time depending on workload number density.  On \texttt{array-2048}
+($\nu = 40\%$), digit generation accounts for $\approx$35\% of CPU time
+in the \burgerdybvig path; on \texttt{deep} ($\nu = 0\%$), it drops to
+$<$2\%.  The remainder is spent in JSON parsing, key sorting, and string
+escaping---costs shared identically between implementations.  Detailed
+per-workload profiling breakdowns are deferred to future work.
 
 \subsection{Practical Implications}
 
@@ -155,7 +164,10 @@ $\text{RoR} > 1$ indicates that the \schubfach advantage is amplified in
 Rust.  On number-dense workloads, $\text{RoR}$ consistently exceeds 1
 (typically 1.3--2.0$\times$), reflecting the larger allocation cost
 differential in Rust where \texttt{num-bigint} lacks Go's
-\texttt{sync.Pool} amortization.  This is consistent with the
+\texttt{sync.Pool} amortization.  The sole exception is
+\texttt{escaped-key-order} ($\text{RoR} = 0.97$), a very small workload
+(18~bytes, 3~values) where non-numeric overhead dominates in both
+languages, leaving little room for differential amplification.  This is consistent with the
 mechanistic explanation: both languages show the algorithmic advantage,
 but Rust amplifies it because its multiprecision path has higher
 per-operation allocation cost.  Readers should interpret the RoR as

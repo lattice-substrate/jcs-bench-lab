@@ -9,6 +9,13 @@ We maintain four implementations with a common CLI ABI:
 \item \texttt{impl-json-canon-rs} (Rust): \burgerdybvig-aligned Rust path.
 \end{itemize}
 
+All four implementations contain their own digit-generation code and do
+not delegate to the standard library's float-to-string routines (e.g.,
+Go's \texttt{strconv.FormatFloat} or Rust's \texttt{std::fmt}).  This is
+necessary because the standard routines do not implement \ecma formatting
+policy.  Consequently, Go~1.26's adoption of Dragonbox for \texttt{strconv}
+does not affect our measurements.
+
 The lab harness treats each implementation as a black-box canonicalizer
 with identical CLI contracts (\texttt{canonicalize}, \texttt{verify},
 exit-code policy, and error-class expectations).  This preserves
