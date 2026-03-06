@@ -1,0 +1,35 @@
+{
+  "generated_at_utc": "2026-03-06T07:04:52Z",
+  "vector_files": [
+    "golden_vectors.csv",
+    "golden_stress_vectors.csv"
+  ],
+  "total_vectors": 286362,
+  "engines": {
+    "jsc": {
+      "engine": "jsc",
+      "version": "JavaScriptCore 2.50.4-0ubuntu0.24.04.1",
+      "total": 286362,
+      "passed": 286362,
+      "failed": 0,
+      "divergences": []
+    },
+    "spidermonkey": {
+      "engine": "spidermonkey",
+      "version": "JavaScript-C115.10.0",
+      "total": 286362,
+      "passed": 286362,
+      "failed": 0,
+      "divergences": []
+    },
+    "v8": {
+      "engine": "v8",
+      "version": "v23.3.0 V8=12.9.202.28-node.11",
+      "total": 286362,
+      "passed": 286362,
+      "failed": 0,
+      "divergences": []
+    }
+  },
+  "cross_engine_agreement": true
+}

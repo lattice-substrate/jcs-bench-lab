@@ -654,6 +654,38 @@ func runGenerateWorkloads() error {
 		})
 	}
 
+	// Discover pre-existing valid workload files not in the fixtures map.
+	validDir := filepath.Join(root, "workloads", "valid")
+	canonDir := filepath.Join(root, "workloads", "canonical")
+	preExistingTags := preExistingWorkloadTags()
+	entries, _ := os.ReadDir(validDir)
+	discovered := 0
+	for _, e := range entries {
+		if e.IsDir() || !strings.HasSuffix(e.Name(), ".json") {
+			continue
+		}
+		name := strings.TrimSuffix(e.Name(), ".json")
+		if _, ok := valid[name]; ok {
+			continue // already in fixtures
+		}
+		canonFile := filepath.Join(canonDir, e.Name())
+		if _, err := os.Stat(canonFile); err != nil {
+			continue // no matching canonical file
+		}
+		validFile := filepath.Join(validDir, e.Name())
+		info, _ := os.Stat(validFile)
+		tags := preExistingTags[name]
+		manifest = append(manifest, workload{
+			Name:          name,
+			Class:         "valid",
+			Path:          filepath.ToSlash(filepath.Join("workloads", "valid", e.Name())),
+			CanonicalPath: filepath.ToSlash(filepath.Join("workloads", "canonical", e.Name())),
+			Bytes:         int(info.Size()),
+			Tags:          tags,
+		})
+		discovered++
+	}
+
 	sort.Slice(manifest, func(i, j int) bool {
 		if manifest[i].Class == manifest[j].Class {
 			return manifest[i].Name < manifest[j].Name
@@ -668,7 +700,8 @@ func runGenerateWorkloads() error {
 	if err := os.WriteFile(filepath.Join(root, "workloads", "manifest.json"), m, 0o644); err != nil {
 		return err
 	}
-	fmt.Printf("generated workloads\n- %d valid\n- %d invalid\n", len(valid), len(invalid))
+	fmt.Printf("generated workloads\n- %d valid (%d from fixtures, %d discovered)\n- %d invalid\n",
+		len(valid)+discovered, len(valid), discovered, len(invalid))
 	return nil
 }
 
@@ -765,6 +798,21 @@ func defaultInvalidFixtures() map[string]workloadFixture {
 		"nan-literal":             {Input: []byte(`{"n":NaN}`), Tags: []string{"numeric"}},
 		"inf-literal":             {Input: []byte(`{"n":Infinity}`), Tags: []string{"numeric"}},
 		"raw-control-char":        {Input: append([]byte(`{"s":"`), append([]byte{0x01}, []byte(`"}`)...)...), Tags: []string{"unicode", "control"}},
+	}
+}
+
+func preExistingWorkloadTags() map[string][]string {
+	return map[string][]string{
+		"deep":            {"depth", "nested"},
+		"large":           {"large", "stress"},
+		"medium":          {"mixed", "realistic"},
+		"mixed-prod":      {"mixed", "realistic"},
+		"number-heavy":    {"numeric", "stress"},
+		"prod-geojson":    {"production", "geojson", "numeric"},
+		"prod-k8s-pod":    {"production", "kubernetes", "config"},
+		"prod-package-meta": {"production", "npm", "metadata"},
+		"prod-cloudevents": {"production", "cloudevents", "numeric"},
+		"prod-openapi":    {"production", "openapi", "schema"},
 	}
 }
 

@@ -193,7 +193,8 @@
     "canonical_path": "workloads/canonical/deep.json",
     "bytes": 1158,
     "tags": [
-      "depth"
+      "depth",
+      "nested"
     ]
   },
   {
@@ -225,8 +226,7 @@
     "bytes": 463537,
     "tags": [
       "large",
-      "stress",
-      "numeric"
+      "stress"
     ]
   },
   {
@@ -248,7 +248,8 @@
     "canonical_path": "workloads/canonical/medium.json",
     "bytes": 13740,
     "tags": [
-      "numeric"
+      "mixed",
+      "realistic"
     ]
   },
   {
@@ -259,7 +260,7 @@
     "bytes": 5653,
     "tags": [
       "mixed",
-      "numeric"
+      "realistic"
     ]
   },
   {
@@ -281,7 +282,7 @@
     "bytes": 140,
     "tags": [
       "numeric",
-      "ieee754"
+      "stress"
     ]
   },
   {
@@ -293,6 +294,66 @@
     "tags": [
       "numeric",
       "ieee754"
+    ]
+  },
+  {
+    "name": "prod-cloudevents",
+    "class": "valid",
+    "path": "workloads/valid/prod-cloudevents.json",
+    "canonical_path": "workloads/canonical/prod-cloudevents.json",
+    "bytes": 1520,
+    "tags": [
+      "production",
+      "cloudevents",
+      "numeric"
+    ]
+  },
+  {
+    "name": "prod-geojson",
+    "class": "valid",
+    "path": "workloads/valid/prod-geojson.json",
+    "canonical_path": "workloads/canonical/prod-geojson.json",
+    "bytes": 7006,
+    "tags": [
+      "production",
+      "geojson",
+      "numeric"
+    ]
+  },
+  {
+    "name": "prod-k8s-pod",
+    "class": "valid",
+    "path": "workloads/valid/prod-k8s-pod.json",
+    "canonical_path": "workloads/canonical/prod-k8s-pod.json",
+    "bytes": 3046,
+    "tags": [
+      "production",
+      "kubernetes",
+      "config"
+    ]
+  },
+  {
+    "name": "prod-openapi",
+    "class": "valid",
+    "path": "workloads/valid/prod-openapi.json",
+    "canonical_path": "workloads/canonical/prod-openapi.json",
+    "bytes": 4128,
+    "tags": [
+      "production",
+      "openapi",
+      "schema"
+    ]
+  },
+  {
+    "name": "prod-package-meta",
+    "class": "valid",
+    "path": "workloads/valid/prod-package-meta.json",
+    "canonical_path": "workloads/canonical/prod-package-meta.json",
+    "bytes": 1863,
+    "tags": [
+      "production",
+      "npm",
+      "metadata"
     ]
   },
   {

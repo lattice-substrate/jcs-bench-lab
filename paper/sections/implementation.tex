@@ -42,14 +42,13 @@ All four Rust implementations use native \texttt{u128} arithmetic
 for the 128-bit intermediate products required by the fixed-width
 algorithms, eliminating the need for compiler intrinsics or multi-word
 emulation.
-The Rust \burgerdybvig implementation uses a custom \texttt{BigUint}
-(approximately 350~lines of schoolbook multiprecision arithmetic with
-Knuth Algorithm~D division) with zero external dependencies; buffer
-lifecycle is managed by Rust's RAII ownership model (deterministic
-\texttt{Drop}), removing the need for explicit pooling strategies such
-as Go's \texttt{sync.Pool}.  All Rust implementations have zero
-runtime crate dependencies, ensuring complete self-containment and
-reproducibility.
+The Rust \burgerdybvig implementation uses the \texttt{num-bigint}
+crate (v0.4), which provides Karatsuba multiplication for large
+operands---comparable in optimization level to Go's
+\texttt{math/big.Int} with its assembly-accelerated x86-64 inner
+loops.  Buffer lifecycle is managed by Rust's RAII ownership model
+(deterministic \texttt{Drop}), removing the need for explicit pooling
+strategies such as Go's \texttt{sync.Pool}.
 
 All Rust implementations share an identical JSON parser and serializer;
 only the \texttt{jcsfloat} digit-generation module differs between them,

@@ -84,11 +84,12 @@ Because these are \emph{within-Rust} comparisons (same harness on both
 sides), they are unaffected by the cross-language measurement granularity
 asymmetry discussed in \S\ref{sec:methodology}.  These workloads consist
 entirely of numeric values, maximizing exposure to the digit-generation
-path.  The Rust \burgerdybvig implementation uses a lazily-initialized
+path.  The Rust \burgerdybvig implementation uses the \texttt{num-bigint}
+crate (Karatsuba multiplication) with a lazily-initialized
 power-of-ten cache (\texttt{OnceLock<Vec<BigUint>>}); although the
 harness discards 3~warmup iterations to amortize first-invocation
 costs, the cache-warmed steady-state cost of
-\texttt{BigUint} schoolbook multiprecision arithmetic remains
+multiprecision arithmetic remains
 substantially higher than the fixed-width implementations'
 compile-time constant lookup table.  The tight confidence intervals
 and low MDEs (2--3\%) confirm these are genuine algorithmic
@@ -182,7 +183,7 @@ $\text{RoR} = R_\text{Rust}/R_\text{Go}$.
 $\text{RoR} > 1$ indicates that the fixed-width advantage is amplified in
 Rust.  On number-dense workloads, $\text{RoR}$ consistently exceeds 1
 (typically 1.3--2.0$\times$), reflecting the larger allocation cost
-differential in Rust where the custom \texttt{BigUint} lacks Go's
+differential in Rust where the \texttt{num-bigint}-based path lacks Go's
 \texttt{sync.Pool} amortization.  Readers should interpret the RoR as
 descriptive evidence of interaction magnitude, not a formal statistical
 test of interaction significance.
@@ -209,7 +210,28 @@ byte and allocation counts in the same format as Go's
 Rust fixed-width implementations allocate minimally (e.g., 1{,}036~B/op,
 24~allocs/op on \texttt{numeric-boundary}) while Rust-\burgerdybvig
 allocates substantially more (25{,}204~B/op, 470~allocs/op on the same
-workload) due to \texttt{BigUint} multiprecision arithmetic.  The
+workload) due to \texttt{num-bigint} multiprecision arithmetic.  The
 $24.3\times$ allocation byte ratio directly explains the
 ${\approx}9\times$ speedup: allocation and initialization cost dominates
 the multiprecision path.
+
+\subsection{Comparison with Isolation Benchmarks}
+
+Champagne Gareau and Lemire~\cite{champagnegareau2026} report
+substantially larger speedup ratios for fixed-width algorithms over
+Dragon4 in C++ isolation benchmarks, where only the digit-generation
+function is timed.  The difference from our pipeline ratios is
+explained by Amdahl's Law: if digit generation accounts for fraction
+$P$ of total pipeline cost and provides speedup $S$ in isolation,
+the pipeline-level speedup is $1/(1 - P + P/S)$.  Our profiling data
+(\S\ref{sec:discussion}, Profile-Level Analysis) shows $P \approx 0.35$
+on number-dense workloads.  With a representative isolation speedup of
+$S = 5\times$, Amdahl's Law predicts a pipeline speedup of
+$1/(0.65 + 0.07) = 1.39\times$, consistent with our observed
+1.4--1.8$\times$ Go API ratios.  The remaining gap between prediction
+and observation reflects differences in allocation overhead (our
+pipeline includes JSON parsing and serialization, which share the
+allocator with digit generation) and cache effects absent from
+isolation benchmarks.  This convergence confirms that our pipeline
+results and their isolation results measure the same underlying
+algorithmic advantage at different levels of system integration.

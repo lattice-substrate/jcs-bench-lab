@@ -1,0 +1,48 @@
+% Supplementary Materials for:
+% Fixed-Width vs. Multiprecision Digit Generation for JSON Canonicalization
+\documentclass[10pt]{article}
+
+\usepackage[margin=0.75in]{geometry}
+\usepackage{booktabs}
+\usepackage{xspace}
+\usepackage{hyperref}
+\usepackage{pdflscape}
+\usepackage{longtable}
+
+\newcommand{\schubfach}{Schubfach\xspace}
+\newcommand{\burgerdybvig}{Burger--Dybvig\xspace}
+\newcommand{\ryualg}{Ry\=u\xspace}
+\newcommand{\dragonbox}{Dragonbox\xspace}
+\newcommand{\ecma}{ECMA-262\xspace}
+\newcommand{\rfcjcs}{RFC~8785\xspace}
+
+\begin{document}
+
+\title{Supplementary Materials:\\Fixed-Width vs.\ Multiprecision Digit Generation\\for JSON Canonicalization}
+\author{Mark Lenhardt}
+\date{}
+\maketitle
+
+\noindent This document contains the complete benchmark data tables
+referenced in the main paper.  Summary tables and exemplar comparisons
+appear in the main text; the full data are provided here for
+reproducibility.
+
+\emph{Note:} Rust allocation data (B/op, allocs/op) is measured via a
+counting global allocator that intercepts all heap allocations (see
+main paper, \S6 Discussion).
+
+\begin{landscape}
+
+\section{Full API Benchmarks}
+\input{../tables/api-benchmarks}
+
+\section{Full CLI Benchmarks}
+\input{../tables/cli-benchmarks}
+
+\section{Full Statistical Comparisons}
+\input{../tables/stats-comparisons}
+
+\end{landscape}
+
+\end{document}

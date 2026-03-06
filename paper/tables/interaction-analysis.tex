@@ -7,25 +7,30 @@
 \toprule
 Workload & $R_\text{Go}$ & $R_\text{Rust}$ & RoR \\
 \midrule
-array-2048 & 1.64$\times$ & 2.27$\times$ & 1.38 \\
-array-256 & 1.57$\times$ & 2.30$\times$ & 1.46 \\
-canonical-minimal & 1.49$\times$ & 2.10$\times$ & 1.41 \\
-control-escapes & 1.01$\times$ & 1.02$\times$ & 1.00 \\
-deep-64 & 1.00$\times$ & 1.05$\times$ & 1.04 \\
-deep & 1.00$\times$ & 1.04$\times$ & 1.04 \\
-escaped-key-order & 1.59$\times$ & 2.55$\times$ & 1.60 \\
-large & 1.77$\times$ & 3.28$\times$ & 1.86 \\
-long-string & 1.01$\times$ & 1.05$\times$ & 1.04 \\
-medium & 1.75$\times$ & 2.91$\times$ & 1.66 \\
-mixed-prod & 1.36$\times$ & 1.78$\times$ & 1.31 \\
-nested-mixed & 1.42$\times$ & 1.97$\times$ & 1.39 \\
-number-heavy & 1.57$\times$ & 8.23$\times$ & 5.25 \\
-numeric-boundary & 1.50$\times$ & 9.33$\times$ & 6.23 \\
-rfc-key-sorting & 1.03$\times$ & 1.02$\times$ & 0.99 \\
-small & 1.36$\times$ & 1.75$\times$ & 1.29 \\
-surrogate-pair & 1.02$\times$ & 1.01$\times$ & 1.00 \\
-unicode & 1.00$\times$ & 1.04$\times$ & 1.04 \\
-verify-whitespace & 1.73$\times$ & 2.96$\times$ & 1.71 \\
+array-2048 & 1.62$\times$ & 2.45$\times$ & 1.51 \\
+array-256 & 1.56$\times$ & 2.37$\times$ & 1.52 \\
+canonical-minimal & 1.50$\times$ & 2.48$\times$ & 1.65 \\
+control-escapes & 1.00$\times$ & 1.03$\times$ & 1.03 \\
+deep-64 & 1.01$\times$ & 1.05$\times$ & 1.04 \\
+deep & 1.01$\times$ & 1.05$\times$ & 1.04 \\
+escaped-key-order & 1.59$\times$ & 2.66$\times$ & 1.67 \\
+large & 1.76$\times$ & 3.64$\times$ & 2.07 \\
+long-string & 1.01$\times$ & 1.04$\times$ & 1.03 \\
+medium & 1.73$\times$ & 3.24$\times$ & 1.87 \\
+mixed-prod & 1.33$\times$ & 2.03$\times$ & 1.52 \\
+nested-mixed & 1.40$\times$ & 2.07$\times$ & 1.48 \\
+number-heavy & 1.56$\times$ & 9.12$\times$ & 5.84 \\
+numeric-boundary & 1.50$\times$ & 10.37$\times$ & 6.92 \\
+prod-cloudevents & 1.35$\times$ & 2.12$\times$ & 1.57 \\
+prod-geojson & 2.32$\times$ & 6.18$\times$ & 2.67 \\
+prod-k8s-pod & 1.11$\times$ & 1.33$\times$ & 1.19 \\
+prod-openapi & 1.06$\times$ & 1.22$\times$ & 1.16 \\
+prod-package-meta & 1.10$\times$ & 1.26$\times$ & 1.14 \\
+rfc-key-sorting & 1.01$\times$ & 1.01$\times$ & 1.01 \\
+small & 1.35$\times$ & 1.82$\times$ & 1.34 \\
+surrogate-pair & 1.01$\times$ & 1.00$\times$ & 0.99 \\
+unicode & 1.01$\times$ & 1.01$\times$ & 1.00 \\
+verify-whitespace & 1.71$\times$ & 3.17$\times$ & 1.85 \\
 \bottomrule
 \multicolumn{4}{l}{\footnotesize $R$ = \schubfach/\burgerdybvig speedup ratio. RoR = $R_\text{Rust}/R_\text{Go}$.} \\
 \multicolumn{4}{l}{\footnotesize RoR $>$ 1 indicates \schubfach advantage is larger in Rust.} \\

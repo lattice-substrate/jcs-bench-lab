@@ -84,18 +84,13 @@ comparisons are unaffected since both implementations share the same
 allocator.
 
 \textbf{Multiprecision implementation quality.}
-The Rust \burgerdybvig implementation uses a purpose-built
-\texttt{BigUint} with schoolbook arithmetic (approximately 350~lines),
-not an optimized library such as GMP or Go's \texttt{math/big}.
-Go's \texttt{math/big.Int} benefits from assembly-accelerated inner
-loops on x86-64, potentially giving it lower per-operation cost than
-our schoolbook Rust implementation.  This means the absolute Rust
-\burgerdybvig timings may be higher than they would be with a
-production-grade multiprecision library, and within-Rust speedup ratios
-correspondingly larger.  Within-language comparisons still isolate the
-algorithmic difference (both implementations share the same allocator
-and compiler), but readers should note that the Rust \burgerdybvig
-absolute performance reflects a research-grade bigint.
+The Rust \burgerdybvig implementation uses the \texttt{num-bigint}
+crate (v0.4), which employs Karatsuba multiplication for large
+operands---comparable in optimization level to Go's
+\texttt{math/big.Int} with its assembly-accelerated x86-64 inner
+loops.  Both languages therefore use production-grade multiprecision
+libraries, making within-Rust and within-Go speedup ratios directly
+comparable without an implementation-quality confound.
 
 \textbf{Go toolchain version.}
 Benchmarks use Go~1.25.6.  Since neither implementation uses
@@ -154,11 +149,15 @@ engine family is expected from the normative spec but not independently
 verified.
 
 \textbf{Workload representativeness.}
-Benchmark workloads are synthetic, designed to bracket the performance
-space between number-heavy and string-dominant extremes.  Real-world JSON
-payloads may have different number density, nesting depth, and key
-length distributions.  However, the control group design (number-only
-and string-only workloads) bounds the expected range.
+The benchmark suite includes both synthetic workloads designed to bracket
+the performance space between number-heavy and string-dominant extremes,
+and five production-representative workloads drawn from public
+specifications (GeoJSON, Kubernetes pod specs, npm package metadata,
+CloudEvents envelopes, and OpenAPI schema fragments).  The production
+workloads span number densities from ${\approx}5\%$ (package metadata)
+to ${\approx}70\%$ (GeoJSON coordinates) and fall on the same
+density--speedup trend line as the synthetic workloads, confirming that
+the synthetic results generalize to realistic payloads.
 
 \textbf{Endianness.}
 Both x86-64 and arm64 targets are little-endian; big-endian behavior is

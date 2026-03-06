@@ -7,8 +7,8 @@ Our methodology enforces a strict ordering: conformance verification
 must pass before any performance data is collected.  This prevents
 measuring the speed of incorrect implementations.
 
-\textbf{Conformance gate:} 87 structural test cases per implementation
-(696 total across 8~implementations) covering key ordering, Unicode
+\textbf{Conformance gate:} 97 structural test cases per implementation
+(776 total across 8~implementations) covering key ordering, Unicode
 handling, numeric formatting, escape sequences, depth limits, and
 invalid input rejection.  All implementations must produce byte-identical
 output (verified via SHA-256) and identical error classification.
@@ -53,11 +53,10 @@ effects while controlling for algorithm.  Directional consistency across
 within-language pairs in both Go and Rust provides evidence that
 algorithmic differences are not language-specific, though this is not a
 formal interaction test (see \S\ref{sec:discussion}).  The Rust
-\burgerdybvig implementation uses a custom \texttt{BigUint} (schoolbook
-multiprecision arithmetic, approximately 350~lines of Rust with zero
-external dependencies, heap-allocated with RAII lifecycle), making
-it a structurally analogous but runtime-different counterpart to the Go
-\texttt{math/big}-based path.  Rust builds use release configuration
+\burgerdybvig implementation uses the \texttt{num-bigint} crate (v0.4,
+Karatsuba multiplication for large operands, heap-allocated with RAII
+lifecycle), providing a production-grade multiprecision library
+comparable to the Go \texttt{math/big}-based path.  Rust builds use release configuration
 (\texttt{opt-level=3}, \texttt{lto=true}, \texttt{codegen-units=1}) to
 align optimization policy with production benchmarking practice.
 
@@ -127,7 +126,7 @@ All comparisons use:
       the true MDE for small $N$ (by ${\approx}3$--6\% compared to a
       $t$-based calculation at $N{=}10$--15).
 \item Benjamini-Hochberg false discovery rate (FDR) control at $q = 0.05$
-      across all 1{,}294~comparisons (608~CLI end-to-end + 686~API).  BH requires independence or positive
+      across all 1{,}644~comparisons.  BH requires independence or positive
       regression dependency (PRDS); comparisons on the same workload across
       different pairs are positively correlated, satisfying PRDS.  We report
       both raw and BH-adjusted $p$-values.

@@ -7,22 +7,22 @@
 \toprule
 Impl & Workload & $n$ & Mean (ns/op) & Std Dev & CV (\%) \\
 \midrule
-schubfach & number-heavy & 10 & 13860 & 162 & 1.2 \\
-schubfach & numeric-boundary & 10 & 12714 & 103 & 0.8 \\
-json-canon & number-heavy & 10 & 21718 & 198 & 0.9 \\
-json-canon & numeric-boundary & 10 & 19052 & 191 & 1.0 \\
-ryu & number-heavy & 10 & 13898 & 140 & 1.0 \\
-ryu & numeric-boundary & 10 & 12702 & 159 & 1.3 \\
-dragonbox & number-heavy & 10 & 13771 & 118 & 0.9 \\
-dragonbox & numeric-boundary & 10 & 12666 & 77 & 0.6 \\
-schubfach-rs & number-heavy & 10 & 1437 & 31 & 2.1 \\
-schubfach-rs & numeric-boundary & 10 & 980 & 32 & 3.3 \\
-json-canon-rs & number-heavy & 10 & 11822 & 134 & 1.1 \\
-json-canon-rs & numeric-boundary & 10 & 9141 & 56 & 0.6 \\
-ryu-rs & number-heavy & 10 & 1480 & 52 & 3.5 \\
-ryu-rs & numeric-boundary & 10 & 1000 & 44 & 4.4 \\
-dragonbox-rs & number-heavy & 10 & 1433 & 32 & 2.2 \\
-dragonbox-rs & numeric-boundary & 10 & 966 & 31 & 3.2 \\
+schubfach & number-heavy & 10 & 13778 & 122 & 0.9 \\
+schubfach & numeric-boundary & 10 & 12653 & 92 & 0.7 \\
+json-canon & number-heavy & 10 & 21535 & 251 & 1.2 \\
+json-canon & numeric-boundary & 10 & 18967 & 239 & 1.3 \\
+ryu & number-heavy & 10 & 13836 & 102 & 0.7 \\
+ryu & numeric-boundary & 10 & 12627 & 84 & 0.7 \\
+dragonbox & number-heavy & 10 & 13854 & 120 & 0.9 \\
+dragonbox & numeric-boundary & 10 & 12670 & 117 & 0.9 \\
+schubfach-rs & number-heavy & 10 & 1457 & 25 & 1.7 \\
+schubfach-rs & numeric-boundary & 10 & 988 & 21 & 2.1 \\
+json-canon-rs & number-heavy & 10 & 13291 & 125 & 0.9 \\
+json-canon-rs & numeric-boundary & 10 & 10249 & 63 & 0.6 \\
+ryu-rs & number-heavy & 10 & 1399 & 37 & 2.6 \\
+ryu-rs & numeric-boundary & 10 & 960 & 21 & 2.2 \\
+dragonbox-rs & number-heavy & 10 & 1429 & 30 & 2.1 \\
+dragonbox-rs & numeric-boundary & 10 & 965 & 27 & 2.8 \\
 \bottomrule
 \multicolumn{6}{l}{\footnotesize Low CV on most rows confirms steady-state measurement. Higher CV on very fast Rust rows} \\
 \multicolumn{6}{l}{\footnotesize reflects nanosecond-scale measurement granularity, not warmup instability.} \\

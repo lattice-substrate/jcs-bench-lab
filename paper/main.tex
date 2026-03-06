@@ -49,11 +49,11 @@ canonicalization pipeline, implemented in both Go and Rust
 language/runtime effects.
 Our methodology gates performance measurement on conformance: only
 implementations passing 286{,}362 oracle vectors (generated from V8
-and validated against SpiderMonkey and JavaScriptCore) and 696
-structural conformance cases (87 per
+and validated against SpiderMonkey and JavaScriptCore) and 776
+structural conformance cases (97 per
 implementation $\times$ 8~implementations) proceed to benchmarking.
 Using permutation tests, BCa bootstrap confidence intervals, and
-Benjamini--Hochberg FDR correction across 1{,}294 comparisons
+Benjamini--Hochberg FDR correction across 1{,}644 comparisons
 (16~pairs $\times$ workloads/modes), we find that all three fixed-width
 algorithms perform within 1--8\% of each other across both languages,
 while each is 1.4--1.8$\times$ faster than \burgerdybvig on
@@ -90,8 +90,11 @@ All data, software, and oracle vectors are freely available online.
 The benchmark infrastructure, all eight implementations, workload manifests,
 and oracle generation scripts are available at the accompanying
 repository.\footnote{Repository URL and Zenodo DOI to be inserted for
-camera-ready version.}  Oracle vector checksums (SHA-256) are documented in
-\texttt{PROVENANCE.json} files accompanying each implementation.
+camera-ready version.}  Complete benchmark tables (full API benchmarks,
+full CLI benchmarks, and all 1{,}644 statistical comparisons across
+16~pairs) are provided in the supplementary materials.  Oracle vector
+checksums (SHA-256) are documented in \texttt{PROVENANCE.json} files
+accompanying each implementation.
 
 \section*{Author Contributions}
 

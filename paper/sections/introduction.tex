@@ -9,6 +9,20 @@ identically to the output of \ecma \texttt{Number::toString}~\cite{ecma262},
 which specifies shortest-representation formatting under roundTiesToEven
 semantics.
 
+Several deployment contexts place canonicalization on the critical path.
+In high-frequency signature verification, every document must be
+canonicalized before its signature can be checked, making formatting
+throughput a direct bottleneck.  Content-addressed storage systems hash
+the canonical form at both ingestion and retrieval, so canonicalization
+cost scales linearly with object throughput.  Distributed consensus
+protocols require byte-identical serialization for state-transition
+agreement, invoking canonicalization on every proposal and vote.  In
+each scenario, a constant-factor improvement in the formatting stage
+translates directly to throughput gains: the 1.4--1.8$\times$ speedup
+we measure on number-dense payloads corresponds to freeing
+approximately 24\% of a CPU core at 1{,}000 canonicalizations per
+second on a representative 14\,KB workload.
+
 Two families of algorithms can satisfy this requirement: multiprecision
 arithmetic approaches exemplified by \burgerdybvig~\cite{burger1996printing},
 and fixed-width integer approaches exemplified by
@@ -34,7 +48,7 @@ This paper makes three contributions:
 
 \item A benchmark methodology that gates performance measurement on
       conformance verification: implementations must pass 286{,}362
-      oracle vectors and 696 structural conformance cases before timing
+      oracle vectors and 776 structural conformance cases before timing
       data is collected.  We document noise floors and minimum observable
       effect sizes for all comparisons.
 

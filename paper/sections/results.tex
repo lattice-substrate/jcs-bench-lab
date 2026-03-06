@@ -7,8 +7,8 @@
 \subsection{Conformance}
 
 All eight implementations (Go and Rust $\times$ \schubfach, \ryualg,
-\dragonbox, and \burgerdybvig) pass the full conformance matrix: 696 total
-cases (87~structural tests $\times$ 8~implementations, 0~failures).
+\dragonbox, and \burgerdybvig) pass the full conformance matrix: 776 total
+cases (97~structural tests $\times$ 8~implementations, 0~failures).
 Output SHA-256 digests are byte-identical across all implementations for
 valid inputs.
 
@@ -71,15 +71,15 @@ Appendix~\ref{sec:appendix-tables}.
 
 Table~\ref{tab:stats-summary} presents the within-language CLI comparisons
 (canonicalize mode) with BH-corrected $p$-values.  The full
-1{,}294-comparison statistical report appears in
-Appendix~\ref{sec:appendix-tables}.
+1{,}644-comparison statistical report appears in
+Appendix~\ref{sec:appendix-tables} (exemplar) and the supplementary materials (complete).
 
 \input{tables/stats-summary}
 
 \subsection{Cross-Language Validation}
 
-All eight implementations pass the full conformance matrix (696 total
-cases: 87~structural tests $\times$ 8~implementations, 0~failures) and
+All eight implementations pass the full conformance matrix (776 total
+cases: 97~structural tests $\times$ 8~implementations, 0~failures) and
 produce byte-identical output on all oracle vectors.  2{,}000
 differential fuzz cases yield zero cross-implementation divergences.
 
