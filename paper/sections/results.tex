@@ -19,11 +19,15 @@ function, removing process startup and I/O overhead.  These measurements
 most directly reflect the digit-generation performance difference.
 
 Table~\ref{tab:api-summary} summarizes the key API results for the
-within-language algorithm comparisons (canonicalize mode).  Full results
+within-language algorithm comparisons (canonicalize mode).
+Figure~\ref{fig:api-speedup} visualizes the speedup across all shared
+workloads for both language pairs.  Full results
 for all pairs, modes, and workloads appear in
 Appendix~\ref{sec:appendix-tables}.
 
 \input{tables/api-summary}
+
+\input{figures/api-speedup-comparison}
 
 \subsection{CLI Benchmarks}
 
@@ -33,10 +37,14 @@ process startup overhead (approximately 1.3\,ms for Go, 0.5\,ms for Rust)
 dominates for smaller workloads, attenuating the algorithmic signal
 observed in API benchmarks.
 
-Table~\ref{tab:cli-summary} summarizes the key CLI results.  Full
-results appear in Appendix~\ref{sec:appendix-tables}.
+Table~\ref{tab:cli-summary} summarizes the key CLI results.
+Figure~\ref{fig:cli-significance} shows the end-to-end speedup with
+BH-significance markers.  Full results appear in
+Appendix~\ref{sec:appendix-tables}.
 
 \input{tables/cli-summary}
+
+\input{figures/cli-significance}
 
 \subsection{Statistical Comparisons}
 

@@ -1,0 +1,20 @@
+{
+  "generated_at_utc": "2026-03-06T00:18:29Z",
+  "track": "e2e",
+  "seed": 1772756309433042614,
+  "conformance_gate_active": true,
+  "determinism_failures": null,
+  "output_equality_failures": null,
+  "invalid_failure_parity_issues": null,
+  "oracle_mismatches": null,
+  "case_failures": null,
+  "notes": {
+    "cli_modes": "canonicalize on workload input; verify on canonical fixtures for valid cases",
+    "cpu_governor": "performance",
+    "cpu_pin": "disabled",
+    "determinism_rule": "successful runs must produce identical stdout hash",
+    "parity_rule": "invalid inputs must fail consistently across implementations and runs",
+    "randomized_order": "enabled",
+    "track": "e2e"
+  }
+}

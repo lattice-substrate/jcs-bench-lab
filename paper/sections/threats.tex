@@ -50,8 +50,22 @@ theoretically differ on big-endian platforms.
 
 \textbf{CPU core affinity.}
 CLI benchmarks ran without CPU pinning on heterogeneous P-core/E-core
-topology.  Process migration may inflate variance for small workloads
-near the noise floor.  API benchmarks (in-process) are less susceptible.
+topology (8~P-cores at 3.6--5.0\,GHz, 4~E-cores at 2.7--3.8\,GHz).
+Process migration may inflate variance for small workloads near the
+noise floor; an E-core placement could slow a single run by 30--40\%.
+The high MDEs observed for small Go CLI workloads (14--24\%) are
+consistent with this variance source.  API benchmarks (in-process) are
+less susceptible.
+
+\textbf{Sequential run autocorrelation.}
+CLI benchmarks run sequentially on the same machine; consecutive runs
+share CPU thermal state, cache warmth, and potentially TDP-limited
+frequency.  The randomized task order (fixed seed) mitigates systematic
+ordering effects, but thermal coupling between adjacent runs creates
+weak positive autocorrelation that may slightly inflate the effective
+sample size.  Permutation tests are robust to mild non-stationarity but
+assume exchangeability under the null hypothesis; this assumption is
+approximately but not exactly satisfied.
 
 \textbf{Warmup validation.}
 CLI benchmarks discard 3~warmup runs.  Rust API benchmarks discard

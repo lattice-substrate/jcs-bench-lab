@@ -5,6 +5,11 @@ This appendix contains the complete benchmark results.  Summary tables
 appear in the main text (\S\ref{sec:results}); the full data are
 provided here for reproducibility.
 
+\emph{Note:} Rust benchmark rows report \texttt{0~B/op} and
+\texttt{0~allocs/op} because Rust lacks Go-style per-operation allocator
+statistics.  These values mean ``not measured,'' not ``zero
+allocations'' (see \S\ref{sec:discussion}).
+
 \begin{landscape}
 
 \subsection{Full API Benchmarks}
