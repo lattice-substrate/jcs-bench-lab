@@ -41,22 +41,22 @@
 \begin{abstract}
 Benchmarks that measure only speed are insufficient when the code
 under test must satisfy a formatting specification: a fast but
-non-conformant implementation is worse than useless.  We introduce
+non-conformant implementation is unusable.  We introduce
 \emph{conformance-gated benchmarking}, a methodology that treats
 specification correctness as a binary prerequisite for performance
 measurement.  The methodology gates every candidate on an oracle
 vector suite, documents noise floors and minimum detectable effect
 sizes for every comparison, and controls false-discovery rate across
-the full comparison matrix.  It is general---applicable wherever
-correctness is a hard prerequisite---and was developed from the
+the full comparison matrix.  It is general, applicable wherever
+correctness is a hard prerequisite, and was developed from the
 practical discovery that existing JSON Canonicalization Scheme
 (RFC~8785) implementations delegate number formatting to language
 runtimes that silently violate the required ECMA-262
 \texttt{Number::toString} policy.
 
 We apply the methodology to a case study comparing four
-digit-generation algorithms---three fixed-width (\schubfach, \ryualg,
-\dragonbox) and one multiprecision (\burgerdybvig)---inside an
+digit-generation algorithms (three fixed-width: \schubfach, \ryualg,
+\dragonbox; one multiprecision: \burgerdybvig) inside an
 RFC~8785 canonicalization pipeline, with cross-language validation in
 Go and Rust (8~implementations, 1{,}644 statistical comparisons).
 Conformance is verified against 286{,}362 oracle vectors generated
@@ -109,7 +109,7 @@ accompanying each implementation.
 Following the CRediT (Contributor Roles Taxonomy) format:
 \textit{Mark Lenhardt:} conceptualization; methodology;
 software; validation; formal analysis; investigation; data curation;
-writing---original draft; writing---review and editing; visualization.
+writing (original draft); writing (review and editing); visualization.
 
 \bibliographystyle{plain}
 \bibliography{references}

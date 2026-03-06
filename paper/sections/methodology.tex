@@ -6,12 +6,12 @@
 Our methodology enforces a strict ordering: conformance verification
 must pass before any performance data is collected.  This approach was
 developed from practical experience: the standard pattern for \rfcjcs
-number formatting---delegating to a language runtime's float-to-string
-function---produces output that passes casual testing but fails \ecma
+number formatting (delegating to a language runtime's float-to-string
+function) produces output that passes casual testing but fails \ecma
 boundary-value verification (e.g., notation-switch thresholds at
 $10^{21}$ and $10^{-7}$, even-digit tie-breaking under Note~2).  An
 implementation that looks fast in a benchmark while producing wrong
-output is worse than useless in a specification-constrained context
+output is unusable in a specification-constrained context
 where the formatted bytes are cryptographically bound.  The citations
 to Georges et al.~\cite{georges2007statistically} and Mytkowicz et
 al.~\cite{mytkowicz2009producing} reinforce the approach; the

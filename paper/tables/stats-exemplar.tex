@@ -19,11 +19,11 @@ Track & Mode & Workload & Winner & Speedup & CI$_{95}$ & $p_\text{adj}$ & $d$ & 
 e2e & canonicalize & array-2048 & schubfach & 1.48$\times$ & [1.377, 1.591] & 0.0004 & -3.63 & 0.5622 & 11.1 & yes \\
 e2e & canonicalize & large & schubfach & 1.54$\times$ & [1.496, 1.599] & 0.0004 & -8.58 & 0.7284 & 4.6 & yes \\
 e2e & canonicalize & medium & schubfach & 1.16$\times$ & [1.041, 1.312] & 0.0395 & -0.90 & 0.3947 & 19.5 & yes \\
-e2e & canonicalize & prod-cloudevents & schubfach & 1.11$\times$ & [0.990, 1.252] & 0.1551 & -0.63 & 0.2762 & 17.8 & --- \\
+e2e & canonicalize & prod-cloudevents & schubfach & 1.11$\times$ & [0.990, 1.252] & 0.1551 & -0.63 & 0.2762 & 17.8 & no \\
 e2e & canonicalize & prod-geojson & schubfach & 1.23$\times$ & [1.114, 1.386] & 0.0031 & -1.38 & 0.3477 & 18.9 & yes \\
-e2e & canonicalize & deep & schubfach & 1.00$\times$ & [0.898, 1.127] & 0.9663 & -0.02 & 0.2521 & 14.8 & --- \\
-e2e & canonicalize & long-string & schubfach & 1.14$\times$ & [1.020, 1.272] & 0.0539 & -0.82 & 0.2768 & 16.5 & --- \\
-e2e & canonicalize & prod-package-meta & json-canon & 1.01$\times$ & [0.896, 1.122] & 0.9156 & 0.06 & 0.2814 & 17.0 & --- \\
+e2e & canonicalize & deep & schubfach & 1.00$\times$ & [0.898, 1.127] & 0.9663 & -0.02 & 0.2521 & 14.8 & no \\
+e2e & canonicalize & long-string & schubfach & 1.14$\times$ & [1.020, 1.272] & 0.0539 & -0.82 & 0.2768 & 16.5 & no \\
+e2e & canonicalize & prod-package-meta & json-canon & 1.01$\times$ & [0.896, 1.122] & 0.9156 & 0.06 & 0.2814 & 17.0 & no \\
 \addlinespace
 \multicolumn{11}{l}{\textit{API benchmarks (canonicalize mode)}} \\
 api & canonicalize & array-2048 & schubfach & 1.62$\times$ & [1.612, 1.635] & 0.0004 & -58.02 & 0.0261 & 1.3 & yes \\
@@ -31,8 +31,8 @@ api & canonicalize & large & schubfach & 1.76$\times$ & [1.751, 1.774] & 0.0004 
 api & canonicalize & medium & schubfach & 1.73$\times$ & [1.721, 1.740] & 0.0004 & -77.25 & 0.0020 & 0.7 & yes \\
 api & canonicalize & prod-cloudevents & schubfach & 1.35$\times$ & [1.338, 1.354] & 0.0004 & -42.94 & 0.0003 & 1.1 & yes \\
 api & canonicalize & prod-geojson & schubfach & 2.32$\times$ & [2.304, 2.331] & 0.0004 & -137.41 & 0.0014 & 1.1 & yes \\
-api & canonicalize & deep & json-canon & 1.01$\times$ & [1.000, 1.013] & 0.1426 & 0.80 & 0.0002 & 0.8 & --- \\
-api & canonicalize & control-escapes & schubfach & 1.00$\times$ & [0.992, 1.008] & 0.9065 & -0.07 & 0.0000 & 1.5 & --- \\
+api & canonicalize & deep & json-canon & 1.01$\times$ & [1.000, 1.013] & 0.1426 & 0.80 & 0.0002 & 0.8 & no \\
+api & canonicalize & control-escapes & schubfach & 1.00$\times$ & [0.992, 1.008] & 0.9065 & -0.07 & 0.0000 & 1.5 & no \\
 api & canonicalize & prod-package-meta & schubfach & 1.10$\times$ & [1.094, 1.108] & 0.0004 & -12.40 & 0.0003 & 1.0 & yes \\
 api & canonicalize & number-heavy & schubfach & 1.56$\times$ & [1.551, 1.578] & 0.0008 & -39.27 & 0.0001 & 1.1 & yes \\
 api & canonicalize & numeric-boundary & schubfach & 1.50$\times$ & [1.487, 1.514] & 0.0004 & -34.81 & 0.0001 & 0.9 & yes \\

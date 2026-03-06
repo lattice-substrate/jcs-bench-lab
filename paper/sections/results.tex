@@ -43,10 +43,10 @@ languages and all workloads.  In Go API benchmarks, within-fixed-width
 comparisons (go:schubfach-vs-ryu, go:schubfach-vs-dragonbox,
 go:ryu-vs-dragonbox) show speedups of ${\leq}1.02\times$ with few
 BH-significant differences.  In Rust, the same pattern holds, with
-occasional small differences (${\leq}1.13\times$) reflecting
+occasional small differences (${\leq}1.13\times$) likely reflecting
 compilation artifacts rather than algorithmic cost.
 
-This equivalence confirms that the dominant performance axis is
+This equivalence is consistent with the conclusion that the dominant performance axis is
 \emph{fixed-width vs.\ multiprecision}, not the choice among
 fixed-width algorithms.
 

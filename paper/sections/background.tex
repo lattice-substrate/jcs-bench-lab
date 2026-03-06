@@ -8,7 +8,7 @@ specifying: (1)~lexicographic key ordering using UTF-16 code unit
 comparison, (2)~no insignificant whitespace, and (3)~floating-point
 formatting matching \ecma \texttt{Number::toString}.
 
-The floating-point requirement is the most technically demanding.  It
+The floating-point requirement is technically demanding.  It
 requires producing the \emph{shortest decimal representation} that
 round-trips to the original IEEE~754 binary64 value under
 roundTiesToEven, then applying the \ecma formatting policy (exponential

@@ -86,7 +86,7 @@ allocator.
 \textbf{Multiprecision implementation quality.}
 The Rust \burgerdybvig implementation uses the \texttt{num-bigint}
 crate (v0.4), which employs Karatsuba multiplication for large
-operands---comparable in optimization level to Go's
+operands, comparable in optimization level to Go's
 \texttt{math/big.Int} with its assembly-accelerated x86-64 inner
 loops.  Both languages therefore use production-grade multiprecision
 libraries, making within-Rust and within-Go speedup ratios directly
@@ -137,12 +137,12 @@ benchmarks on Graviton, Apple Silicon, or Ampere hardware.
 Oracle vectors are generated from V8 (via Node.js v23.3.0,
 V8~12.9.202.28) and independently validated against SpiderMonkey
 (JavaScript-C115.10.0) and JavaScriptCore (WebKitGTK~2.50.4).  All
-three engines---representing the three major independent implementations
-of ECMA-262 \texttt{Number::toString}---produce identical output for
+three engines, representing the three major independent implementations
+of ECMA-262 \texttt{Number::toString}, produce identical output for
 all 286{,}362 vectors with zero divergences.  Combined with dense
 boundary coverage (all subnormals up to $2^{12}$, all binary64 powers
 of two, subnormal/normal boundary neighborhoods, \rfcjcs Appendix~B
-examples with neighbors, and pseudorandom fill), this provides strong
+examples with neighbors, and pseudorandom fill), this provides
 evidence that the oracle reflects the normative specification rather
 than engine-specific behavior.  Cross-version stability within each
 engine family is expected from the normative spec but not independently

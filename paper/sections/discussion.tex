@@ -3,7 +3,7 @@
 
 \subsection{Fixed-Width Algorithm Equivalence}
 
-The most striking finding is that the three fixed-width algorithms
+The primary finding is that the three fixed-width algorithms
 (\schubfach, \ryualg, \dragonbox) perform within 1--8\% of each other
 across both languages.  In Go API benchmarks, pairwise comparisons among
 fixed-width algorithms yield speedups of ${\leq}1.02\times$, with only
@@ -13,7 +13,7 @@ out of 76 per pair, with speedups of ${\leq}1.13\times$ and no
 consistent winner.
 
 This equivalence has a mechanistic explanation: all three algorithms
-share the same computational core---128-bit multiply against a
+share the same computational core: 128-bit multiply against a
 precomputed power-of-ten table, followed by digit trimming.  The
 differences (\ryualg's lastRemovedDigit heuristic, \dragonbox's
 two-digit-at-a-time extraction, \schubfach's bound computation) affect
@@ -50,7 +50,7 @@ workloads ($>$70\% number values) show the full algorithmic advantage.
 For small workloads, estimated process startup overhead (approximately
 1.3\,ms) accounts for roughly 87--93\% of CLI execution time (e.g.,
 \texttt{canonical-minimal} total $\approx$1.47\,ms in canonicalize
-mode).  This fundamentally limits the observable
+mode).  This limits the observable
 algorithmic signal in end-to-end measurement.  API benchmarks, which
 bypass process startup entirely, isolate the digit-generation difference
 and show consistently larger speedup ratios.  CLI results reflect
@@ -120,7 +120,7 @@ time depending on workload number density.  On \texttt{array-2048}
 ($\nu = 40\%$), digit generation accounts for $\approx$35\% of CPU time
 in the \burgerdybvig path; on \texttt{deep} ($\nu = 0\%$), it drops to
 $<$2\%.  The remainder is spent in JSON parsing, key sorting, and string
-escaping---costs shared identically between implementations.  Detailed
+escaping, all of which are shared identically between implementations.  Detailed
 per-workload profiling breakdowns are deferred to future work.
 
 \subsection{Practical Implications}
@@ -134,7 +134,7 @@ $\nu = 40\%$), the Go API difference between fixed-width algorithms
 (${\approx}581\,\mu$s/op) is approximately 239\,$\mu$s per
 canonicalization.  A service verifying 1{,}000 signed JSON
 documents per second at this payload size would reclaim roughly
-0.24~seconds of CPU time per second---freeing approximately 24\% of
+0.24~seconds of CPU time per second, freeing approximately 24\% of
 a core compared to the \burgerdybvig path.
 
 The engineering context that produced these results is illustrative.
@@ -206,7 +206,7 @@ interpreted carefully.  Go's \texttt{testing.B} averages over many
 inner iterations per sample, producing low-variance measurements, while
 the Rust harness times individual function calls, producing
 higher-variance samples.  Additionally, the two compilers apply
-fundamentally different optimization strategies: Rust with LTO and
+different optimization strategies: Rust with LTO and
 \texttt{codegen-units=1} enables aggressive cross-crate inlining that
 Go's compiler cannot match.  The observed 2--3$\times$ cross-language
 speedup (API) may partly reflect compiler optimization quality rather
@@ -218,7 +218,7 @@ not to quantify precise language overhead.
 counting global allocator (\texttt{std::alloc::GlobalAlloc}) that
 increments atomic counters on each allocation, reporting per-operation
 byte and allocation counts in the same format as Go's
-\texttt{testing.B}.  This confirms the mechanistic explanation:
+\texttt{testing.B}.  This is consistent with the mechanistic explanation:
 Rust fixed-width implementations allocate minimally (e.g., 1{,}036~B/op,
 24~allocs/op on \texttt{numeric-boundary}) while Rust-\burgerdybvig
 allocates substantially more (25{,}204~B/op, 470~allocs/op on the same
@@ -245,12 +245,12 @@ and observation reflects differences in allocation overhead (our
 pipeline includes JSON parsing and serialization, which share the
 allocator with digit generation) and cache effects absent from
 isolation benchmarks.  Moreover, the pipeline-level speedup on these
-workloads is bounded by $1/(1-P) \approx 1.54\times$---the Amdahl
+workloads is bounded by $1/(1-P) \approx 1.54\times$, the Amdahl
 ceiling when $P \approx 0.35$.  The observed Go API ratios of
 1.4--1.8$\times$ already approach this ceiling, indicating that the
 fixed-width algorithms have largely exhausted the available improvement
 from optimizing digit generation alone; further gains require reducing
-parsing or serialization cost.  This convergence confirms that our
+parsing or serialization cost.  This convergence is consistent with the conclusion that our
 pipeline results and their isolation results measure the same underlying
 algorithmic advantage at different levels of system integration.
 
@@ -262,9 +262,9 @@ canonicalization pipeline serves as the case study in which the
 methodology was developed and validated; the methodology itself is
 general, applicable to any specification-constrained formatting
 evaluation where correctness is a binary prerequisite.  The core
-design---gate timing on correctness, validate against multiple
+design (gate timing on correctness, validate against multiple
 independent oracles, document noise floors and minimum detectable
-effects for every comparison---was not adopted as an academic
+effects for every comparison) was not adopted as an academic
 principle but developed from the practical discovery that the standard
 ecosystem pattern (delegating number formatting to a language runtime)
 produces implementations that pass casual testing while failing
@@ -273,14 +273,14 @@ the float-to-string literature, where prior benchmarks (including
 Adams's Ry\=u evaluation and Champagne Gareau and Lemire's
 comprehensive C++ study) measure performance in isolation without
 first establishing conformance to a target specification.  In domains
-where correctness is a hard prerequisite---canonicalization,
-serialization standards, interoperability testing---measuring the
+where correctness is a hard prerequisite (canonicalization,
+serialization standards, interoperability testing), measuring the
 speed of a non-conformant implementation is meaningless.
 
 As a concrete example of generalizability, consider CBOR deterministic
 encoding (RFC~8949 \S4.2)~\cite{rfc8949}: the specification requires a
 specific integer-to-bytes mapping and canonical map key ordering.  The
-conformance-gated approach applies directly---oracle vectors would be
+conformance-gated approach applies directly: oracle vectors would be
 generated from a reference CBOR encoder, and candidate implementations
 would be gated on byte-identical output before timing comparison of
 encoding strategies.  The benchmark infrastructure released with this

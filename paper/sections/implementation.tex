@@ -44,7 +44,7 @@ algorithms, eliminating the need for compiler intrinsics or multi-word
 emulation.
 The Rust \burgerdybvig implementation uses the \texttt{num-bigint}
 crate (v0.4), which provides Karatsuba multiplication for large
-operands---comparable in optimization level to Go's
+operands, comparable in optimization level to Go's
 \texttt{math/big.Int} with its assembly-accelerated x86-64 inner
 loops.  Buffer lifecycle is managed by Rust's RAII ownership model
 (deterministic \texttt{Drop}), removing the need for explicit pooling
@@ -71,8 +71,8 @@ real-world consequence was observed in December 2025, when a Go database
 compiler emitted FMA on ARM but not x86, causing a one-ULP difference
 that flipped a cost comparison~\cite{dolthub2025fma}.
 
-For digit-generation algorithms used in canonicalization---where the
-formatted bytes are cryptographically bound---platform-dependent output
+For digit-generation algorithms used in canonicalization, where the
+formatted bytes are cryptographically bound, platform-dependent output
 is unacceptable.  The \burgerdybvig implementation with
 \texttt{math/big.Int} is immune by construction: all operations execute
 on the CPU's integer ALU, where floating-point fusion is inapplicable by

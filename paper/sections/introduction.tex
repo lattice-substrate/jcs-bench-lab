@@ -5,9 +5,9 @@ Specification-constrained formatting is common in systems where
 serialized bytes are hashed, signed, or used as consensus inputs:
 a single divergent byte invalidates every downstream hash and
 signature.  Yet the standard benchmarking approach for formatting
-code---measure speed in isolation, assume correctness---is
+code, which measures speed in isolation and assumes correctness, is
 inadequate here.  A fast implementation that silently deviates from
-the specification is worse than a slow correct one, because the
+the specification is unusable, because the
 deviation may not surface until production signatures fail to verify.
 This paper introduces \emph{conformance-gated benchmarking}, a
 methodology that treats specification correctness as a binary
@@ -15,7 +15,7 @@ prerequisite: candidates must pass an oracle vector suite before any
 timing data is collected.  The methodology documents noise floors and
 minimum detectable effect sizes for every comparison, applies
 Benjamini--Hochberg FDR correction across the full comparison matrix,
-and is general---applicable to any domain where correctness is a hard
+and is general, applicable to any domain where correctness is a hard
 prerequisite for meaningful performance measurement.
 
 The methodology was developed from an engineering problem, not adopted
@@ -23,7 +23,7 @@ as an academic principle.  Building a correct JSON Canonicalization
 Scheme (\rfcjcs)~\cite{rfc8785} primitive required implementing
 \ecma \texttt{Number::toString}~\cite{ecma262} number formatting from
 scratch, because existing \rfcjcs implementations delegate to language
-runtimes---Go's \texttt{strconv.FormatFloat}, for example---that do
+runtimes (Go's \texttt{strconv.FormatFloat}, for example) that do
 not implement the \ecma formatting policy (they make different notation
 choices at key boundaries: \texttt{1e20} vs.\ the required
 \texttt{100000000000000000000}; \texttt{1e-06} vs.\ the required
@@ -37,9 +37,9 @@ its heap allocation as a bottleneck on number-dense workloads.
 Replacing \burgerdybvig with the fixed-width
 \schubfach~\cite{giulietti2022schubfach} algorithm eliminated
 digit-generation allocation entirely while producing byte-identical
-output.  The natural follow-up question---\emph{is \schubfach
+output.  The natural follow-up question, \emph{is \schubfach
 specifically the right choice, or would \ryualg~\cite{adams2018ryu} or
-\dragonbox~\cite{jeon2021dragonbox} perform equivalently?}---asked with
+\dragonbox~\cite{jeon2021dragonbox} perform equivalently?}, asked with
 statistical rigor inside a pipeline context, is the case study of this
 paper.
 
@@ -60,15 +60,15 @@ second on a representative 14\,KB workload.
 Beyond throughput, the choice of digit-generation algorithm is a
 correctness concern in systems where canonicalized bytes are hashed and
 signed at every layer of a processing pipeline.  In deployment contexts
-such as deterministic infrastructure---where data-processing steps
+such as deterministic infrastructure, where data-processing steps
 execute in sandboxed isolation and every governed artifact is
 schema-validated, canonically serialized, and cryptographically
-bound---a formatting divergence at the number-rendering layer does not
+bound, a formatting divergence at the number-rendering layer does not
 produce one wrong document: it
-invalidates every hash computed over those bytes, every signature
-computed over those hashes, and every audit trail that chains those
+can invalidate hashes computed over those bytes, signatures
+computed over those hashes, and audit trails that chain those
 signatures.  The digit-generation algorithm sits at the foundation of a
-determinism guarantee that no higher layer can independently recover.
+determinism guarantee that higher layers cannot independently recover.
 This makes both the correctness validation (conformance gating) and the
 performance characterization reported here directly relevant to
 infrastructure where canonicalization is not optional but
@@ -96,8 +96,8 @@ This paper makes three contributions:
       each achieves 1.4--1.8$\times$ speedup over \burgerdybvig on
       number-dense workloads ($\nu(D) \geq 40\%$) in Go API benchmarks;
       the advantage replicates at 2.3--3.0$\times$ in Rust.  The
-      fixed-width equivalence is confirmatory---consistent with Adams
-      and Champagne Gareau \& Lemire---but the pipeline context and
+      fixed-width equivalence is confirmatory (consistent with Adams
+      and Champagne Gareau \& Lemire), but the pipeline context and
       Amdahl's Law characterization showing how isolation-level
       speedups attenuate at the system level are new.
       String-dominant and deeply-nested inputs show $<$5\% difference.
