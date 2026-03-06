@@ -1,17 +1,18 @@
 \section{Conclusion}
 \label{sec:conclusion}
 
-We presented a conformance-gated benchmark methodology and applied it to,
-to our knowledge, the first empirical comparison of four digit-generation
-algorithms---\burgerdybvig (multiprecision), \schubfach, \ryualg, and
-\dragonbox (all fixed-width)---inside a \rfcjcs/\ecma-constrained JSON
-canonicalization pipeline, with cross-language validation in Go and Rust
-to separate algorithmic effects from language/runtime characteristics.
-While prior work has compared float-to-string algorithms in isolation
-(e.g., Adams's comparison of Ry\=u against Grisu and Errol; Champagne
-Gareau and Lemire's comprehensive C++ evaluation), our study is, to our knowledge, the first to evaluate these algorithms
-within a specification-constrained canonicalization pipeline using
-conformance-gated methodology.
+We presented a conformance-gated benchmark methodology and applied it to
+what is, to our knowledge, the first empirical comparison of four
+digit-generation algorithms---\burgerdybvig (multiprecision), \schubfach,
+\ryualg, and \dragonbox (all fixed-width)---inside a
+\rfcjcs/\ecma-constrained JSON canonicalization pipeline, with
+cross-language validation in Go and Rust to separate algorithmic effects
+from language/runtime characteristics.  While prior work has compared
+float-to-string algorithms in isolation (e.g., Adams's comparison of
+Ry\=u against Grisu and Errol; Champagne Gareau and Lemire's
+comprehensive C++ evaluation), ours is, to our knowledge, the first
+study to evaluate these algorithms within a specification-constrained
+canonicalization pipeline using conformance-gated methodology.
 
 Key findings:
 \begin{itemize}

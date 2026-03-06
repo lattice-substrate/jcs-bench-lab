@@ -152,6 +152,16 @@
                unless an explicit \texttt{float64()} cast forces intermediate rounding},
 }
 
+@misc{dolthub2025fma,
+  author    = {Engel, Max},
+  title     = {The Floats Awakening: How a Floating-Point Bug Hid in Plain Sight for 10 Months},
+  year      = {2025},
+  url       = {https://www.dolthub.com/blog/2025-01-03-golang-fma-bug/},
+  note      = {DoltHub engineering blog, 3 January 2025; documents how Go's
+               compiler-emitted FMA on ARM produced one-ULP differences that
+               changed query-plan cost comparisons},
+}
+
 @misc{w3c2024rdf,
   author    = {{W3C}},
   title     = {{RDF Dataset Canonicalization}},

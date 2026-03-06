@@ -28,6 +28,14 @@ Ja{\"e}l Champagne~Gareau and Daniel Lemire.
 {Ecma International}.
 \newblock {ECMA-262: ECMAScript Language Specification}, 2024.
 
+\bibitem{dolthub2025fma}
+Max Engel.
+\newblock The floats awakening: How a floating-point bug hid in plain sight for
+  10 months, 2025.
+\newblock DoltHub engineering blog, 3 January 2025; documents how Go's
+  compiler-emitted FMA on ARM produced one-ULP differences that changed
+  query-plan cost comparisons.
+
 \bibitem{gay1990dtoa}
 David~M. Gay.
 \newblock Correctly rounded binary-decimal and decimal-binary conversions,

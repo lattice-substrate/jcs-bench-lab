@@ -1,50 +1,47 @@
 \section{Introduction}
 \label{sec:introduction}
 
-The JSON Canonicalization Scheme (\rfcjcs)~\cite{rfc8785} standardizes a
-deterministic serialization of JSON values for use in digital signatures,
-content-addressable storage, and distributed consensus protocols.  A
-critical requirement is that floating-point numbers must be formatted
-identically to the output of \ecma \texttt{Number::toString}~\cite{ecma262},
-which specifies shortest-representation formatting under roundTiesToEven
-semantics.
+Specification-constrained formatting is common in systems where
+serialized bytes are hashed, signed, or used as consensus inputs:
+a single divergent byte invalidates every downstream hash and
+signature.  Yet the standard benchmarking approach for formatting
+code---measure speed in isolation, assume correctness---is
+inadequate here.  A fast implementation that silently deviates from
+the specification is worse than a slow correct one, because the
+deviation may not surface until production signatures fail to verify.
+This paper introduces \emph{conformance-gated benchmarking}, a
+methodology that treats specification correctness as a binary
+prerequisite: candidates must pass an oracle vector suite before any
+timing data is collected.  The methodology documents noise floors and
+minimum detectable effect sizes for every comparison, applies
+Benjamini--Hochberg FDR correction across the full comparison matrix,
+and is general---applicable to any domain where correctness is a hard
+prerequisite for meaningful performance measurement.
 
-This research originated in an engineering problem: the need for a
-correct \rfcjcs primitive whose output could be verified against the
-\ecma specification.  Existing \rfcjcs implementations delegate number
-formatting to language runtimes---for example, Go's
-\texttt{strconv.FormatFloat}---which do not implement the \ecma
-formatting policy (they make different notation choices at key
-boundaries: \texttt{1e20} vs.\ the required
+The methodology was developed from an engineering problem, not adopted
+as an academic principle.  Building a correct JSON Canonicalization
+Scheme (\rfcjcs)~\cite{rfc8785} primitive required implementing
+\ecma \texttt{Number::toString}~\cite{ecma262} number formatting from
+scratch, because existing \rfcjcs implementations delegate to language
+runtimes---Go's \texttt{strconv.FormatFloat}, for example---that do
+not implement the \ecma formatting policy (they make different notation
+choices at key boundaries: \texttt{1e20} vs.\ the required
 \texttt{100000000000000000000}; \texttt{1e-06} vs.\ the required
 \texttt{0.000001}) and whose underlying algorithms have changed across
 versions.  Conformance verification against 286{,}362 oracle vectors
 generated from three independent JavaScript engines confirmed these
-gaps.
-
-A correct implementation was built from scratch using
-\burgerdybvig~\cite{burger1996printing} with exact multiprecision
-arithmetic (\texttt{math/big.Int}).  This approach provides a provably
-correct baseline and is immune to fused-multiply-add (FMA) platform
-divergence by construction, since \texttt{big.Int} operations execute on
-the CPU's integer ALU where floating-point fusion is inapplicable by
-type~\cite{go17895}.  The implementation was validated against the full
-oracle vector suite.  Profiling inside the canonicalization pipeline then
-revealed multiprecision heap allocation as a bottleneck on number-dense
-workloads due to 4--6 allocations per formatted number.  Replacing
-\burgerdybvig with \schubfach~\cite{giulietti2022schubfach}---a
-fixed-width algorithm using 64/128-bit integer arithmetic with a
-precomputed lookup table---eliminated digit-generation allocation
-entirely while producing byte-identical output on all vectors.
-
-The natural question that emerged was: \emph{is \schubfach specifically
-the right choice, or would \ryualg~\cite{adams2018ryu} or
-\dragonbox~\cite{jeon2021dragonbox} perform equivalently?}  That
-question, asked with statistical rigor inside a pipeline context, is
-this paper.  The \rfcjcs canonicalization pipeline serves as a case study
-for a more general contribution: a conformance-gated benchmarking
-methodology applicable to any specification-constrained formatting
-evaluation.
+gaps.  A correct \burgerdybvig~\cite{burger1996printing}
+implementation with exact multiprecision arithmetic was built, validated
+against the full vector suite, and deployed; profiling then revealed
+its heap allocation as a bottleneck on number-dense workloads.
+Replacing \burgerdybvig with the fixed-width
+\schubfach~\cite{giulietti2022schubfach} algorithm eliminated
+digit-generation allocation entirely while producing byte-identical
+output.  The natural follow-up question---\emph{is \schubfach
+specifically the right choice, or would \ryualg~\cite{adams2018ryu} or
+\dragonbox~\cite{jeon2021dragonbox} perform equivalently?}---asked with
+statistical rigor inside a pipeline context, is the case study of this
+paper.
 
 Several deployment contexts place canonicalization on the critical path.
 In high-frequency signature verification, every document must be

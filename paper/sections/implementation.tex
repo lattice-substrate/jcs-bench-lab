@@ -69,7 +69,7 @@ explicit \texttt{float64()} cast forcing intermediate rounding.  A
 real-world consequence was observed in December 2025, when a Go database
 (DoltHub) produced different query plans on ARM vs.\ x86 because the
 compiler emitted FMA on ARM but not x86, causing a one-ULP difference
-that flipped a cost comparison.
+that flipped a cost comparison~\cite{dolthub2025fma}.
 
 For digit-generation algorithms used in canonicalization---where the
 formatted bytes are cryptographically bound---platform-dependent output
