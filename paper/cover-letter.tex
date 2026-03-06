@@ -1,0 +1,69 @@
+\documentclass[12pt]{letter}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\usepackage{xcolor}
+
+\signature{Mark Lenhardt\\Lattice Substrate}
+\address{Lattice Substrate}
+
+\begin{document}
+
+\begin{letter}{%
+The Editors\\
+\textit{Software: Practice and Experience}\\
+John Wiley \& Sons}
+
+\opening{Dear Editors,}
+
+Please consider the enclosed manuscript, ``Fixed-Width vs.\
+Multiprecision Digit Generation for JSON Canonicalization: A
+Four-Algorithm Empirical Study,'' for publication in \textit{Software:
+Practice and Experience}.
+
+The paper makes three contributions to the practice of
+specification-constrained performance evaluation:
+
+\begin{enumerate}
+\item \textbf{Conformance-gated benchmarking}, a methodology that
+      treats specification correctness as a binary prerequisite for
+      performance measurement.  The methodology was developed from a
+      practical discovery: existing JSON Canonicalization Scheme
+      (RFC~8785) implementations delegate number formatting to language
+      runtimes that silently violate the required ECMA-262
+      \texttt{Number::toString} policy, making speed comparisons
+      meaningless without a conformance gate.
+
+\item \textbf{A pipeline-level empirical study} comparing four
+      digit-generation algorithms (Schubfach, Ry\=u, Dragonbox, and
+      Burger--Dybvig) inside an RFC~8785 canonicalization pipeline,
+      with cross-language validation in Go and Rust (8~implementations,
+      1,644~statistical comparisons).  This characterizes how Amdahl's
+      Law attenuates isolation-level algorithm speedups at the system
+      level---a perspective absent from prior isolation benchmarks.
+
+\item \textbf{A cross-language validation design} (4$\times$2 matrix
+      of algorithm $\times$ language) that separates algorithmic effects
+      from language/runtime characteristics.
+\end{enumerate}
+
+The work is practice-oriented: the methodology emerged from building a
+production canonicalization primitive, and the findings directly inform
+algorithm selection for implementors.  The paper engages with Champagne
+Gareau and Lemire's recent float-to-string survey published in
+\textit{SP\&E} (January~2026), extending their isolation-level results
+to a pipeline context with conformance gating.
+
+All source code (8~implementations), 286,362 oracle vectors, raw
+benchmark data, and the statistical analysis pipeline are archived at
+Zenodo (DOI: \href{https://doi.org/10.5281/zenodo.18890835}{10.5281/zenodo.18890835})
+and available on GitHub at
+\href{https://github.com/lattice-substrate/jcs-bench-lab}{github.com/lattice-substrate/jcs-bench-lab}.
+
+This manuscript has not been submitted to or published in any other
+journal or conference proceedings, and the sole author has approved
+the submission.
+
+\closing{Sincerely,}
+
+\end{letter}
+\end{document}

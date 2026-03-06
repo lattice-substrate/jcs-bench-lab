@@ -1,0 +1,136 @@
+% Supplementary Materials for:
+% Fixed-Width vs. Multiprecision Digit Generation for JSON Canonicalization:
+% A Four-Algorithm Empirical Study
+%
+% Mark Lenhardt, Lattice Substrate
+\documentclass[10pt]{article}
+
+\usepackage[margin=0.75in]{geometry}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{pdflscape}
+\usepackage{xspace}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{caption}
+\usepackage{fancyhdr}
+
+\newcommand{\schubfach}{Schubfach\xspace}
+\newcommand{\burgerdybvig}{Burger--Dybvig\xspace}
+\newcommand{\ryualg}{Ry\=u\xspace}
+\newcommand{\dragonbox}{Dragonbox\xspace}
+\newcommand{\ecma}{ECMA-262\xspace}
+\newcommand{\rfcjcs}{RFC~8785\xspace}
+
+% Provide labels referenced by auto-generated tables that are defined in the main paper
+\newcommand{\fakesec}[1]{\label{#1}}
+\AtBeginDocument{%
+  \fakesec{sec:discussion}%
+  \fakesec{sec:appendix-tables}%
+  \fakesec{sec:methodology}%
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small Supplementary Materials --- Lenhardt (2026)}
+\fancyhead[R]{\small \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+\begin{center}
+{\Large\bfseries Supplementary Materials}\\[6pt]
+{\large Fixed-Width vs.\ Multiprecision Digit Generation\\
+for JSON Canonicalization: A Four-Algorithm Empirical Study}\\[6pt]
+Mark Lenhardt\\
+Lattice Substrate\\[6pt]
+\today
+\end{center}
+
+\vspace{1em}
+\noindent
+This document contains the complete benchmark tables and statistical
+comparisons referenced as ``supplementary materials'' in the main
+paper.  All data are auto-generated from raw benchmark output by
+\texttt{scripts/generate-paper-tables.go} and are reproducible from
+the archived artifact (DOI:
+\href{https://doi.org/10.5281/zenodo.18890835}{10.5281/zenodo.18890835}).
+
+\tableofcontents
+
+\clearpage
+
+% ─── Section 1: Full API Benchmarks ───────────────────────────────────────────
+
+\section{Full API Benchmark Results}
+\label{sec:supp-api}
+
+Table~\ref{tab:api-benchmarks} reports the complete API benchmark
+results for all 16~comparison pairs across all workloads and modes
+(canonicalize and verify).  Each row reports the mean of $n{=}10$
+iterations.  Allocation columns ($\Delta$allocs/op, $\Delta$B/op)
+report the difference between the two implementations in each pair;
+negative values indicate the first implementation allocates less.
+
+For Rust implementations, allocation data is measured via a counting
+global allocator (\texttt{std::alloc::GlobalAlloc}) that intercepts
+all heap allocations.
+
+\begin{landscape}
+\input{tables/api-benchmarks}
+\end{landscape}
+
+\clearpage
+
+% ─── Section 2: Full CLI Benchmarks ──────────────────────────────────────────
+
+\section{Full CLI Benchmark Results}
+\label{sec:supp-cli}
+
+Table~\ref{tab:cli-benchmarks} reports the complete CLI benchmark
+results for all 16~comparison pairs across all workloads and modes.
+Each row reports the mean wall time of $n{=}15$ repetitions (3~warmup
+discarded).  Task order was randomized with a fixed seed.
+
+\begin{landscape}
+\input{tables/cli-benchmarks}
+\end{landscape}
+
+\clearpage
+
+% ─── Section 3: Full Statistical Comparisons ─────────────────────────────────
+
+\section{Full Statistical Comparisons}
+\label{sec:supp-stats}
+
+Table~\ref{tab:stats-comparisons} reports all 1{,}644 statistical
+comparisons across 16~pairs, 3~tracks (API, CLI end-to-end, CLI
+algorithmic), 2~modes (canonicalize, verify), and all workloads.
+Each comparison includes:
+
+\begin{itemize}
+\item \textbf{Speedup:} ratio of slower to faster mean.
+\item \textbf{CI$_{95}$:} BCa bootstrap 95\% confidence interval on
+      the speedup ratio (5{,}000 resamples).
+\item \textbf{$p$:} raw permutation test $p$-value (5{,}000 resamples).
+\item \textbf{$p_\text{adj}$:} Benjamini--Hochberg adjusted $p$-value
+      controlling false discovery rate at $q = 0.05$ across all
+      1{,}644 comparisons.
+\item \textbf{$d$:} Cohen's $d$ effect size
+      ($(\bar{x}_A - \bar{x}_B)/s_p$; negative = implementation A
+      faster).
+\item \textbf{Noise:} standard deviation of the faster implementation,
+      quantifying measurement noise in the same units as the metric.
+\item \textbf{MDE:} minimum detectable effect at 80\% power, expressed
+      as a percentage of the faster implementation's mean.
+\end{itemize}
+
+\noindent
+$p$-values at the resolution floor of $1/(R+1) = 0.0002$ (where
+$R = 5{,}000$ resamples) should be interpreted as $p < 0.0002$.
+
+\begin{landscape}
+\input{tables/stats-comparisons}
+\end{landscape}
+
+\end{document}

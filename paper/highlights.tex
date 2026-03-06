@@ -1,0 +1,47 @@
+\documentclass[12pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{enumitem}
+
+\pagestyle{empty}
+
+\begin{document}
+
+\begin{center}
+{\Large\bfseries Research Highlights}\\[6pt]
+{\large Fixed-Width vs.\ Multiprecision Digit Generation\\
+for JSON Canonicalization: A Four-Algorithm Empirical Study}\\[6pt]
+Mark Lenhardt
+\end{center}
+
+\vspace{1em}
+
+\begin{itemize}[leftmargin=*, itemsep=8pt]
+
+\item We introduce \textbf{conformance-gated benchmarking}, a
+      methodology that gates performance measurement on specification
+      correctness, developed from the discovery that existing RFC~8785
+      implementations silently violate ECMA-262 formatting rules.
+
+\item Three fixed-width digit-generation algorithms (Schubfach,
+      Ry\=u, Dragonbox) \textbf{perform within 1--8\% of each other}
+      across Go and Rust, confirming that the choice among them does
+      not matter for performance.
+
+\item Each fixed-width algorithm is \textbf{1.4--1.8$\times$ faster}
+      than Burger--Dybvig on number-dense workloads in Go API
+      benchmarks, \textbf{replicating at 2.3--3.0$\times$ in Rust};
+      the cross-language replication separates algorithmic effects from
+      runtime characteristics.
+
+\item Pipeline-level speedups match Amdahl's Law predictions at
+      measured pipeline fractions (15--40\%), demonstrating that
+      \textbf{fixed-width algorithms have largely exhausted the
+      available improvement} from optimizing digit generation alone.
+
+\item All source code, oracle vectors, and raw data are released as
+      a reproducibility artifact
+      (DOI: 10.5281/zenodo.18890835).
+
+\end{itemize}
+
+\end{document}
