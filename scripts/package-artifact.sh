@@ -17,6 +17,7 @@ mkdir -p "${DEST}"
 # Source code (excluding binaries and build artifacts)
 rsync -a --exclude='bin/' --exclude='*.exe' --exclude='.git/' \
   --exclude='workloads/' --exclude='__debug_bin*' \
+  --exclude='target/' --exclude='node_modules/' \
   "${ROOT}/" "${DEST}/"
 
 # Ensure results directory is included
