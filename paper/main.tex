@@ -48,8 +48,9 @@ canonicalization pipeline, implemented in both Go and Rust
 (8~implementations total) to separate algorithmic effects from
 language/runtime effects.
 Our methodology gates performance measurement on conformance: only
-implementations passing 286{,}362 oracle vectors (generated from the V8
-JavaScript engine) and 696 structural conformance cases (87 per
+implementations passing 286{,}362 oracle vectors (generated from V8
+and validated against SpiderMonkey and JavaScriptCore) and 696
+structural conformance cases (87 per
 implementation $\times$ 8~implementations) proceed to benchmarking.
 Using permutation tests, BCa bootstrap confidence intervals, and
 Benjamini--Hochberg FDR correction across 1{,}294 comparisons

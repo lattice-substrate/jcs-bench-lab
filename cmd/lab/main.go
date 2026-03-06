@@ -234,6 +234,16 @@ func main() {
 		if err := runReport(*apiPath, *cliPath, *qualityPath, *benchstatPath, *conformancePath, *statsPath, *fuzzPath); err != nil {
 			fatal(err)
 		}
+	case "oracle-validate":
+		fs := flag.NewFlagSet("oracle-validate", flag.ExitOnError)
+		v8Bin := fs.String("v8-bin", "", "path to Node.js binary (default: auto-detect)")
+		smBin := fs.String("sm-bin", "", "path to SpiderMonkey shell binary (default: auto-detect)")
+		jscBin := fs.String("jsc-bin", "", "path to JavaScriptCore binary (default: auto-detect)")
+		requireAll := fs.Bool("require-all", false, "fail if any engine is missing")
+		_ = fs.Parse(os.Args[2:])
+		if err := runOracleValidate(*v8Bin, *smBin, *jscBin, *requireAll); err != nil {
+			fatal(err)
+		}
 	case "arm64-determinism":
 		if err := runARM64Determinism(); err != nil {
 			fatal(err)
@@ -258,7 +268,7 @@ func main() {
 }
 
 func usage() {
-	fmt.Println("usage: go run ./cmd/lab <setup|gen-workloads|conformance|bench-cli|bench-api|fuzz|stats|gate|benchstat|profile-api|report|arm64-determinism|smoke> [flags]")
+	fmt.Println("usage: go run ./cmd/lab <setup|gen-workloads|conformance|bench-cli|bench-api|fuzz|stats|gate|benchstat|profile-api|report|oracle-validate|arm64-determinism|smoke> [flags]")
 }
 
 func fatal(err error) {

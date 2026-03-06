@@ -90,7 +90,20 @@ func runGate(conformancePath, statsPath, fuzzPath, baselinePath string, maxRegre
 	if len(violations) > 0 {
 		return fmt.Errorf("gate failed: %d performance regressions: %s", len(violations), strings.Join(violations, "; "))
 	}
-	fmt.Printf("gate passed\n- conformance: %s\n- stats: %s\n- fuzz: %s\n- baseline: %s\n", conformancePath, statsPath, fuzzPath, baselinePath)
+	// Optional oracle-validate check: only enforced if report exists.
+	oraclePath := filepath.Join(root, "results", "latest-oracle-validate.json")
+	oracleMsg := "(not found, skipped)"
+	if ob, oerr := os.ReadFile(oraclePath); oerr == nil {
+		var or oracleReport
+		if json.Unmarshal(ob, &or) == nil {
+			if !or.CrossEngineAgreement {
+				return errors.New("gate failed: oracle cross-engine agreement is false")
+			}
+			oracleMsg = oraclePath
+		}
+	}
+
+	fmt.Printf("gate passed\n- conformance: %s\n- stats: %s\n- fuzz: %s\n- baseline: %s\n- oracle: %s\n", conformancePath, statsPath, fuzzPath, baselinePath, oracleMsg)
 	return nil
 }
 
