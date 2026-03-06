@@ -76,6 +76,23 @@ algorithmic conclusions.
 \textbf{Differential fuzzing:} 2{,}000 randomly-generated JSON inputs
 processed by all implementations, verifying byte-identical output.
 
+\subsection{Workload Characterization}
+
+\begin{definition}[Number value fraction]
+For a JSON document $D$, define $\nu(D)$ as the fraction of JSON values
+that are numbers.  Array and object containers are counted as values;
+their elements and members are counted separately.  Formally,
+$\nu(D) = |\{v \in V(D) : v \text{ is a JSON number}\}| / |V(D)|$,
+where $V(D)$ is the multiset of all JSON values in $D$ (including
+containers).
+\end{definition}
+
+Table~\ref{tab:workload-characteristics} reports the structural
+properties of each benchmark workload, including $\nu(D)$, total value
+count, maximum nesting depth, and unique key count.
+
+\input{tables/workload-characteristics}
+
 \subsection{Statistical Protocol}
 
 All comparisons use:

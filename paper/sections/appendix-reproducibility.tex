@@ -1,0 +1,63 @@
+\section{Reproducibility Checklist}
+\label{sec:appendix-reproducibility}
+
+This appendix documents the information required to reproduce the
+benchmark results reported in this paper.
+
+\subsection*{Software Versions}
+
+\begin{itemize}
+\item Go 1.25.6 (\texttt{go version go1.25.6 linux/amd64})
+\item Rust 1.94.0 (\texttt{rustc 1.94.0})
+\item Node.js v23.3.0 (V8 12.9.202.28-node.11) --- oracle generation
+\item Linux 6.8.0-101-generic (Ubuntu)
+\end{itemize}
+
+\subsection*{Hardware Specification}
+
+\begin{itemize}
+\item CPU: Intel Core i7-12700K (8~P-cores at 3.6--5.0\,GHz, 4~E-cores at 2.7--3.8\,GHz)
+\item RAM: 64\,GB DDR4
+\item Architecture: x86-64
+\item CPU governor: \texttt{performance}
+\end{itemize}
+
+\subsection*{Oracle Vector Checksums (SHA-256)}
+
+\begin{itemize}
+\item \texttt{golden\_vectors.csv} (54{,}445 vectors):\\
+  \texttt{593bdecbe0dccbc182bc3baf570b716887db25739fc61b7808764ecb966d5636}
+\item \texttt{golden\_stress\_vectors.csv} (231{,}917 vectors):\\
+  \texttt{287d21ac87e5665550f1baf86038302a0afc67a74a020dffb872f1a93b26d410}
+\end{itemize}
+
+\subsection*{Reproduction Commands}
+
+\begin{verbatim}
+git clone <repository-url> && cd jcs-bench-lab
+go run ./cmd/lab setup
+go run ./cmd/lab conformance
+go run ./cmd/lab bench-api -count 10
+go run ./cmd/lab bench-cli -repeats 15
+go run ./cmd/lab fuzz -cases 2000
+go run ./cmd/lab stats -resamples 5000
+go run ./cmd/lab gate
+go run scripts/generate-paper-tables.go
+\end{verbatim}
+
+\subsection*{Build Configuration}
+
+\begin{itemize}
+\item Go implementations: default \texttt{go build} flags
+\item Rust implementations: \texttt{opt-level=3}, \texttt{lto=true},
+      \texttt{codegen-units=1}, \texttt{strip=true}
+\item Rust API benchmarks use a counting global allocator
+      (\texttt{std::alloc::GlobalAlloc}) to measure per-operation
+      allocation bytes and counts
+\end{itemize}
+
+\subsection*{Data Availability}
+
+All raw benchmark data, statistical reports, oracle vectors, and the
+benchmark infrastructure are archived at Zenodo.\footnote{Zenodo DOI to
+be inserted for camera-ready version.}

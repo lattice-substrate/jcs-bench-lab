@@ -9,7 +9,7 @@ function), number-dense inputs (e.g., \texttt{array-2048},
 \texttt{large}, \texttt{medium}) show 1.3--1.7$\times$ speedup due
 to zero heap allocation in the digit-generation path.  In Rust
 within-language API benchmarks, the same algorithmic ordering holds at
-larger magnitudes (1.6--3.1$\times$ on the same workloads), confirming
+larger magnitudes (1.9--4.1$\times$ on the same workloads), confirming
 the advantage is algorithmic.  Deeply-nested
 workloads (\texttt{deep}, \texttt{deep-64}) contain numbers but show
 ${\approx}1.0\times$ because JSON structural parsing and key sorting
@@ -68,8 +68,8 @@ mechanism underlying the observed speedup.
 \subsection{Extreme Outliers: \texttt{numeric-boundary} and \texttt{number-heavy}}
 
 Two workloads show unusually large speedup ratios in Rust API
-benchmarks: \texttt{numeric-boundary} (9.2$\times$ within-Rust, CI
-[9.1, 9.3]) and \texttt{number-heavy} (8.2$\times$, CI [7.9, 8.9]),
+benchmarks: \texttt{numeric-boundary} (11.5$\times$ within-Rust, CI
+[11.4, 11.8]) and \texttt{number-heavy} (9.1$\times$, CI [7.9, 9.9]),
 compared to 1.5$\times$ in Go for both.  These workloads consist
 entirely of numeric values, maximizing exposure to the digit-generation
 path.  The Rust \burgerdybvig implementation uses a lazily-initialized
@@ -84,6 +84,14 @@ cost differences, not measurement noise.  The Go within-language
 comparisons at ${\approx}1.5\times$ are smaller because Go's
 \texttt{sync.Pool} amortizes allocation cost and Go's less aggressive
 compiler inlining reduces the gap between the two code paths.
+
+Table~\ref{tab:per-iteration-outliers} shows per-iteration timing
+stability for these outlier workloads.  Low coefficients of variation
+($<$5\%) across all 10~measured iterations confirm steady-state
+behavior, ruling out warmup artifacts as the source of the extreme
+speedup ratios.
+
+\input{tables/per-iteration-outliers}
 
 \subsection{Profile-Level Analysis}
 
@@ -132,21 +140,27 @@ algorithm itself (zero heap allocation, no multiprecision arithmetic),
 not from Go-specific runtime characteristics such as garbage collection
 pressure or \texttt{sync.Pool} contention.
 
-\textbf{Interaction analysis limitation.}  The four implementations form
-a $2 \times 2$ structure (algorithm $\times$ language), but we analyze
-them via pairwise comparisons rather than a formal factorial interaction
-test (e.g., two-way ANOVA or aligned rank transform).  A formal
-interaction test would directly quantify whether the algorithm
-advantage \emph{differs in magnitude} between Go and Rust.  Our pairwise
-approach establishes directional consistency (the \schubfach advantage
-holds in both languages) but does not test whether the effect size
-difference between languages is statistically significant.  We adopt the
-pairwise approach because (a)~the Go and Rust API harnesses have
-fundamentally different measurement granularity, violating the
-homoscedasticity assumption of ANOVA, and (b)~within-language
-comparisons are the primary focus for algorithmic conclusions.
-Readers should interpret the cross-language consistency as suggestive
-evidence of language independence, not a formal interaction test.
+\textbf{Interaction analysis.}  The four implementations form
+a $2 \times 2$ structure (algorithm $\times$ language).  While we do not
+perform a formal factorial interaction test (e.g., two-way ANOVA or
+aligned rank transform) due to measurement granularity asymmetry between
+harnesses, Table~\ref{tab:interaction-analysis} reports a ratio-of-ratios
+(RoR) analysis: for each canonicalize workload, $R_\text{Go}$ and
+$R_\text{Rust}$ are the within-language \schubfach/\burgerdybvig speedup
+ratios, and $\text{RoR} = R_\text{Rust}/R_\text{Go}$.
+
+\input{tables/interaction-analysis}
+
+$\text{RoR} > 1$ indicates that the \schubfach advantage is amplified in
+Rust.  On number-dense workloads, $\text{RoR}$ consistently exceeds 1
+(typically 1.3--2.0$\times$), reflecting the larger allocation cost
+differential in Rust where \texttt{num-bigint} lacks Go's
+\texttt{sync.Pool} amortization.  This is consistent with the
+mechanistic explanation: both languages show the algorithmic advantage,
+but Rust amplifies it because its multiprecision path has higher
+per-operation allocation cost.  Readers should interpret the RoR as
+descriptive evidence of interaction magnitude, not a formal statistical
+test of interaction significance.
 
 \textbf{Cross-language comparison caveats.}  Same-algorithm
 cross-language API comparisons (e.g., schubfach:go-vs-rs) should be
@@ -162,14 +176,18 @@ than inherent language characteristics.  These comparisons primarily
 serve to confirm directional consistency of the algorithmic ordering,
 not to quantify precise language overhead.
 
-\textbf{Allocation reporting asymmetry.}  The Rust bench harness reports
-\texttt{0~B/op} and \texttt{0~allocs/op} for all benchmarks because
-Rust lacks Go-style per-operation allocator statistics.  These zeros
-mean ``not measured,'' not ``zero allocations.''  The Rust
-\burgerdybvig implementation does perform heap allocations via
-\texttt{num-bigint::BigInt}; only the Rust \schubfach implementation is
-truly allocation-free in its digit-generation path.  Within-language
-allocation comparisons are therefore limited to the Go pair.
+\textbf{Allocation instrumentation.}  The Rust bench harness uses a
+counting global allocator (\texttt{std::alloc::GlobalAlloc}) that
+increments atomic counters on each allocation, reporting per-operation
+byte and allocation counts in the same format as Go's
+\texttt{testing.B}.  This confirms the mechanistic explanation:
+Rust-\schubfach allocates minimally (e.g., 1{,}036~B/op, 24~allocs/op
+on \texttt{numeric-boundary}) while Rust-\burgerdybvig allocates
+substantially more (27{,}652~B/op, 471~allocs/op on the same workload)
+due to \texttt{num-bigint::BigInt} multiprecision arithmetic.  The
+$26.7\times$ allocation byte ratio directly explains the 11.5$\times$
+speedup: allocation and initialization cost dominates the
+multiprecision path.
 
 \textbf{Unicode workload anomaly.}  The \texttt{unicode} workload is
 the only API-level case where Go outperforms Rust for both algorithms:

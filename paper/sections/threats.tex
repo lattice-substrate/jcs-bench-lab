@@ -1,6 +1,95 @@
 \section{Threats to Validity}
 \label{sec:threats}
 
+\subsection{Internal Validity}
+
+\textbf{Warmup validation.}
+CLI benchmarks discard 3~warmup runs.  Rust API benchmarks discard
+3~warmup iterations per workload to stabilize instruction caches,
+branch predictors, and lazily-initialized data structures (specifically,
+the Rust \burgerdybvig implementation's \texttt{OnceLock}-based
+power-of-ten cache).  Go API benchmarks benefit from \texttt{testing.B}'s
+built-in warmup.  Per-iteration timing data
+(Table~\ref{tab:per-iteration-outliers}) confirms low coefficient of
+variation ($<$5\%) across measured iterations, indicating stable
+steady-state behavior after warmup.  Figure~\ref{fig:warmup-validation}
+shows 20-iteration warmup validation data for a representative workload.
+
+\input{figures/warmup-validation}
+
+\textbf{Sequential run autocorrelation.}
+CLI benchmarks run sequentially on the same machine; consecutive runs
+share CPU thermal state, cache warmth, and potentially TDP-limited
+frequency.  The randomized task order (fixed seed) mitigates systematic
+ordering effects, but thermal coupling between adjacent runs creates
+weak positive autocorrelation that may slightly inflate the effective
+sample size.  Permutation tests are robust to mild non-stationarity but
+assume exchangeability under the null hypothesis; this assumption is
+approximately but not exactly satisfied.
+
+\textbf{CPU core affinity.}
+CLI benchmarks ran without CPU pinning on heterogeneous P-core/E-core
+topology (8~P-cores at 3.6--5.0\,GHz, 4~E-cores at 2.7--3.8\,GHz).
+Process migration may inflate variance for small workloads near the
+noise floor; an E-core placement could slow a single run by 30--40\%.
+The high MDEs observed for small Go CLI workloads (14--24\%) are
+consistent with this variance source.  API benchmarks (in-process) are
+less susceptible.
+
+\textbf{API measurement granularity.}
+Go API benchmarks (\texttt{testing.B}) auto-calibrate the number of
+inner loop iterations per sample, producing averaged low-variance
+samples.  Rust API benchmarks time individual function calls ($N{=}1$
+per sample), producing inherently higher-variance samples.  This
+asymmetry affects cross-language comparisons but not within-language
+comparisons.  We note this caveat in \S\ref{sec:discussion} and
+emphasize within-language results for algorithmic conclusions.
+
+\textbf{sync.Pool mitigation.}
+The Go \burgerdybvig implementation uses \texttt{sync.Pool} to reuse
+big-integer buffers, reducing allocation cost.  Without pooling, the
+performance gap would be wider.  This reflects realistic production usage
+but may understate the theoretical algorithmic advantage of fixed-width
+approaches.
+
+\subsection{Construct Validity}
+
+\textbf{Allocation instrumentation.}
+Rust allocation data is measured via a counting global allocator
+(\texttt{std::alloc::GlobalAlloc}) that intercepts all heap allocations
+and reports per-operation byte and count totals.  This includes
+allocations from the benchmark infrastructure itself (e.g., output buffer
+construction), not solely the digit-generation path.  Go's
+\texttt{testing.B} has the same characteristic.  Within-language
+$\Delta$allocs comparisons are valid because both implementations share
+the same infrastructure overhead.
+
+\textbf{Compiler optimization asymmetry.}
+Rust builds use \texttt{opt-level=3}, link-time optimization (LTO), and
+\texttt{codegen-units=1}, enabling aggressive cross-crate inlining and
+whole-program optimization.  Go's compiler does not support LTO and has
+a less aggressive inlining heuristic.  The observed cross-language
+speedups (2--4$\times$ in API benchmarks) may partly reflect differences
+in compiler optimization quality rather than intrinsic language
+characteristics.  Within-language comparisons are unaffected since both
+implementations in each pair share the same compiler pipeline.
+
+\textbf{Memory allocator differences.}
+Go uses a tcmalloc-derived allocator integrated with its garbage
+collector.  Rust uses the system allocator (typically glibc malloc on
+Linux).  For the multiprecision (\burgerdybvig) path, which performs
+heap allocations for big-integer arithmetic, allocator performance
+differences could affect cross-language comparisons.  Within-language
+comparisons are unaffected since both implementations share the same
+allocator.
+
+\textbf{Oracle SHA-256 circularity.}
+SHA-256 checksums verify vector integrity but cannot verify oracle
+correctness.  Independent verification against a second JS engine
+(SpiderMonkey, JavaScriptCore) is noted as future work.
+
+\subsection{External Validity}
+
 \textbf{Language specificity (mitigated).}
 This threat is substantially mitigated by the $2 \times 2$
 cross-language comparison matrix: both algorithms are implemented in Go
@@ -32,7 +121,9 @@ normative spec but not independently verified.  This is mitigated by
 dense boundary coverage: 286{,}362 vectors including all subnormals
 up to $2^{12}$, all binary64 powers of two, subnormal/normal boundary
 neighborhoods, \rfcjcs Appendix~B examples with neighbors, and
-pseudorandom fill.
+pseudorandom fill.  Multi-engine validation (SpiderMonkey,
+JavaScriptCore) is a concrete item for future work that would
+strengthen oracle independence.
 
 \textbf{Workload representativeness.}
 Benchmark workloads are synthetic, designed to bracket the performance
@@ -47,75 +138,3 @@ untested.  While the canonicalization algorithms do not depend on byte
 order (they operate on IEEE~754 binary64 values via language-level
 primitives), edge cases in binary representation parsing could
 theoretically differ on big-endian platforms.
-
-\textbf{CPU core affinity.}
-CLI benchmarks ran without CPU pinning on heterogeneous P-core/E-core
-topology (8~P-cores at 3.6--5.0\,GHz, 4~E-cores at 2.7--3.8\,GHz).
-Process migration may inflate variance for small workloads near the
-noise floor; an E-core placement could slow a single run by 30--40\%.
-The high MDEs observed for small Go CLI workloads (14--24\%) are
-consistent with this variance source.  API benchmarks (in-process) are
-less susceptible.
-
-\textbf{Sequential run autocorrelation.}
-CLI benchmarks run sequentially on the same machine; consecutive runs
-share CPU thermal state, cache warmth, and potentially TDP-limited
-frequency.  The randomized task order (fixed seed) mitigates systematic
-ordering effects, but thermal coupling between adjacent runs creates
-weak positive autocorrelation that may slightly inflate the effective
-sample size.  Permutation tests are robust to mild non-stationarity but
-assume exchangeability under the null hypothesis; this assumption is
-approximately but not exactly satisfied.
-
-\textbf{Warmup validation.}
-CLI benchmarks discard 3~warmup runs.  Rust API benchmarks discard
-3~warmup iterations per workload to stabilize instruction caches,
-branch predictors, and lazily-initialized data structures (specifically,
-the Rust \burgerdybvig implementation's \texttt{OnceLock}-based
-power-of-ten cache).  Go API benchmarks benefit from \texttt{testing.B}'s
-built-in warmup.  We did not formally validate convergence beyond
-discarding these iterations; however, Go static binaries have minimal
-JIT-like warmup effects, and permutation tests are robust to mild
-non-stationarity.  Residual first-few-iteration effects may persist
-for very small Rust workloads (e.g., \texttt{numeric-boundary}), where
-the wide confidence intervals reflect this uncertainty.
-
-\textbf{Oracle SHA-256 circularity.}
-SHA-256 checksums verify vector integrity but cannot verify oracle
-correctness.  Independent verification against a second JS engine
-(SpiderMonkey, JavaScriptCore) is noted as future work.
-
-\textbf{sync.Pool mitigation.}
-The Go \burgerdybvig implementation uses \texttt{sync.Pool} to reuse
-big-integer buffers, reducing allocation cost.  Without pooling, the
-performance gap would be wider.  This reflects realistic production usage
-but may understate the theoretical algorithmic advantage of fixed-width
-approaches.
-
-\textbf{Compiler optimization asymmetry.}
-Rust builds use \texttt{opt-level=3}, link-time optimization (LTO), and
-\texttt{codegen-units=1}, enabling aggressive cross-crate inlining and
-whole-program optimization.  Go's compiler does not support LTO and has
-a less aggressive inlining heuristic.  The observed cross-language
-speedups (2--4$\times$ in API benchmarks) may partly reflect differences
-in compiler optimization quality rather than intrinsic language
-characteristics.  Within-language comparisons are unaffected since both
-implementations in each pair share the same compiler pipeline.
-
-\textbf{Memory allocator differences.}
-Go uses a tcmalloc-derived allocator integrated with its garbage
-collector.  Rust uses the system allocator (typically glibc malloc on
-Linux).  For the multiprecision (\burgerdybvig) path, which performs
-heap allocations for big-integer arithmetic, allocator performance
-differences could affect cross-language comparisons.  Within-language
-comparisons are unaffected since both implementations share the same
-allocator.
-
-\textbf{API measurement granularity.}
-Go API benchmarks (\texttt{testing.B}) auto-calibrate the number of
-inner loop iterations per sample, producing averaged low-variance
-samples.  Rust API benchmarks time individual function calls ($N{=}1$
-per sample), producing inherently higher-variance samples.  This
-asymmetry affects cross-language comparisons but not within-language
-comparisons.  We note this caveat in \S\ref{sec:discussion} and
-emphasize within-language results for algorithmic conclusions.

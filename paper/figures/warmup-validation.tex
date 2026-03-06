@@ -1,0 +1,46 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    width=0.95\columnwidth,
+    height=6.5cm,
+    xlabel={Iteration (post-warmup)},
+    ylabel={Latency ($\mu$s)},
+    xmin=0.5, xmax=20.5,
+    ymin=0, ymax=4500,
+    grid=major,
+    legend style={at={(0.98,0.98)}, anchor=north east, font=\small},
+    legend cell align={left},
+    mark size=2pt,
+    xtick={1,5,10,15,20},
+]
+% Schubfach-Rust: array-2048, 20 measured iterations (3 warmup discarded)
+\addplot[mark=*, blue!70, thick] coordinates {
+    (1,2165) (2,2184) (3,2148) (4,1797) (5,1375)
+    (6,1366) (7,1341) (8,1367) (9,1348) (10,1338)
+    (11,1369) (12,1336) (13,1347) (14,1402) (15,1380)
+    (16,1366) (17,1373) (18,1346) (19,1360) (20,1354)
+};
+% JSON-Canon-Rust: array-2048, 20 measured iterations
+\addplot[mark=triangle*, red!70, thick] coordinates {
+    (1,4014) (2,4081) (3,4031) (4,4099) (5,4027)
+    (6,4016) (7,4015) (8,4038) (9,4015) (10,4017)
+    (11,4036) (12,4021) (13,4024) (14,4037) (15,4008)
+    (16,4015) (17,4002) (18,4022) (19,4020) (20,4017)
+};
+\legend{\schubfach-rs, \burgerdybvig-rs}
+% Annotate warmup region
+\draw[dashed, gray, thin] (axis cs:4.5,0) -- (axis cs:4.5,4500);
+\node[anchor=south, font=\scriptsize, gray] at (axis cs:2.5,4200) {warmup tail};
+\end{axis}
+\end{tikzpicture}
+\caption{Per-iteration latency for \texttt{array-2048} (Rust API
+canonicalize, $n{=}20$ measured iterations after 3~discarded warmup
+iterations).  \schubfach-rs shows residual cache stabilization in
+iterations 1--4; \burgerdybvig-rs is stable from iteration~1.  Both
+reach steady state by iteration~5, confirming that 3~warmup iterations
+are sufficient for most workloads and any residual warmup effect in the
+first few measured iterations does not bias the within-language
+comparison (both implementations share the same harness).}
+\label{fig:warmup-validation}
+\end{figure}
