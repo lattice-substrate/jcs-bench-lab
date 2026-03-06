@@ -61,7 +61,7 @@ type caseSummary struct {
 	PassRate int `json:"pass_rate_pct"`
 }
 
-func runConformance(failOnMismatch bool) error {
+func runConformance(failOnMismatch bool, lang, impl string) error {
 	root, err := repoRoot()
 	if err != nil {
 		return err
@@ -70,15 +70,14 @@ func runConformance(failOnMismatch bool) error {
 		return err
 	}
 
-	impls := []implConfig{
-		{Name: "schubfach", Bin: filepath.Join(root, "bin", "schubfach-jcs-canon")},
-		{Name: "json-canon", Bin: filepath.Join(root, "bin", "json-canon-jcs-canon")},
+	selected, err := selectImplSpecs(root, lang, impl)
+	if err != nil {
+		return err
 	}
-	for _, impl := range impls {
-		if _, err := os.Stat(impl.Bin); err != nil {
-			return fmt.Errorf("missing binary %s (run setup first)", impl.Bin)
-		}
+	if err := ensureImplBinsExist(root, selected); err != nil {
+		return err
 	}
+	impls := toImplConfigs(root, selected)
 
 	cases, err := loadConformanceCases(root)
 	if err != nil {

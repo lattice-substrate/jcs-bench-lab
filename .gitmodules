@@ -4,3 +4,9 @@
 [submodule "impl-json-canon"]
 	path = impl-json-canon
 	url = git@github.com:lattice-substrate/json-canon.git
+[submodule "impl-schubfach-rs"]
+	path = impl-schubfach-rs
+	url = git@github.com:lattice-substrate/jcs-schubfach-rs.git
+[submodule "impl-json-canon-rs"]
+	path = impl-json-canon-rs
+	url = git@github.com:lattice-substrate/jcs-burger-dybvig-rs.git

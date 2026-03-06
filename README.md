@@ -3,8 +3,10 @@
 Go-native benchmarking lab for comparing:
 - `impl-schubfach` (`lattice-substrate/jcs-schubfach`)
 - `impl-json-canon` (`lattice-substrate/json-canon`)
+- `impl-schubfach-rs` (`lattice-substrate/jcs-schubfach-rs`)
+- `impl-json-canon-rs` (`lattice-substrate/json-canon-rs`)
 
-Both implementations are treated as black-box competitors.
+All implementations are treated as black-box competitors.
 
 ## First runnable benchmark command
 
@@ -13,7 +15,7 @@ go run ./cmd/lab smoke
 ```
 
 This single command will:
-1. Build both CLI binaries into `bin/`
+1. Build selected CLI binaries into `bin/` (default: all Go+Rust impls)
 2. Capture environment metadata into `results/latest-env.txt`
 3. Generate expanded workload + canonical fixture corpus into `workloads/`
 4. Run authoritative conformance matrix with case IDs
@@ -24,9 +26,15 @@ This single command will:
 
 ```bash
 go run ./cmd/lab setup
+go run ./cmd/lab setup -lang go
+go run ./cmd/lab setup -lang rust
 go run ./cmd/lab gen-workloads
 go run ./cmd/lab conformance
+go run ./cmd/lab conformance -lang rust
+go run ./cmd/lab conformance -impl schubfach-rs
 go run ./cmd/lab bench-cli -track e2e -repeats 9 -warmup 2 -seed 42
+go run ./cmd/lab bench-cli -lang go
+go run ./cmd/lab bench-cli -lang rust
 go run ./cmd/lab bench-cli -track cli-algorithmic -repeats 9 -warmup 2
 go run ./cmd/lab bench-cli -track verify-only -repeats 9 -warmup 2
 go run ./cmd/lab bench-api -count 7

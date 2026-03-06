@@ -1,0 +1,75 @@
+\begin{thebibliography}{10}
+
+\bibitem{adams2018ryu}
+Ulf Adams.
+\newblock Ry\={u}: Fast float-to-string conversion.
+\newblock In {\em Proceedings of the ACM SIGPLAN 2018 Conference on Programming
+  Language Design and Implementation (PLDI)}, pages 270--282. ACM, 2018.
+
+\bibitem{rfc8949}
+Carsten Bormann and Paul Hoffman.
+\newblock {Concise Binary Object Representation (CBOR)}.
+\newblock RFC 8949, 2020.
+
+\bibitem{burger1996printing}
+Robert~G. Burger and R.~Kent Dybvig.
+\newblock Printing floating-point numbers quickly and accurately.
+\newblock In {\em Proceedings of the ACM SIGPLAN 1996 Conference on Programming
+  Language Design and Implementation (PLDI)}, pages 108--116. ACM, 1996.
+
+\bibitem{champagnegareau2026}
+Ja{\"e}l Champagne~Gareau and Daniel Lemire.
+\newblock Converting binary floating-point numbers to shortest decimal strings:
+  An experimental review.
+\newblock {\em Software: Practice and Experience}, 2026.
+\newblock Published online January 2026.
+
+\bibitem{ecma262}
+{Ecma International}.
+\newblock {ECMA-262: ECMAScript Language Specification}, 2024.
+
+\bibitem{gay1990dtoa}
+David~M. Gay.
+\newblock Correctly rounded binary-decimal and decimal-binary conversions,
+  1990.
+\newblock AT\&T Bell Laboratories Numerical Analysis Manuscript 90-10.
+
+\bibitem{giulietti2022schubfach}
+Raffaello Giulietti.
+\newblock The schubfach way to render doubles, 2022.
+\newblock Technical report.
+
+\bibitem{ieee754}
+{IEEE}.
+\newblock {\em {IEEE Standard for Floating-Point Arithmetic}}.
+\newblock Number 754-2019. IEEE, 2019.
+
+\bibitem{jeon2021dragonbox}
+Junekey Jeon.
+\newblock Dragonbox: A new floating-point binary-to-decimal conversion
+  algorithm, 2022.
+\newblock arXiv preprint; reference implementation and technical report at
+  \url{https://github.com/jk-jeon/dragonbox}.
+
+\bibitem{lemire2021number}
+Daniel Lemire.
+\newblock Number parsing at a gigabyte per second.
+\newblock {\em Software: Practice and Experience}, 51(8):1700--1727, 2021.
+
+\bibitem{loitsch2010grisu}
+Florian Loitsch.
+\newblock Printing floating-point numbers quickly and accurately with integers.
+\newblock In {\em Proceedings of the ACM SIGPLAN 2010 Conference on Programming
+  Language Design and Implementation (PLDI)}, pages 233--243. ACM, 2010.
+
+\bibitem{rfc8785}
+Anders Rundgren, Bret Jordan, and Samuel Erdtman.
+\newblock {JSON Canonicalization Scheme (JCS)}.
+\newblock RFC 8785, June 2020.
+
+\bibitem{w3c2024rdf}
+{W3C}.
+\newblock {RDF Dataset Canonicalization}, 2024.
+\newblock W3C Recommendation, 21 May 2024.
+
+\end{thebibliography}

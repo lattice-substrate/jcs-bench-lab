@@ -128,7 +128,11 @@ func main() {
 
 	switch os.Args[1] {
 	case "setup":
-		if err := runSetup(); err != nil {
+		fs := flag.NewFlagSet("setup", flag.ExitOnError)
+		lang := fs.String("lang", "all", "implementation language set: all | go | rust")
+		impl := fs.String("impl", "", "specific implementation name (or comma-separated list)")
+		_ = fs.Parse(os.Args[2:])
+		if err := runSetup(*lang, *impl); err != nil {
 			fatal(err)
 		}
 	case "gen-workloads":
@@ -138,8 +142,10 @@ func main() {
 	case "conformance":
 		fs := flag.NewFlagSet("conformance", flag.ExitOnError)
 		failOnMismatch := fs.Bool("fail-on-mismatch", true, "return non-zero when any case fails")
+		lang := fs.String("lang", "all", "implementation language set: all | go | rust")
+		impl := fs.String("impl", "", "specific implementation name (or comma-separated list)")
 		_ = fs.Parse(os.Args[2:])
-		if err := runConformance(*failOnMismatch); err != nil {
+		if err := runConformance(*failOnMismatch, *lang, *impl); err != nil {
 			fatal(err)
 		}
 	case "bench-cli":
@@ -150,23 +156,29 @@ func main() {
 		seed := fs.Int64("seed", 0, "run randomization seed (0 = current time)")
 		pinCPU := fs.Int("pin-cpu", -1, "cpu core index for taskset pinning (-1 disables)")
 		skipConformance := fs.Bool("skip-conformance", false, "skip conformance gate check (development only)")
+		lang := fs.String("lang", "all", "implementation language set: all | go | rust")
+		impl := fs.String("impl", "", "specific implementation name (or comma-separated list)")
 		_ = fs.Parse(os.Args[2:])
-		if err := runBenchCLI(*repeats, *warmup, *track, *seed, *pinCPU, *skipConformance); err != nil {
+		if err := runBenchCLI(*repeats, *warmup, *track, *seed, *pinCPU, *skipConformance, *lang, *impl); err != nil {
 			fatal(err)
 		}
 	case "bench-api":
 		fs := flag.NewFlagSet("bench-api", flag.ExitOnError)
 		count := fs.Int("count", 10, "go test -count value")
+		lang := fs.String("lang", "all", "implementation language set: all | go | rust")
+		impl := fs.String("impl", "", "specific implementation name (or comma-separated list)")
 		_ = fs.Parse(os.Args[2:])
-		if err := runBenchAPI(*count); err != nil {
+		if err := runBenchAPI(*count, *lang, *impl); err != nil {
 			fatal(err)
 		}
 	case "fuzz":
 		fs := flag.NewFlagSet("fuzz", flag.ExitOnError)
 		cases := fs.Int("cases", 2000, "number of differential fuzz cases")
 		seed := fs.Int64("seed", 0, "fuzz seed (0 = current time)")
+		lang := fs.String("lang", "all", "implementation language set: all | go | rust")
+		impl := fs.String("impl", "", "specific implementation name (or comma-separated list)")
 		_ = fs.Parse(os.Args[2:])
-		if err := runFuzz(*cases, *seed); err != nil {
+		if err := runFuzz(*cases, *seed, *lang, *impl); err != nil {
 			fatal(err)
 		}
 	case "stats":
@@ -227,16 +239,16 @@ func main() {
 			fatal(err)
 		}
 	case "smoke":
-		if err := runSetup(); err != nil {
+		if err := runSetup("go", ""); err != nil {
 			fatal(err)
 		}
 		if err := runGenerateWorkloads(); err != nil {
 			fatal(err)
 		}
-		if err := runConformance(true); err != nil {
+		if err := runConformance(true, "go", ""); err != nil {
 			fatal(err)
 		}
-		if err := runBenchCLI(3, 1, "e2e", 0, -1, false); err != nil {
+		if err := runBenchCLI(3, 1, "e2e", 0, -1, false, "go", ""); err != nil {
 			fatal(err)
 		}
 	default:
@@ -271,7 +283,7 @@ func ensureDirs(root string) error {
 	return nil
 }
 
-func runSetup() error {
+func runSetup(lang, impl string) error {
 	root, err := repoRoot()
 	if err != nil {
 		return err
@@ -280,19 +292,40 @@ func runSetup() error {
 		return err
 	}
 
-	tasks := []struct {
-		implDir string
-		outBin  string
-	}{
-		{implDir: filepath.Join(root, "impl-schubfach"), outBin: filepath.Join(root, "bin", "schubfach-jcs-canon")},
-		{implDir: filepath.Join(root, "impl-json-canon"), outBin: filepath.Join(root, "bin", "json-canon-jcs-canon")},
+	selected, err := selectImplSpecs(root, lang, impl)
+	if err != nil {
+		return err
 	}
-	for _, t := range tasks {
-		cmd := exec.Command("go", "build", "-trimpath", "-o", t.outBin, "./cmd/jcs-canon")
-		cmd.Dir = t.implDir
-		out, err := cmd.CombinedOutput()
-		if err != nil {
-			return fmt.Errorf("build failed in %s: %w\n%s", t.implDir, err, string(out))
+	for _, spec := range selected {
+		if _, err := os.Stat(spec.RepoDir); err != nil {
+			return fmt.Errorf("missing implementation repo %s (%s)", spec.RepoDir, spec.Name)
+		}
+		outBin := implBinPath(root, spec)
+		switch spec.BuildKind {
+		case "go":
+			cmd := exec.Command("go", "build", "-trimpath", "-o", outBin, spec.GoBuildPkg)
+			cmd.Dir = spec.RepoDir
+			out, err := cmd.CombinedOutput()
+			if err != nil {
+				return fmt.Errorf("go build failed in %s: %w\n%s", spec.RepoDir, err, string(out))
+			}
+		case "rust":
+			cmd := exec.Command(findCargo(), "build", "--release")
+			cmd.Dir = spec.RepoDir
+			out, err := cmd.CombinedOutput()
+			if err != nil {
+				return fmt.Errorf("cargo build failed in %s: %w\n%s", spec.RepoDir, err, string(out))
+			}
+			srcBin := filepath.Join(spec.RepoDir, "target", "release", "jcs-canon")
+			binData, err := os.ReadFile(srcBin)
+			if err != nil {
+				return fmt.Errorf("read rust binary %s: %w", srcBin, err)
+			}
+			if err := os.WriteFile(outBin, binData, 0o755); err != nil {
+				return fmt.Errorf("write binary %s: %w", outBin, err)
+			}
+		default:
+			return fmt.Errorf("unsupported build kind %q for %s", spec.BuildKind, spec.Name)
 		}
 	}
 
@@ -319,6 +352,12 @@ func collectEnv(root string) (string, error) {
 	fmt.Fprintf(&b, "go_runtime=%s\n", runtime.Version())
 	if out, err := exec.Command("go", "version").CombinedOutput(); err == nil {
 		fmt.Fprintf(&b, "go_version_cmd=%s\n", strings.TrimSpace(string(out)))
+	}
+	if out, err := exec.Command(findRustc(), "--version").CombinedOutput(); err == nil {
+		fmt.Fprintf(&b, "rustc_version=%s\n", strings.TrimSpace(string(out)))
+	}
+	if out, err := exec.Command(findCargo(), "--version").CombinedOutput(); err == nil {
+		fmt.Fprintf(&b, "cargo_version=%s\n", strings.TrimSpace(string(out)))
 	}
 	fmt.Fprintf(&b, "goos=%s\n", runtime.GOOS)
 	fmt.Fprintf(&b, "goarch=%s\n", runtime.GOARCH)
@@ -358,14 +397,45 @@ func collectEnv(root string) (string, error) {
 	if goflags := os.Getenv("GOFLAGS"); goflags != "" {
 		fmt.Fprintf(&b, "goflags=%s\n", goflags)
 	}
-	for _, repo := range []string{"impl-schubfach", "impl-json-canon"} {
-		rev, _ := gitRev(filepath.Join(root, repo))
-		fmt.Fprintf(&b, "%s_rev=%s\n", repo, rev)
-		if st, err := os.Stat(filepath.Join(root, "bin", strings.TrimPrefix(repo, "impl-")+"-jcs-canon")); err == nil {
-			fmt.Fprintf(&b, "%s_bin_bytes=%d\n", repo, st.Size())
+	for _, spec := range allImplSpecs(root) {
+		if _, err := os.Stat(spec.RepoDir); err != nil {
+			continue
+		}
+		rev, _ := gitRev(spec.RepoDir)
+		fmt.Fprintf(&b, "%s_rev=%s\n", strings.ReplaceAll(spec.Name, "-", "_"), rev)
+		if st, err := os.Stat(implBinPath(root, spec)); err == nil {
+			fmt.Fprintf(&b, "%s_bin_bytes=%d\n", strings.ReplaceAll(spec.Name, "-", "_"), st.Size())
 		}
 	}
 	return b.String(), nil
+}
+
+func findCargo() string {
+	if p, err := exec.LookPath("cargo"); err == nil {
+		return p
+	}
+	home, _ := os.UserHomeDir()
+	if home != "" {
+		p := filepath.Join(home, ".cargo", "bin", "cargo")
+		if _, err := os.Stat(p); err == nil {
+			return p
+		}
+	}
+	return "cargo"
+}
+
+func findRustc() string {
+	if p, err := exec.LookPath("rustc"); err == nil {
+		return p
+	}
+	home, _ := os.UserHomeDir()
+	if home != "" {
+		p := filepath.Join(home, ".cargo", "bin", "rustc")
+		if _, err := os.Stat(p); err == nil {
+			return p
+		}
+	}
+	return "rustc"
 }
 
 func hostnameOrUnknown() string {
@@ -726,7 +796,7 @@ func longStringPayload(size int) string {
 	return s.String()
 }
 
-func runBenchCLI(repeats, warmup int, track string, seed int64, pinCPU int, skipConformance bool) error {
+func runBenchCLI(repeats, warmup int, track string, seed int64, pinCPU int, skipConformance bool, lang, impl string) error {
 	root, err := repoRoot()
 	if err != nil {
 		return err
@@ -756,15 +826,14 @@ func runBenchCLI(repeats, warmup int, track string, seed int64, pinCPU int, skip
 		}
 	}
 
-	impls := []implConfig{
-		{Name: "schubfach", Bin: filepath.Join(root, "bin", "schubfach-jcs-canon")},
-		{Name: "json-canon", Bin: filepath.Join(root, "bin", "json-canon-jcs-canon")},
+	selected, err := selectImplSpecs(root, lang, impl)
+	if err != nil {
+		return err
 	}
-	for _, impl := range impls {
-		if _, err := os.Stat(impl.Bin); err != nil {
-			return fmt.Errorf("missing binary %s (run setup first)", impl.Bin)
-		}
+	if err := ensureImplBinsExist(root, selected); err != nil {
+		return err
 	}
+	impls := toImplConfigs(root, selected)
 
 	workloads, err := loadManifest(filepath.Join(root, "workloads", "manifest.json"))
 	if err != nil {
@@ -1147,7 +1216,6 @@ func applyQualityChecks(records []runRecord, q *qualityReport) {
 		}
 		for k, implMap := range byRunWorkload {
 			if len(implMap) < 2 {
-				q.InvalidFailureParityIssues = append(q.InvalidFailureParityIssues, k+"|missing-impl")
 				continue
 			}
 			var baseline *runRecord
@@ -1391,7 +1459,7 @@ func writeSummaryCSV(path string, rows []summaryRecord) error {
 	return w.Error()
 }
 
-func runBenchAPI(count int) error {
+func runBenchAPI(count int, lang, impl string) error {
 	if count < 1 {
 		return errors.New("count must be >= 1")
 	}
@@ -1406,16 +1474,53 @@ func runBenchAPI(count int) error {
 	outPath := filepath.Join(root, "results", "api-bench-"+stamp+".txt")
 	latest := filepath.Join(root, "results", "latest-api-bench.txt")
 
-	args := []string{"test", "./internal/apibench", "-run", "^$", "-bench", ".", "-benchmem", "-count", strconv.Itoa(count)}
-	cmd := exec.Command("go", args...)
-	cmd.Dir = root
 	var buf bytes.Buffer
-	mw := io.MultiWriter(os.Stdout, &buf)
-	cmd.Stdout = mw
-	cmd.Stderr = mw
-	if err := cmd.Run(); err != nil {
-		return fmt.Errorf("api benchmark failed: %w", err)
+	selected, err := selectImplSpecs(root, lang, impl)
+	if err != nil {
+		return err
 	}
+
+	var goStems []string
+	var rustSpecs []implSpec
+	for _, spec := range selected {
+		switch spec.Lang {
+		case "go":
+			goStems = append(goStems, spec.APIBenchStem)
+		case "rust":
+			rustSpecs = append(rustSpecs, spec)
+		}
+	}
+
+	mw := io.MultiWriter(os.Stdout, &buf)
+	if len(goStems) > 0 {
+		pattern := "."
+		if len(goStems) == 1 {
+			pattern = "^BenchmarkAPI(Canonicalize|Verify)" + goStems[0] + "/"
+		} else if len(goStems) > 1 {
+			pattern = "^BenchmarkAPI(Canonicalize|Verify)(" + strings.Join(goStems, "|") + ")/"
+		}
+		args := []string{"test", "./internal/apibench", "-run", "^$", "-bench", pattern, "-benchmem", "-count", strconv.Itoa(count)}
+		cmd := exec.Command("go", args...)
+		cmd.Dir = root
+		cmd.Stdout = mw
+		cmd.Stderr = mw
+		if err := cmd.Run(); err != nil {
+			return fmt.Errorf("api benchmark failed: %w", err)
+		}
+	}
+
+	for _, spec := range rustSpecs {
+		if _, err := os.Stat(rustBenchPath(spec)); err != nil {
+			return fmt.Errorf("missing rust bench binary %s (run setup first)", rustBenchPath(spec))
+		}
+		cmd := exec.Command(rustBenchPath(spec), "--workloads", filepath.Join(root, "workloads"), "--count", strconv.Itoa(count))
+		cmd.Stdout = mw
+		cmd.Stderr = mw
+		if err := cmd.Run(); err != nil {
+			return fmt.Errorf("rust api benchmark failed for %s: %w", spec.Name, err)
+		}
+	}
+
 	if err := os.WriteFile(outPath, buf.Bytes(), 0o644); err != nil {
 		return err
 	}
@@ -1546,10 +1651,10 @@ func runARM64Determinism() error {
 
 	// Run oracle vector tests for arm64 binaries.
 	type oracleResult struct {
-		GoldenVectors    map[string]interface{} `json:"golden_vectors"`
-		StressVectors    map[string]interface{} `json:"stress_vectors"`
-		TotalTests       int                    `json:"total_tests"`
-		TotalPassed      int                    `json:"total_passed"`
+		GoldenVectors map[string]interface{} `json:"golden_vectors"`
+		StressVectors map[string]interface{} `json:"stress_vectors"`
+		TotalTests    int                    `json:"total_tests"`
+		TotalPassed   int                    `json:"total_passed"`
 	}
 	oracleTests := map[string]oracleResult{}
 	for _, b := range builds {
@@ -1615,14 +1720,14 @@ func runARM64Determinism() error {
 
 	goVer := runtime.Version()
 	report := map[string]interface{}{
-		"generated_at_utc":  time.Now().UTC().Format(time.RFC3339),
-		"test":              "cross_architecture_determinism",
-		"x86_64_go":         goVer,
-		"arm64_emulation":   qemuVer,
-		"total_comparisons": totalComparisons,
-		"passed":            passed,
-		"failed":            len(failures),
-		"failures":          failures,
+		"generated_at_utc":    time.Now().UTC().Format(time.RFC3339),
+		"test":                "cross_architecture_determinism",
+		"x86_64_go":           goVer,
+		"arm64_emulation":     qemuVer,
+		"total_comparisons":   totalComparisons,
+		"passed":              passed,
+		"failed":              len(failures),
+		"failures":            failures,
 		"oracle_vector_tests": oracleTests,
 		"cli_workload_determinism": map[string]interface{}{
 			"total_workload_mode_impl_comparisons": totalComparisons,

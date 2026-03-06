@@ -80,10 +80,10 @@ func runGate(conformancePath, statsPath, fuzzPath, baselinePath string, maxRegre
 		relA := c.MeanMSImplA / maxFloat(base.MeanMSImplA, 1e-9)
 		relB := c.MeanMSImplB / maxFloat(base.MeanMSImplB, 1e-9)
 		if relA > maxAllowed {
-			violations = append(violations, fmt.Sprintf("%s: schubfach mean regression %.2f%%", statsKey(c), (relA-1.0)*100))
+			violations = append(violations, fmt.Sprintf("%s: %s mean regression %.2f%%", statsKey(c), c.ImplA, (relA-1.0)*100))
 		}
 		if relB > maxAllowed {
-			violations = append(violations, fmt.Sprintf("%s: json-canon mean regression %.2f%%", statsKey(c), (relB-1.0)*100))
+			violations = append(violations, fmt.Sprintf("%s: %s mean regression %.2f%%", statsKey(c), c.ImplB, (relB-1.0)*100))
 		}
 	}
 
@@ -146,7 +146,7 @@ func loadFuzzReport(path string) (fuzzReport, error) {
 }
 
 func statsKey(c statsComparison) string {
-	return strings.Join([]string{c.Track, c.Mode, c.Workload, c.Class}, "|")
+	return strings.Join([]string{c.PairLabel, c.Track, c.Mode, c.Workload, c.Class, c.ImplA, c.ImplB}, "|")
 }
 
 func maxFloat(a, b float64) float64 {

@@ -41,7 +41,7 @@ type fuzzMember struct {
 	v fuzzNode
 }
 
-func runFuzz(cases int, seed int64) error {
+func runFuzz(cases int, seed int64, lang, impl string) error {
 	if cases < 1 {
 		return fmt.Errorf("cases must be >= 1")
 	}
@@ -52,15 +52,17 @@ func runFuzz(cases int, seed int64) error {
 	if err != nil {
 		return err
 	}
-	impls := []implConfig{
-		{Name: "schubfach", Bin: filepath.Join(root, "bin", "schubfach-jcs-canon")},
-		{Name: "json-canon", Bin: filepath.Join(root, "bin", "json-canon-jcs-canon")},
+	selected, err := selectImplSpecs(root, lang, impl)
+	if err != nil {
+		return err
 	}
-	for _, impl := range impls {
-		if _, err := fileSize(impl.Bin); err != nil {
-			return fmt.Errorf("missing binary %s (run setup first)", impl.Bin)
-		}
+	if len(selected) < 2 {
+		return fmt.Errorf("fuzz requires at least 2 implementations; got %d", len(selected))
 	}
+	if err := ensureImplBinsExist(root, selected); err != nil {
+		return err
+	}
+	impls := toImplConfigs(root, selected)
 
 	r := rand.New(rand.NewSource(seed))
 	failures := make([]fuzzFailure, 0)
@@ -69,46 +71,81 @@ func runFuzz(cases int, seed int64) error {
 		input := renderFuzzNode(n, r, false)
 		caseID := fmt.Sprintf("FUZZ-%06d", i+1)
 
-		canonA, errA := canonicalizeOutput(impls[0].Bin, []byte(input))
-		canonB, errB := canonicalizeOutput(impls[1].Bin, []byte(input))
-		if errA != nil || errB != nil {
-			failures = append(failures, fuzzFailure{CaseID: caseID, Input: input, Reason: "canonicalize execution error"})
-			continue
+		canonByImpl := make(map[string][]byte, len(impls))
+		var canonRef []byte
+		canonMismatch := false
+		for _, impl := range impls {
+			canon, err := canonicalizeOutput(impl.Bin, []byte(input))
+			if err != nil {
+				failures = append(failures, fuzzFailure{CaseID: caseID, Input: input, Reason: "canonicalize execution error for " + impl.Name})
+				canonMismatch = true
+				break
+			}
+			canonByImpl[impl.Name] = canon
+			if canonRef == nil {
+				canonRef = canon
+				continue
+			}
+			if !bytes.Equal(canonRef, canon) {
+				failures = append(failures, fuzzFailure{CaseID: caseID, Input: input, Reason: "cross-implementation output mismatch"})
+				canonMismatch = true
+				break
+			}
 		}
-		if !bytes.Equal(canonA, canonB) {
-			failures = append(failures, fuzzFailure{CaseID: caseID, Input: input, Reason: "cross-implementation output mismatch"})
+		if canonMismatch {
 			continue
 		}
 
 		// Idempotence: canonicalize(canonicalize(x)) == canonicalize(x)
-		canonAgainA, errA := canonicalizeOutput(impls[0].Bin, canonA)
-		canonAgainB, errB := canonicalizeOutput(impls[1].Bin, canonB)
-		if errA != nil || errB != nil {
-			failures = append(failures, fuzzFailure{CaseID: caseID, Input: input, Reason: "idempotence canonicalize second pass failed"})
-			continue
+		idempotenceFailed := false
+		for _, impl := range impls {
+			canon := canonByImpl[impl.Name]
+			canonAgain, err := canonicalizeOutput(impl.Bin, canon)
+			if err != nil {
+				failures = append(failures, fuzzFailure{CaseID: caseID, Input: input, Reason: "idempotence canonicalize second pass failed for " + impl.Name})
+				idempotenceFailed = true
+				break
+			}
+			if !bytes.Equal(canonAgain, canon) {
+				failures = append(failures, fuzzFailure{CaseID: caseID, Input: input, Reason: "idempotence mismatch for " + impl.Name})
+				idempotenceFailed = true
+				break
+			}
 		}
-		if !bytes.Equal(canonAgainA, canonA) || !bytes.Equal(canonAgainB, canonB) {
-			failures = append(failures, fuzzFailure{CaseID: caseID, Input: input, Reason: "idempotence mismatch"})
+		if idempotenceFailed {
 			continue
 		}
 
-		verifyA, errA := runOne(impls[0].Bin, "verify", benchInput{Data: canonA}, -1)
-		verifyB, errB := runOne(impls[1].Bin, "verify", benchInput{Data: canonA}, -1)
-		if errA != nil || errB != nil || !verifyA.OK || !verifyB.OK {
-			failures = append(failures, fuzzFailure{CaseID: caseID, Input: input, Reason: "verify rejected canonicalized output"})
+		verifyFailed := false
+		for _, impl := range impls {
+			verifyRes, err := runOne(impl.Bin, "verify", benchInput{Data: canonRef}, -1)
+			if err != nil || !verifyRes.OK {
+				failures = append(failures, fuzzFailure{CaseID: caseID, Input: input, Reason: "verify rejected canonicalized output for " + impl.Name})
+				verifyFailed = true
+				break
+			}
+		}
+		if verifyFailed {
 			continue
 		}
 
 		// Metamorphic check: canonical output with added leading WS must fail verify.
-		mutated := append([]byte(" "), canonA...)
-		verifyMutA, errA := runOne(impls[0].Bin, "verify", benchInput{Data: mutated}, -1)
-		verifyMutB, errB := runOne(impls[1].Bin, "verify", benchInput{Data: mutated}, -1)
-		if errA != nil || errB != nil {
-			failures = append(failures, fuzzFailure{CaseID: caseID, Input: input, Reason: "metamorphic verify execution error"})
-			continue
+		mutated := append([]byte(" "), canonRef...)
+		mutatedFailed := false
+		for _, impl := range impls {
+			verifyMut, err := runOne(impl.Bin, "verify", benchInput{Data: mutated}, -1)
+			if err != nil {
+				failures = append(failures, fuzzFailure{CaseID: caseID, Input: input, Reason: "metamorphic verify execution error for " + impl.Name})
+				mutatedFailed = true
+				break
+			}
+			if verifyMut.OK {
+				failures = append(failures, fuzzFailure{CaseID: caseID, Input: input, Reason: "metamorphic verify accepted non-canonical mutation for " + impl.Name})
+				mutatedFailed = true
+				break
+			}
 		}
-		if verifyMutA.OK || verifyMutB.OK {
-			failures = append(failures, fuzzFailure{CaseID: caseID, Input: input, Reason: "metamorphic verify accepted non-canonical mutation"})
+		if mutatedFailed {
 			continue
 		}
 	}

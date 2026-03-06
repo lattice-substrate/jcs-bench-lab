@@ -43,12 +43,15 @@ type cliSummarySample struct {
 }
 
 type workloadCmp struct {
-	Workload string
-	Mode     string
-	Winner   string
-	Speedup  float64
-	Schub    float64
-	JSON     float64
+	Workload  string
+	Mode      string
+	PairLabel string
+	ImplA     string
+	ImplB     string
+	Winner    string
+	Speedup   float64
+	ImplAVal  float64
+	ImplBVal  float64
 }
 
 func runBenchstat(apiPath, cliPath, qualityPath string, allowFallback bool) error {
@@ -416,22 +419,14 @@ func parseAPIBenchmarkLine(line string) (apiBenchSample, bool) {
 		return apiBenchSample{}, false
 	}
 	prefix := parts[0]
-	impl := ""
-	op := ""
-	switch {
-	case strings.HasSuffix(prefix, "Schubfach"):
-		impl = "schubfach"
-		op = strings.TrimSuffix(prefix, "Schubfach")
-	case strings.HasSuffix(prefix, "JSONCanon"):
-		impl = "json-canon"
-		op = strings.TrimSuffix(prefix, "JSONCanon")
-	default:
+	impl, op, ok := parseAPIPrefix("BenchmarkAPI" + prefix)
+	if !ok {
 		return apiBenchSample{}, false
 	}
 	workload := trimBenchCPUSuffix(parts[1])
 	iters, _ := strconv.Atoi(fields[1])
 
-	s := apiBenchSample{Impl: impl, Operation: strings.ToLower(op), Workload: workload, Iters: iters}
+	s := apiBenchSample{Impl: impl, Operation: op, Workload: workload, Iters: iters}
 	for i := 2; i+1 < len(fields); i += 2 {
 		val, err := strconv.ParseFloat(fields[i], 64)
 		if err != nil {
@@ -595,9 +590,15 @@ func renderBenchstatMarkdown(apiPath, cliPath, qualityPath string, apiSamples []
 	fmt.Fprintf(&b, "- CLI summary: `%s`\n", cliPath)
 	fmt.Fprintf(&b, "- Quality report: `%s`\n\n", qualityPath)
 
-	apiCmp := compareAPIWorkloads(apiSamples)
-	cliCanonCmp := compareCLIWorkloads(cliSamples, "canonicalize")
-	cliVerifyCmp := compareCLIWorkloads(cliSamples, "verify")
+	pairs := comparisonPairs()
+	apiByPair := make(map[string][]workloadCmp, len(pairs))
+	cliCanonByPair := make(map[string][]workloadCmp, len(pairs))
+	cliVerifyByPair := make(map[string][]workloadCmp, len(pairs))
+	for _, pair := range pairs {
+		apiByPair[pair.Label] = compareAPIWorkloadsForPair(apiSamples, pair)
+		cliCanonByPair[pair.Label] = compareCLIWorkloadsForPair(cliSamples, "canonicalize", pair)
+		cliVerifyByPair[pair.Label] = compareCLIWorkloadsForPair(cliSamples, "verify", pair)
+	}
 
 	fmt.Fprintf(&b, "## Quality Gate\n\n")
 	fmt.Fprintf(&b, "- determinism_failures: %d\n", len(quality.DeterminismFailures))
@@ -606,16 +607,25 @@ func renderBenchstatMarkdown(apiPath, cliPath, qualityPath string, apiSamples []
 	fmt.Fprintf(&b, "- oracle_mismatches: %d\n\n", len(quality.OracleMismatches))
 
 	fmt.Fprintf(&b, "## CLI Canonicalize (valid workloads)\n\n")
-	b.WriteString(renderCmpTable(cliCanonCmp, "avg_ms"))
-	b.WriteString("\n")
+	for _, pair := range pairs {
+		fmt.Fprintf(&b, "### %s\n\n", pair.Label)
+		b.WriteString(renderCmpTable(cliCanonByPair[pair.Label], "avg_ms"))
+		b.WriteString("\n")
+	}
 
 	fmt.Fprintf(&b, "## CLI Verify (valid workloads)\n\n")
-	b.WriteString(renderCmpTable(cliVerifyCmp, "avg_ms"))
-	b.WriteString("\n")
+	for _, pair := range pairs {
+		fmt.Fprintf(&b, "### %s\n\n", pair.Label)
+		b.WriteString(renderCmpTable(cliVerifyByPair[pair.Label], "avg_ms"))
+		b.WriteString("\n")
+	}
 
 	fmt.Fprintf(&b, "## API Benchmarks (ns/op)\n\n")
-	b.WriteString(renderCmpTable(apiCmp, "ns/op"))
-	b.WriteString("\n")
+	for _, pair := range pairs {
+		fmt.Fprintf(&b, "### %s\n\n", pair.Label)
+		b.WriteString(renderCmpTable(apiByPair[pair.Label], "ns/op"))
+		b.WriteString("\n")
+	}
 
 	fmt.Fprintf(&b, "## benchstat Output\n\n")
 	if usedExternal {
@@ -627,7 +637,7 @@ func renderBenchstatMarkdown(apiPath, cliPath, qualityPath string, apiSamples []
 	return b.String()
 }
 
-func compareAPIWorkloads(samples []apiBenchSample) []workloadCmp {
+func compareAPIWorkloadsForPair(samples []apiBenchSample, pair implPair) []workloadCmp {
 	type agg struct {
 		workload string
 		impl     string
@@ -657,24 +667,34 @@ func compareAPIWorkloads(samples []apiBenchSample) []workloadCmp {
 
 	out := make([]workloadCmp, 0, len(byWorkload))
 	for workload, impls := range byWorkload {
-		schub, okS := impls["schubfach"]
-		jsonCanon, okJ := impls["json-canon"]
-		if !okS || !okJ || schub <= 0 || jsonCanon <= 0 {
+		implAVal, okA := impls[pair.A]
+		implBVal, okB := impls[pair.B]
+		if !okA || !okB || implAVal <= 0 || implBVal <= 0 {
 			continue
 		}
-		winner := "schubfach"
-		speedup := jsonCanon / schub
-		if jsonCanon < schub {
-			winner = "json-canon"
-			speedup = schub / jsonCanon
+		winner := pair.A
+		speedup := implBVal / implAVal
+		if implBVal < implAVal {
+			winner = pair.B
+			speedup = implAVal / implBVal
 		}
-		out = append(out, workloadCmp{Workload: workload, Mode: "api", Winner: winner, Speedup: speedup, Schub: schub, JSON: jsonCanon})
+		out = append(out, workloadCmp{
+			Workload:  workload,
+			Mode:      "api",
+			PairLabel: pair.Label,
+			ImplA:     pair.A,
+			ImplB:     pair.B,
+			Winner:    winner,
+			Speedup:   speedup,
+			ImplAVal:  implAVal,
+			ImplBVal:  implBVal,
+		})
 	}
 	sort.Slice(out, func(i, j int) bool { return out[i].Workload < out[j].Workload })
 	return out
 }
 
-func compareCLIWorkloads(samples []cliSummarySample, mode string) []workloadCmp {
+func compareCLIWorkloadsForPair(samples []cliSummarySample, mode string, pair implPair) []workloadCmp {
 	byWorkload := map[string]map[string]float64{}
 	for _, s := range samples {
 		if s.Class != "valid" || s.Mode != mode || s.AvgMS <= 0 {
@@ -687,18 +707,28 @@ func compareCLIWorkloads(samples []cliSummarySample, mode string) []workloadCmp 
 	}
 	out := make([]workloadCmp, 0, len(byWorkload))
 	for workload, impls := range byWorkload {
-		schub, okS := impls["schubfach"]
-		jsonCanon, okJ := impls["json-canon"]
-		if !okS || !okJ {
+		implAVal, okA := impls[pair.A]
+		implBVal, okB := impls[pair.B]
+		if !okA || !okB || implAVal <= 0 || implBVal <= 0 {
 			continue
 		}
-		winner := "schubfach"
-		speedup := jsonCanon / schub
-		if jsonCanon < schub {
-			winner = "json-canon"
-			speedup = schub / jsonCanon
+		winner := pair.A
+		speedup := implBVal / implAVal
+		if implBVal < implAVal {
+			winner = pair.B
+			speedup = implAVal / implBVal
 		}
-		out = append(out, workloadCmp{Workload: workload, Mode: mode, Winner: winner, Speedup: speedup, Schub: schub, JSON: jsonCanon})
+		out = append(out, workloadCmp{
+			Workload:  workload,
+			Mode:      mode,
+			PairLabel: pair.Label,
+			ImplA:     pair.A,
+			ImplB:     pair.B,
+			Winner:    winner,
+			Speedup:   speedup,
+			ImplAVal:  implAVal,
+			ImplBVal:  implBVal,
+		})
 	}
 	sort.Slice(out, func(i, j int) bool { return out[i].Workload < out[j].Workload })
 	return out
@@ -709,10 +739,10 @@ func renderCmpTable(rows []workloadCmp, unit string) string {
 		return "_No paired samples found._\n"
 	}
 	var b strings.Builder
-	fmt.Fprintf(&b, "| workload | schubfach (%s) | json-canon (%s) | winner | speedup |\n", unit, unit)
+	fmt.Fprintf(&b, "| workload | %s (%s) | %s (%s) | winner | speedup |\n", rows[0].ImplA, unit, rows[0].ImplB, unit)
 	fmt.Fprintf(&b, "|---|---:|---:|---|---:|\n")
 	for _, r := range rows {
-		fmt.Fprintf(&b, "| %s | %.3f | %.3f | %s | %.2fx |\n", r.Workload, r.Schub, r.JSON, r.Winner, r.Speedup)
+		fmt.Fprintf(&b, "| %s | %.3f | %.3f | %s | %.2fx |\n", r.Workload, r.ImplAVal, r.ImplBVal, r.Winner, r.Speedup)
 	}
 	return b.String()
 }
@@ -730,9 +760,15 @@ func loadBenchstatSnippet(path string) string {
 }
 
 func renderReportMarkdown(apiSamples []apiBenchSample, cliSamples []cliSummarySample, quality qualityReport, conf conformanceReport, stats statsReport, fuzz fuzzReport, benchstatSnippet, apiPath, cliPath, qualityPath, benchstatPath, conformancePath, statsPath, fuzzPath string) string {
-	cliCanon := compareCLIWorkloads(cliSamples, "canonicalize")
-	cliVerify := compareCLIWorkloads(cliSamples, "verify")
-	apiCmp := compareAPIWorkloads(apiSamples)
+	pairs := comparisonPairs()
+	apiByPair := make(map[string][]workloadCmp, len(pairs))
+	cliCanonByPair := make(map[string][]workloadCmp, len(pairs))
+	cliVerifyByPair := make(map[string][]workloadCmp, len(pairs))
+	for _, pair := range pairs {
+		apiByPair[pair.Label] = compareAPIWorkloadsForPair(apiSamples, pair)
+		cliCanonByPair[pair.Label] = compareCLIWorkloadsForPair(cliSamples, "canonicalize", pair)
+		cliVerifyByPair[pair.Label] = compareCLIWorkloadsForPair(cliSamples, "verify", pair)
+	}
 
 	status := recommendation(quality, conf, stats, fuzz)
 
@@ -777,14 +813,23 @@ func renderReportMarkdown(apiSamples []apiBenchSample, cliSamples []cliSummarySa
 
 	fmt.Fprintf(&b, "## Performance Winners by Workload\n\n")
 	fmt.Fprintf(&b, "### CLI canonicalize\n\n")
-	b.WriteString(renderCmpTable(cliCanon, "avg_ms"))
-	b.WriteString("\n")
+	for _, pair := range pairs {
+		fmt.Fprintf(&b, "#### %s\n\n", pair.Label)
+		b.WriteString(renderCmpTable(cliCanonByPair[pair.Label], "avg_ms"))
+		b.WriteString("\n")
+	}
 	fmt.Fprintf(&b, "### CLI verify\n\n")
-	b.WriteString(renderCmpTable(cliVerify, "avg_ms"))
-	b.WriteString("\n")
+	for _, pair := range pairs {
+		fmt.Fprintf(&b, "#### %s\n\n", pair.Label)
+		b.WriteString(renderCmpTable(cliVerifyByPair[pair.Label], "avg_ms"))
+		b.WriteString("\n")
+	}
 	fmt.Fprintf(&b, "### API\n\n")
-	b.WriteString(renderCmpTable(apiCmp, "ns/op"))
-	b.WriteString("\n")
+	for _, pair := range pairs {
+		fmt.Fprintf(&b, "#### %s\n\n", pair.Label)
+		b.WriteString(renderCmpTable(apiByPair[pair.Label], "ns/op"))
+		b.WriteString("\n")
+	}
 
 	fmt.Fprintf(&b, "## Statistical Inference\n\n")
 	fmt.Fprintf(&b, "| track | mode | workload | winner | speedup | ci95 | p-value | p-adj | sig-BH |\n")
@@ -857,22 +902,33 @@ func recommendation(q qualityReport, conf conformanceReport, stats statsReport, 
 	if len(q.DeterminismFailures) > 0 || len(q.OutputEqualityFailures) > 0 || len(q.InvalidFailureParityIssues) > 0 || len(q.OracleMismatches) > 0 {
 		return "Do not promote any implementation: quality parity/oracle issues are present."
 	}
-	score := map[string]int{"schubfach": 0, "json-canon": 0}
+	score := map[string]int{}
 	for _, c := range stats.Comparisons {
 		if c.SignificantBH {
 			score[c.Winner]++
 		}
 	}
-	if score["schubfach"] == 0 && score["json-canon"] == 0 {
+	if len(score) == 0 {
 		return "No statistically significant winner (BH-corrected). Keep dual-track evaluation and expand workload representativeness."
 	}
-	if score["schubfach"] > score["json-canon"] {
-		return "Recommend `schubfach` based on BH-significant wins with conformance/oracle gates passing."
+	topWinner := ""
+	topCount := 0
+	tie := false
+	for impl, n := range score {
+		if n > topCount {
+			topWinner = impl
+			topCount = n
+			tie = false
+			continue
+		}
+		if n == topCount {
+			tie = true
+		}
 	}
-	if score["json-canon"] > score["schubfach"] {
-		return "Recommend `json-canon` based on BH-significant wins with conformance/oracle gates passing."
+	if tie {
+		return "Tie under statistical decision policy. Keep dual-track deployment and collect additional workload evidence."
 	}
-	return "Tie under statistical decision policy. Keep dual-track deployment and collect additional workload evidence."
+	return fmt.Sprintf("Recommend `%s` based on BH-significant wins with conformance/oracle gates passing.", topWinner)
 }
 
 func geomean(xs []float64) float64 {

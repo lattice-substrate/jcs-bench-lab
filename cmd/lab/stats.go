@@ -17,33 +17,34 @@ import (
 )
 
 type statsComparison struct {
-	Track            string  `json:"track"`
-	Mode             string  `json:"mode"`
-	Workload         string  `json:"workload"`
-	Class            string  `json:"class"`
-	ImplA            string  `json:"impl_a"`
-	ImplB            string  `json:"impl_b"`
-	NImplA           int     `json:"n_impl_a"`
-	NImplB           int     `json:"n_impl_b"`
-	MeanMSImplA      float64 `json:"mean_ms_impl_a"`
-	MeanMSImplB      float64 `json:"mean_ms_impl_b"`
-	MedianMSImplA    float64 `json:"median_ms_impl_a"`
-	MedianMSImplB    float64 `json:"median_ms_impl_b"`
-	CVImplA          float64 `json:"cv_impl_a"`
-	CVImplB          float64 `json:"cv_impl_b"`
-	Winner           string  `json:"winner"`
-	Speedup          float64 `json:"speedup"`
-	CI95Low          float64 `json:"ci95_low"`
-	CI95High         float64 `json:"ci95_high"`
-	PValue           float64 `json:"p_value"`
-	PValueAdjusted   float64 `json:"p_value_adjusted"`
-	EffectSizeCohenD float64 `json:"effect_size_cohen_d"`
-	Significant      bool    `json:"significant"`
-	SignificantBH    bool    `json:"significant_bh"`
-	NoiseFloorMS          float64 `json:"noise_floor_ms"`
-	MinObservableEffPct   float64 `json:"min_observable_effect_pct"`
-	OraclePassRateA       float64 `json:"oracle_pass_rate_a"`
-	OraclePassRateB       float64 `json:"oracle_pass_rate_b"`
+	Track               string  `json:"track"`
+	Mode                string  `json:"mode"`
+	Workload            string  `json:"workload"`
+	Class               string  `json:"class"`
+	PairLabel           string  `json:"pair_label,omitempty"`
+	ImplA               string  `json:"impl_a"`
+	ImplB               string  `json:"impl_b"`
+	NImplA              int     `json:"n_impl_a"`
+	NImplB              int     `json:"n_impl_b"`
+	MeanMSImplA         float64 `json:"mean_ms_impl_a"`
+	MeanMSImplB         float64 `json:"mean_ms_impl_b"`
+	MedianMSImplA       float64 `json:"median_ms_impl_a"`
+	MedianMSImplB       float64 `json:"median_ms_impl_b"`
+	CVImplA             float64 `json:"cv_impl_a"`
+	CVImplB             float64 `json:"cv_impl_b"`
+	Winner              string  `json:"winner"`
+	Speedup             float64 `json:"speedup"`
+	CI95Low             float64 `json:"ci95_low"`
+	CI95High            float64 `json:"ci95_high"`
+	PValue              float64 `json:"p_value"`
+	PValueAdjusted      float64 `json:"p_value_adjusted"`
+	EffectSizeCohenD    float64 `json:"effect_size_cohen_d"`
+	Significant         bool    `json:"significant"`
+	SignificantBH       bool    `json:"significant_bh"`
+	NoiseFloorMS        float64 `json:"noise_floor_ms"`
+	MinObservableEffPct float64 `json:"min_observable_effect_pct"`
+	OraclePassRateA     float64 `json:"oracle_pass_rate_a"`
+	OraclePassRateB     float64 `json:"oracle_pass_rate_b"`
 }
 
 type statsReport struct {
@@ -72,12 +73,12 @@ func runStats(runsPath, apiBenchPath string, alpha float64, resamples int) error
 		return err
 	}
 
-	comparisons := buildStatsComparisons(runs, alpha, resamples)
+	comparisons := buildStatsComparisons(runs, alpha, resamples, comparisonPairs())
 
 	// Parse API bench output and add API comparisons.
 	apiRuns, apiErr := loadAPIBenchRuns(apiBenchPath)
 	if apiErr == nil && len(apiRuns) > 0 {
-		apiComparisons := buildStatsComparisons(apiRuns, alpha, resamples)
+		apiComparisons := buildStatsComparisons(apiRuns, alpha, resamples, comparisonPairs())
 		comparisons = append(comparisons, apiComparisons...)
 		fmt.Printf("included %d API comparisons from %s\n", len(apiComparisons), apiBenchPath)
 	} else if apiErr != nil {
@@ -174,20 +175,9 @@ func loadAPIBenchRuns(path string) ([]runRecord, error) {
 			}
 		}
 
-		switch {
-		case strings.Contains(prefix, "CanonicalizeSchubfach"):
-			impl = "schubfach"
-			mode = "canonicalize"
-		case strings.Contains(prefix, "CanonicalizeJSONCanon"):
-			impl = "json-canon"
-			mode = "canonicalize"
-		case strings.Contains(prefix, "VerifySchubfach"):
-			impl = "schubfach"
-			mode = "verify"
-		case strings.Contains(prefix, "VerifyJSONCanon"):
-			impl = "json-canon"
-			mode = "verify"
-		default:
+		var ok bool
+		impl, mode, ok = parseAPIPrefix(prefix)
+		if !ok {
 			continue
 		}
 		workload = rest
@@ -210,7 +200,6 @@ func loadAPIBenchRuns(path string) ([]runRecord, error) {
 	}
 	return runs, nil
 }
-
 
 func loadRunsCSV(path string) ([]runRecord, error) {
 	f, err := os.Open(path)
@@ -256,7 +245,7 @@ func loadRunsCSV(path string) ([]runRecord, error) {
 	return out, nil
 }
 
-func buildStatsComparisons(runs []runRecord, alpha float64, resamples int) []statsComparison {
+func buildStatsComparisons(runs []runRecord, alpha float64, resamples int, pairs []implPair) []statsComparison {
 	type agg struct {
 		durations   []float64
 		oracleTotal int
@@ -295,74 +284,80 @@ func buildStatsComparisons(runs []runRecord, alpha float64, resamples int) []sta
 	for _, key := range keys {
 		parts := strings.Split(key, "|")
 		impls := grouped[key]
-		a, okA := impls["schubfach"]
-		b, okB := impls["json-canon"]
-		if !okA || !okB || len(a.durations) < 2 || len(b.durations) < 2 {
-			continue
-		}
+		for _, pair := range pairs {
+			a, okA := impls[pair.A]
+			b, okB := impls[pair.B]
+			if !okA || !okB || len(a.durations) < 2 || len(b.durations) < 2 {
+				continue
+			}
 
-		meanA := avg(a.durations)
-		meanB := avg(b.durations)
-		medianA := percentile(a.durations, 0.50)
-		medianB := percentile(b.durations, 0.50)
-		winner := "schubfach"
-		speedup := meanB / meanA
-		if meanB < meanA {
-			winner = "json-canon"
-			speedup = meanA / meanB
-		}
+			meanA := avg(a.durations)
+			meanB := avg(b.durations)
+			medianA := percentile(a.durations, 0.50)
+			medianB := percentile(b.durations, 0.50)
+			winner := pair.A
+			winnerIsB := false
+			speedup := meanB / meanA
+			if meanB < meanA {
+				winner = pair.B
+				winnerIsB = true
+				speedup = meanA / meanB
+			}
 
-		ciLo, ciHi := bootstrapSpeedupCI(a.durations, b.durations, winner, resamples, key)
-		pval := permutationPValue(a.durations, b.durations, resamples, key)
-		effect := cohenD(a.durations, b.durations)
+			comparisonKey := key + "|" + pair.A + "|" + pair.B
+			ciLo, ciHi := bootstrapSpeedupCI(a.durations, b.durations, winnerIsB, resamples, comparisonKey)
+			pval := permutationPValue(a.durations, b.durations, resamples, comparisonKey)
+			effect := cohenD(a.durations, b.durations)
 
-		// Noise floor = standard deviation of the faster impl (equivalently CV × mean).
-		// This quantifies measurement noise in the same units as the metric (ms).
-		fasterMean := meanA
-		fasterCV := coefficientOfVariation(a.durations)
-		fasterN := float64(len(a.durations))
-		if meanB < meanA {
-			fasterMean = meanB
-			fasterCV = coefficientOfVariation(b.durations)
-			fasterN = float64(len(b.durations))
-		}
-		noiseFloor := fasterCV * fasterMean
-		minObsEff := 0.0
-		if fasterN > 0 {
-			// Two-sample minimum detectable effect at 80% power (α = 0.05):
-			// Δ/μ = (z_{α/2} + z_β) × √(2/n) × CV × 100
-			// where z_{α/2} + z_β ≈ 1.96 + 0.84 = 2.8, and √2 ≈ 1.4142.
-			// This uses only the faster implementation's CV and n as an approximation.
-			minObsEff = (2.8 * math.Sqrt2 * fasterCV * 100.0) / math.Sqrt(fasterN)
-		}
+			// Noise floor = standard deviation of the faster impl (equivalently CV × mean).
+			// This quantifies measurement noise in the same units as the metric (ms).
+			fasterMean := meanA
+			fasterCV := coefficientOfVariation(a.durations)
+			fasterN := float64(len(a.durations))
+			if meanB < meanA {
+				fasterMean = meanB
+				fasterCV = coefficientOfVariation(b.durations)
+				fasterN = float64(len(b.durations))
+			}
+			noiseFloor := fasterCV * fasterMean
+			minObsEff := 0.0
+			if fasterN > 0 {
+				// Two-sample minimum detectable effect at 80% power (α = 0.05):
+				// Δ/μ = (z_{α/2} + z_β) × √(2/n) × CV × 100
+				// where z_{α/2} + z_β ≈ 1.96 + 0.84 = 2.8, and √2 ≈ 1.4142.
+				// This uses only the faster implementation's CV and n as an approximation.
+				minObsEff = (2.8 * math.Sqrt2 * fasterCV * 100.0) / math.Sqrt(fasterN)
+			}
 
-		cmp = append(cmp, statsComparison{
-			Track:            parts[0],
-			Mode:             parts[1],
-			Workload:         parts[2],
-			Class:            parts[3],
-			ImplA:            "schubfach",
-			ImplB:            "json-canon",
-			NImplA:           len(a.durations),
-			NImplB:           len(b.durations),
-			MeanMSImplA:      meanA,
-			MeanMSImplB:      meanB,
-			MedianMSImplA:    medianA,
-			MedianMSImplB:    medianB,
-			CVImplA:          coefficientOfVariation(a.durations),
-			CVImplB:          coefficientOfVariation(b.durations),
-			Winner:           winner,
-			Speedup:          speedup,
-			CI95Low:          ciLo,
-			CI95High:         ciHi,
-			PValue:           pval,
-			EffectSizeCohenD: effect,
-			Significant:      pval < alpha,
-			NoiseFloorMS:          noiseFloor,
-			MinObservableEffPct:   minObsEff,
-			OraclePassRateA:       safeRate(a.oraclePass, a.oracleTotal),
-			OraclePassRateB:       safeRate(b.oraclePass, b.oracleTotal),
-		})
+			cmp = append(cmp, statsComparison{
+				Track:               parts[0],
+				Mode:                parts[1],
+				Workload:            parts[2],
+				Class:               parts[3],
+				PairLabel:           pair.Label,
+				ImplA:               pair.A,
+				ImplB:               pair.B,
+				NImplA:              len(a.durations),
+				NImplB:              len(b.durations),
+				MeanMSImplA:         meanA,
+				MeanMSImplB:         meanB,
+				MedianMSImplA:       medianA,
+				MedianMSImplB:       medianB,
+				CVImplA:             coefficientOfVariation(a.durations),
+				CVImplB:             coefficientOfVariation(b.durations),
+				Winner:              winner,
+				Speedup:             speedup,
+				CI95Low:             ciLo,
+				CI95High:            ciHi,
+				PValue:              pval,
+				EffectSizeCohenD:    effect,
+				Significant:         pval < alpha,
+				NoiseFloorMS:        noiseFloor,
+				MinObservableEffPct: minObsEff,
+				OraclePassRateA:     safeRate(a.oraclePass, a.oracleTotal),
+				OraclePassRateB:     safeRate(b.oraclePass, b.oracleTotal),
+			})
+		}
 	}
 	return cmp
 }
@@ -416,14 +411,14 @@ func comparisonSeed(comparisonKey string, lenA, lenB int) int64 {
 	return int64(h.Sum64()) ^ int64(lenA*1000003+lenB)
 }
 
-func bootstrapSpeedupCI(a, b []float64, winner string, resamples int, comparisonKey string) (float64, float64) {
+func bootstrapSpeedupCI(a, b []float64, winnerIsB bool, resamples int, comparisonKey string) (float64, float64) {
 	r := rand.New(rand.NewSource(comparisonSeed(comparisonKey, len(a), len(b))))
 
 	// Compute observed statistic.
 	obsA := avg(a)
 	obsB := avg(b)
 	var observed float64
-	if winner == "json-canon" {
+	if winnerIsB {
 		observed = obsA / obsB
 	} else {
 		observed = obsB / obsA
@@ -438,7 +433,7 @@ func bootstrapSpeedupCI(a, b []float64, winner string, resamples int, comparison
 			continue
 		}
 		ratio := mb / ma
-		if winner == "json-canon" {
+		if winnerIsB {
 			ratio = ma / mb
 		}
 		samples = append(samples, ratio)
@@ -458,7 +453,7 @@ func bootstrapSpeedupCI(a, b []float64, winner string, resamples int, comparison
 	z0 := normInv(float64(belowCount) / float64(len(samples)))
 
 	// BCa acceleration constant a: jackknife estimate of skewness.
-	acc := bcaAcceleration(a, b, winner)
+	acc := bcaAcceleration(a, b, winnerIsB)
 
 	// Adjusted percentile indices.
 	zAlpha := normInv(0.025)
@@ -483,7 +478,7 @@ func bootstrapSpeedupCI(a, b []float64, winner string, resamples int, comparison
 }
 
 // bcaAcceleration computes the jackknife acceleration constant for the speedup ratio.
-func bcaAcceleration(a, b []float64, winner string) float64 {
+func bcaAcceleration(a, b []float64, winnerIsB bool) float64 {
 	n := len(a) + len(b)
 	if n < 3 {
 		return 0
@@ -501,7 +496,7 @@ func bcaAcceleration(a, b []float64, winner string) float64 {
 			jackknife[i] = 1
 			continue
 		}
-		if winner == "json-canon" {
+		if winnerIsB {
 			jackknife[i] = ma / mb
 		} else {
 			jackknife[i] = mb / ma
@@ -517,7 +512,7 @@ func bcaAcceleration(a, b []float64, winner string) float64 {
 			jackknife[len(a)+i] = 1
 			continue
 		}
-		if winner == "json-canon" {
+		if winnerIsB {
 			jackknife[len(a)+i] = ma / mb
 		} else {
 			jackknife[len(a)+i] = mb / ma
@@ -652,11 +647,11 @@ func renderStatsMarkdown(report statsReport, runsPath string) string {
 	fmt.Fprintf(&b, "Source: `%s`\n\n", runsPath)
 	fmt.Fprintf(&b, "Protocol: permutation test + BCa bootstrap 95%% CI, alpha=%.4f, resamples=%d\n\n", report.Alpha, report.Resamples)
 	fmt.Fprintf(&b, "Benjamini-Hochberg FDR correction applied across %d comparisons.\n\n", len(report.Comparisons))
-	fmt.Fprintf(&b, "| track | mode | workload | winner | speedup | ci95 | p-value | p-adj | effect d | sig | sig-BH | noise floor (ms) | min obs effect (%%) |\n")
-	fmt.Fprintf(&b, "|---|---|---|---|---:|---|---:|---:|---:|---|---|---:|---:|\n")
+	fmt.Fprintf(&b, "| pair | track | mode | workload | impl-a | impl-b | winner | speedup | ci95 | p-value | p-adj | effect d | sig | sig-BH | noise floor (ms) | min obs effect (%%) |\n")
+	fmt.Fprintf(&b, "|---|---|---|---|---|---|---|---:|---|---:|---:|---:|---|---|---:|---:|\n")
 	for _, c := range report.Comparisons {
-		fmt.Fprintf(&b, "| %s | %s | %s | %s | %.3fx | [%.3f, %.3f] | %.4f | %.4f | %.3f | %t | %t | %.4f | %.2f |\n",
-			c.Track, c.Mode, c.Workload, c.Winner, c.Speedup, c.CI95Low, c.CI95High,
+		fmt.Fprintf(&b, "| %s | %s | %s | %s | %s | %s | %s | %.3fx | [%.3f, %.3f] | %.4f | %.4f | %.3f | %t | %t | %.4f | %.2f |\n",
+			c.PairLabel, c.Track, c.Mode, c.Workload, c.ImplA, c.ImplB, c.Winner, c.Speedup, c.CI95Low, c.CI95High,
 			c.PValue, c.PValueAdjusted, c.EffectSizeCohenD, c.Significant, c.SignificantBH,
 			c.NoiseFloorMS, c.MinObservableEffPct)
 	}

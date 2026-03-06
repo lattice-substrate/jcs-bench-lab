@@ -1,12 +1,16 @@
 \section{Threats to Validity}
 \label{sec:threats}
 
-\textbf{Language specificity.}
-Both implementations are in Go.  The relative performance of
-multiprecision vs.\ fixed-width digit generation may differ in languages
-with different allocation models (e.g., C/Rust with stack allocation, or
-JVM with generational GC).  The \texttt{sync.Pool} optimization in the
-\burgerdybvig implementation is Go-specific.
+\textbf{Language specificity (mitigated).}
+This threat is substantially mitigated by the $2 \times 2$
+cross-language comparison matrix: both algorithms are implemented in Go
+and Rust, and the \schubfach performance ordering holds in both
+languages.  Within-Rust
+comparisons replicate the within-Go algorithmic advantage, confirming
+that the result is not an artifact of Go's garbage collector or
+allocation subsystem.  Residual external-validity risk remains for
+additional runtimes (e.g., JVM/generational-GC and unmanaged C
+implementations) that are not yet benchmarked.
 
 \textbf{Single-architecture performance data.}
 Performance benchmarks run on a single x86-64 machine.
@@ -50,9 +54,17 @@ topology.  Process migration may inflate variance for small workloads
 near the noise floor.  API benchmarks (in-process) are less susceptible.
 
 \textbf{Warmup validation.}
-CLI benchmarks discard 3~warmup runs.  We did not formally validate
-convergence; however, Go static binaries have minimal JIT-like warmup
-effects, and permutation tests are robust to mild non-stationarity.
+CLI benchmarks discard 3~warmup runs.  Rust API benchmarks discard
+3~warmup iterations per workload to stabilize instruction caches,
+branch predictors, and lazily-initialized data structures (specifically,
+the Rust \burgerdybvig implementation's \texttt{OnceLock}-based
+power-of-ten cache).  Go API benchmarks benefit from \texttt{testing.B}'s
+built-in warmup.  We did not formally validate convergence beyond
+discarding these iterations; however, Go static binaries have minimal
+JIT-like warmup effects, and permutation tests are robust to mild
+non-stationarity.  Residual first-few-iteration effects may persist
+for very small Rust workloads (e.g., \texttt{numeric-boundary}), where
+the wide confidence intervals reflect this uncertainty.
 
 \textbf{Oracle SHA-256 circularity.}
 SHA-256 checksums verify vector integrity but cannot verify oracle
@@ -60,8 +72,36 @@ correctness.  Independent verification against a second JS engine
 (SpiderMonkey, JavaScriptCore) is noted as future work.
 
 \textbf{sync.Pool mitigation.}
-The \burgerdybvig implementation uses \texttt{sync.Pool} to reuse
+The Go \burgerdybvig implementation uses \texttt{sync.Pool} to reuse
 big-integer buffers, reducing allocation cost.  Without pooling, the
 performance gap would be wider.  This reflects realistic production usage
 but may understate the theoretical algorithmic advantage of fixed-width
 approaches.
+
+\textbf{Compiler optimization asymmetry.}
+Rust builds use \texttt{opt-level=3}, link-time optimization (LTO), and
+\texttt{codegen-units=1}, enabling aggressive cross-crate inlining and
+whole-program optimization.  Go's compiler does not support LTO and has
+a less aggressive inlining heuristic.  The observed cross-language
+speedups (2--4$\times$ in API benchmarks) may partly reflect differences
+in compiler optimization quality rather than intrinsic language
+characteristics.  Within-language comparisons are unaffected since both
+implementations in each pair share the same compiler pipeline.
+
+\textbf{Memory allocator differences.}
+Go uses a tcmalloc-derived allocator integrated with its garbage
+collector.  Rust uses the system allocator (typically glibc malloc on
+Linux).  For the multiprecision (\burgerdybvig) path, which performs
+heap allocations for big-integer arithmetic, allocator performance
+differences could affect cross-language comparisons.  Within-language
+comparisons are unaffected since both implementations share the same
+allocator.
+
+\textbf{API measurement granularity.}
+Go API benchmarks (\texttt{testing.B}) auto-calibrate the number of
+inner loop iterations per sample, producing averaged low-variance
+samples.  Rust API benchmarks time individual function calls ($N{=}1$
+per sample), producing inherently higher-variance samples.  This
+asymmetry affects cross-language comparisons but not within-language
+comparisons.  We note this caveat in \S\ref{sec:discussion} and
+emphasize within-language results for algorithmic conclusions.

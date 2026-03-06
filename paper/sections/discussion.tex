@@ -4,19 +4,26 @@
 \subsection{Workload-Dependent Behavior}
 
 The performance advantage of \schubfach over \burgerdybvig is strongly
-workload-dependent.  In API benchmarks (isolating the canonicalization
-function), number-dense inputs (e.g., \texttt{numeric-boundary},
-\texttt{array-2048}, \texttt{large}) show 1.3--1.7$\times$ speedup due
-to zero heap allocation in the digit-generation path.  Deeply-nested
+workload-dependent.  In Go API benchmarks (isolating the canonicalization
+function), number-dense inputs (e.g., \texttt{array-2048},
+\texttt{large}, \texttt{medium}) show 1.3--1.7$\times$ speedup due
+to zero heap allocation in the digit-generation path.  In Rust
+within-language API benchmarks, the same algorithmic ordering holds at
+larger magnitudes (1.7--2.8$\times$ on the same workloads), confirming
+the advantage is algorithmic.  Deeply-nested
 workloads (\texttt{deep}, \texttt{deep-64}) contain numbers but show
 ${\approx}1.0\times$ because JSON structural parsing and key sorting
-dominate, diluting the digit-generation signal.  The speedup therefore
+dominate, diluting the digit-generation signal.  On a small number of
+non-number workloads (\texttt{control-escapes}, \texttt{rfc-key-sorting},
+\texttt{surrogate-pair}), \burgerdybvig is marginally faster
+(${\approx}1$--6\%) in Go API benchmarks, likely due to differences in
+non-numeric code paths.  The speedup therefore
 correlates with number \emph{density} (fraction of total cost attributable
 to digit generation), not merely number presence.
 
-In end-to-end CLI measurement, only 5 of 28 comparisons reach
-BH-corrected significance, with speedups of 1.2--1.4$\times$ on the
-most number-dense workloads.  The remaining 23~comparisons show no
+In end-to-end Go CLI measurement, 11 of 28 within-Go comparisons reach
+BH-corrected significance, with speedups of 1.1--1.3$\times$.
+The remaining 17~comparisons show no
 statistically significant difference because estimated process startup
 overhead (approximately 1.3\,ms, inferred from the difference between
 minimal-workload CLI and API times) dominates for smaller workloads.
@@ -50,6 +57,23 @@ json-canon's 57{,}343 allocs/op ($\Delta$4.0 per number, 91\,B per
 number).  The per-number allocation elimination is the primary
 mechanism underlying the observed speedup.
 
+\subsection{Extreme Outlier: \texttt{numeric-boundary}}
+
+The \texttt{numeric-boundary} workload shows unusually large speedup
+ratios in Rust API benchmarks (9.2$\times$ within-Rust) compared to
+1.5$\times$ in Go.  The Rust \burgerdybvig implementation uses a
+lazily-initialized power-of-ten cache (\texttt{OnceLock<Vec<BigInt>>});
+although the harness discards 3~warmup iterations to amortize
+first-invocation costs, the cache-warmed steady-state cost of
+\texttt{num-bigint::BigInt} multiprecision arithmetic remains
+substantially higher than the Rust \schubfach implementation's
+compile-time constant lookup table.  The tight confidence interval
+([8.8, 9.4] at 95\%) and low MDE (5\%) confirm this is a genuine
+algorithmic cost difference, not measurement noise.  The Go
+within-language comparison at 1.5$\times$ is smaller because Go's
+\texttt{sync.Pool} amortizes allocation cost and Go's less aggressive
+compiler inlining reduces the gap between the two code paths.
+
 \subsection{Profile-Level Analysis}
 
 CPU profiling confirms that digit generation consumes 15--40\% of total
@@ -64,3 +88,58 @@ high-frequency signature verification of number-heavy payloads),
 \schubfach offers meaningful improvement.  For typical mixed-content JSON,
 the choice of digit-generation algorithm has minimal practical impact on
 end-to-end latency.
+
+\subsection{Cross-Language Interpretation}
+
+Adding Rust implementations enables attribution of performance deltas to
+either algorithm choice or language/runtime effects.  The within-language
+comparisons test whether the \schubfach advantage persists independent of
+Go's allocator and garbage collector behavior, while same-algorithm
+cross-language comparisons quantify language overhead (startup and
+steady-state) directly.
+
+Rust's ownership model removes the need for Go-style
+\texttt{sync.Pool}-based reuse patterns.  For multiprecision paths, this
+shifts lifecycle cost from GC-mediated reuse to deterministic RAII
+destruction, which can materially change allocation profiles and latency
+variance characteristics.
+
+\textbf{Startup overhead.}  Rust native binaries exhibit substantially
+lower process startup cost than Go binaries (roughly 2--3$\times$ faster
+in CLI wall time), because they avoid Go runtime initialization (scheduler
+bootstrap, GC metadata setup, goroutine stack allocation).  This
+amplifies the startup-dominance effect discussed in
+\S\ref{sec:discussion}: for small workloads the language runtime overhead
+is the primary differentiator, not the digit-generation algorithm.
+
+\textbf{Algorithmic ordering is language-independent.}  The key finding
+from the cross-language design is that within-Rust comparisons replicate
+the within-Go ordering: \schubfach outperforms \burgerdybvig on
+number-dense workloads in both languages.  This confirms that the
+performance advantage derives from the fixed-width digit-generation
+algorithm itself (zero heap allocation, no multiprecision arithmetic),
+not from Go-specific runtime characteristics such as garbage collection
+pressure or \texttt{sync.Pool} contention.
+
+\textbf{Cross-language comparison caveats.}  Same-algorithm
+cross-language API comparisons (e.g., schubfach:go-vs-rs) should be
+interpreted carefully.  Go's \texttt{testing.B} averages over many
+inner iterations per sample, producing low-variance measurements, while
+the Rust harness times individual function calls, producing
+higher-variance samples.  Additionally, the two compilers apply
+fundamentally different optimization strategies: Rust with LTO and
+\texttt{codegen-units=1} enables aggressive cross-crate inlining that
+Go's compiler cannot match.  The observed 2--3$\times$ cross-language
+speedup (API) may partly reflect compiler optimization quality rather
+than inherent language characteristics.  These comparisons primarily
+serve to confirm directional consistency of the algorithmic ordering,
+not to quantify precise language overhead.
+
+\textbf{Allocation reporting asymmetry.}  The Rust bench harness reports
+\texttt{0~B/op} and \texttt{0~allocs/op} for all benchmarks because
+Rust lacks Go-style per-operation allocator statistics.  These zeros
+mean ``not measured,'' not ``zero allocations.''  The Rust
+\burgerdybvig implementation does perform heap allocations via
+\texttt{num-bigint::BigInt}; only the Rust \schubfach implementation is
+truly allocation-free in its digit-generation path.  Within-language
+allocation comparisons are therefore limited to the Go pair.

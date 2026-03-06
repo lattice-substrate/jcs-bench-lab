@@ -1,40 +1,259 @@
 # Statistical Comparison
 
-Generated at: 2026-03-05T19:28:23Z
+Generated at: 2026-03-06T00:19:25Z
 
 Source: `/home/lenny/jcs-bench-lab/results/latest-cli-runs.csv`
 
 Protocol: permutation test + BCa bootstrap 95% CI, alpha=0.0500, resamples=5000
 
-Benjamini-Hochberg FDR correction applied across 28 comparisons.
+Benjamini-Hochberg FDR correction applied across 247 comparisons.
 
-| track | mode | workload | winner | speedup | ci95 | p-value | p-adj | effect d | sig | sig-BH | noise floor (ms) | min obs effect (%) |
-|---|---|---|---|---:|---|---:|---:|---:|---|---|---:|---:|
-| e2e | canonicalize | array-2048 | schubfach | 1.394x | [1.302, 1.504] | 0.0002 | 0.0028 | -3.064 | true | true | 0.5303 | 7.20 |
-| e2e | canonicalize | array-256 | schubfach | 1.193x | [1.057, 1.344] | 0.0120 | 0.0560 | -1.000 | true | false | 0.3412 | 12.23 |
-| e2e | canonicalize | canonical-minimal | schubfach | 1.093x | [0.967, 1.223] | 0.1606 | 0.3549 | -0.528 | false | false | 0.2824 | 13.56 |
-| e2e | canonicalize | control-escapes | schubfach | 1.051x | [0.915, 1.226] | 0.5191 | 0.6241 | -0.231 | false | false | 0.2518 | 12.77 |
-| e2e | canonicalize | deep-64 | schubfach | 1.122x | [0.994, 1.269] | 0.0816 | 0.2643 | -0.670 | false | false | 0.2711 | 13.46 |
-| e2e | canonicalize | escaped-key-order | schubfach | 1.214x | [1.065, 1.360] | 0.0062 | 0.0347 | -1.103 | true | true | 0.2421 | 13.03 |
-| e2e | canonicalize | long-string | schubfach | 1.112x | [0.977, 1.259] | 0.1310 | 0.3334 | -0.578 | false | false | 0.2883 | 13.27 |
-| e2e | canonicalize | nested-mixed | json-canon | 1.048x | [0.909, 1.179] | 0.4913 | 0.6241 | 0.250 | false | false | 0.3244 | 15.83 |
-| e2e | canonicalize | numeric-boundary | json-canon | 1.032x | [0.904, 1.153] | 0.6193 | 0.6241 | 0.180 | false | false | 0.2728 | 12.81 |
-| e2e | canonicalize | rfc-key-sorting | schubfach | 1.038x | [0.919, 1.198] | 0.5915 | 0.6241 | -0.197 | false | false | 0.2971 | 14.86 |
-| e2e | canonicalize | small | schubfach | 1.091x | [0.951, 1.259] | 0.2515 | 0.4729 | -0.420 | false | false | 0.3004 | 15.21 |
-| e2e | canonicalize | surrogate-pair | schubfach | 1.243x | [1.110, 1.358] | 0.0006 | 0.0056 | -1.535 | true | true | 0.2184 | 11.26 |
-| e2e | canonicalize | unicode | schubfach | 1.031x | [0.917, 1.162] | 0.6161 | 0.6241 | -0.180 | false | false | 0.2605 | 12.52 |
-| e2e | canonicalize | verify-whitespace | schubfach | 1.035x | [0.914, 1.173] | 0.6069 | 0.6241 | -0.193 | false | false | 0.2755 | 12.99 |
-| e2e | verify | array-2048 | schubfach | 1.254x | [1.167, 1.343] | 0.0002 | 0.0028 | -2.381 | true | true | 0.7783 | 9.76 |
-| e2e | verify | array-256 | schubfach | 1.118x | [0.984, 1.254] | 0.0944 | 0.2643 | -0.630 | false | false | 0.3409 | 12.20 |
-| e2e | verify | canonical-minimal | json-canon | 1.061x | [0.926, 1.200] | 0.3881 | 0.5720 | 0.317 | false | false | 0.3019 | 14.77 |
-| e2e | verify | control-escapes | schubfach | 1.267x | [1.104, 1.422] | 0.0026 | 0.0182 | -1.329 | true | true | 0.2685 | 14.76 |
-| e2e | verify | deep-64 | schubfach | 1.049x | [0.938, 1.183] | 0.4273 | 0.5982 | -0.287 | false | false | 0.2703 | 12.39 |
-| e2e | verify | escaped-key-order | schubfach | 1.137x | [0.983, 1.293] | 0.0890 | 0.2643 | -0.651 | false | false | 0.2811 | 14.73 |
-| e2e | verify | long-string | schubfach | 1.095x | [0.938, 1.264] | 0.2533 | 0.4729 | -0.424 | false | false | 0.3694 | 16.95 |
-| e2e | verify | nested-mixed | schubfach | 1.059x | [0.940, 1.202] | 0.3775 | 0.5720 | -0.321 | false | false | 0.3057 | 14.25 |
-| e2e | verify | numeric-boundary | schubfach | 1.207x | [1.032, 1.394] | 0.0286 | 0.1144 | -0.856 | true | false | 0.2081 | 11.44 |
-| e2e | verify | rfc-key-sorting | schubfach | 1.038x | [0.901, 1.201] | 0.6241 | 0.6241 | -0.176 | false | false | 0.2999 | 14.84 |
-| e2e | verify | small | schubfach | 1.072x | [0.945, 1.209] | 0.2915 | 0.4881 | -0.392 | false | false | 0.2624 | 12.81 |
-| e2e | verify | surrogate-pair | schubfach | 1.101x | [0.970, 1.252] | 0.1648 | 0.3549 | -0.530 | false | false | 0.2338 | 12.17 |
-| e2e | verify | unicode | schubfach | 1.063x | [0.953, 1.188] | 0.2963 | 0.4881 | -0.390 | false | false | 0.2287 | 10.62 |
-| e2e | verify | verify-whitespace | schubfach | 1.047x | [0.927, 1.198] | 0.5007 | 0.6241 | -0.246 | false | false | 0.2768 | 13.16 |
+| pair | track | mode | workload | impl-a | impl-b | winner | speedup | ci95 | p-value | p-adj | effect d | sig | sig-BH | noise floor (ms) | min obs effect (%) |
+|---|---|---|---|---|---|---|---:|---|---:|---:|---:|---|---|---:|---:|
+| go:schubfach-vs-bd | e2e | canonicalize | array-2048 | schubfach | json-canon | schubfach | 1.292x | [1.210, 1.384] | 0.0002 | 0.0003 | -2.673 | true | true | 0.6165 | 11.53 |
+| rs:schubfach-vs-bd | e2e | canonicalize | array-2048 | schubfach-rs | json-canon-rs | schubfach-rs | 1.759x | [1.578, 1.992] | 0.0002 | 0.0003 | -3.224 | true | true | 0.4319 | 16.95 |
+| schubfach:go-vs-rs | e2e | canonicalize | array-2048 | schubfach | schubfach-rs | schubfach-rs | 2.098x | [1.910, 2.329] | 0.0002 | 0.0003 | 5.373 | true | true | 0.4319 | 16.95 |
+| bd:go-vs-rs | e2e | canonicalize | array-2048 | json-canon | json-canon-rs | json-canon-rs | 1.541x | [1.394, 1.667] | 0.0002 | 0.0003 | 3.695 | true | true | 0.7526 | 16.79 |
+| go:schubfach-vs-bd | e2e | canonicalize | array-256 | schubfach | json-canon | schubfach | 1.127x | [0.991, 1.282] | 0.0912 | 0.1072 | -0.632 | false | false | 0.3909 | 20.79 |
+| rs:schubfach-vs-bd | e2e | canonicalize | array-256 | schubfach-rs | json-canon-rs | schubfach-rs | 1.391x | [1.262, 1.515] | 0.0002 | 0.0003 | -2.331 | true | true | 0.0848 | 10.47 |
+| schubfach:go-vs-rs | e2e | canonicalize | array-256 | schubfach | schubfach-rs | schubfach-rs | 2.322x | [2.079, 2.589] | 0.0002 | 0.0003 | 3.871 | true | true | 0.0848 | 10.47 |
+| bd:go-vs-rs | e2e | canonicalize | array-256 | json-canon | json-canon-rs | json-canon-rs | 1.882x | [1.693, 2.122] | 0.0002 | 0.0003 | 3.413 | true | true | 0.1771 | 15.73 |
+| go:schubfach-vs-bd | e2e | canonicalize | canonical-minimal | schubfach | json-canon | schubfach | 1.036x | [0.917, 1.163] | 0.5691 | 0.6046 | -0.208 | false | false | 0.2179 | 14.75 |
+| rs:schubfach-vs-bd | e2e | canonicalize | canonical-minimal | schubfach-rs | json-canon-rs | schubfach-rs | 1.067x | [0.987, 1.159] | 0.1492 | 0.1698 | -0.549 | false | false | 0.0568 | 10.64 |
+| schubfach:go-vs-rs | e2e | canonicalize | canonical-minimal | schubfach | schubfach-rs | schubfach-rs | 2.767x | [2.517, 3.003] | 0.0002 | 0.0003 | 6.056 | true | true | 0.0568 | 10.64 |
+| bd:go-vs-rs | e2e | canonicalize | canonical-minimal | json-canon | json-canon-rs | json-canon-rs | 2.688x | [2.394, 2.998] | 0.0002 | 0.0003 | 4.515 | true | true | 0.0745 | 13.08 |
+| go:schubfach-vs-bd | e2e | canonicalize | control-escapes | schubfach | json-canon | schubfach | 1.213x | [1.083, 1.369] | 0.0046 | 0.0059 | -1.172 | true | true | 0.2859 | 21.18 |
+| rs:schubfach-vs-bd | e2e | canonicalize | control-escapes | schubfach-rs | json-canon-rs | schubfach-rs | 1.117x | [1.030, 1.199] | 0.0110 | 0.0139 | -1.003 | true | true | 0.0508 | 9.78 |
+| schubfach:go-vs-rs | e2e | canonicalize | control-escapes | schubfach | schubfach-rs | schubfach-rs | 2.597x | [2.316, 2.883] | 0.0002 | 0.0003 | 4.132 | true | true | 0.0508 | 9.78 |
+| bd:go-vs-rs | e2e | canonicalize | control-escapes | json-canon | json-canon-rs | json-canon-rs | 2.819x | [2.598, 3.076] | 0.0002 | 0.0003 | 6.911 | true | true | 0.0715 | 12.31 |
+| go:schubfach-vs-bd | e2e | canonicalize | deep-64 | schubfach | json-canon | schubfach | 1.117x | [0.997, 1.259] | 0.0864 | 0.1021 | -0.647 | false | false | 0.2603 | 18.15 |
+| rs:schubfach-vs-bd | e2e | canonicalize | deep-64 | schubfach-rs | json-canon-rs | schubfach-rs | 1.147x | [1.067, 1.258] | 0.0012 | 0.0016 | -1.208 | true | true | 0.0766 | 13.88 |
+| schubfach:go-vs-rs | e2e | canonicalize | deep-64 | schubfach | schubfach-rs | schubfach-rs | 2.600x | [2.339, 2.906] | 0.0002 | 0.0003 | 4.703 | true | true | 0.0766 | 13.88 |
+| bd:go-vs-rs | e2e | canonicalize | deep-64 | json-canon | json-canon-rs | json-canon-rs | 2.532x | [2.291, 2.759] | 0.0002 | 0.0003 | 5.072 | true | true | 0.0597 | 9.43 |
+| go:schubfach-vs-bd | e2e | canonicalize | escaped-key-order | schubfach | json-canon | json-canon | 1.011x | [0.899, 1.138] | 0.8612 | 0.8863 | 0.066 | false | false | 0.2870 | 19.16 |
+| rs:schubfach-vs-bd | e2e | canonicalize | escaped-key-order | schubfach-rs | json-canon-rs | schubfach-rs | 1.242x | [1.178, 1.302] | 0.0002 | 0.0003 | -2.989 | true | true | 0.0447 | 7.98 |
+| schubfach:go-vs-rs | e2e | canonicalize | escaped-key-order | schubfach | schubfach-rs | schubfach-rs | 2.702x | [2.423, 2.893] | 0.0002 | 0.0003 | 5.726 | true | true | 0.0447 | 7.98 |
+| bd:go-vs-rs | e2e | canonicalize | escaped-key-order | json-canon | json-canon-rs | json-canon-rs | 2.150x | [1.939, 2.354] | 0.0002 | 0.0003 | 3.981 | true | true | 0.0482 | 6.92 |
+| go:schubfach-vs-bd | e2e | canonicalize | long-string | schubfach | json-canon | schubfach | 1.201x | [1.031, 1.394] | 0.0292 | 0.0359 | -0.838 | true | true | 0.3121 | 22.64 |
+| rs:schubfach-vs-bd | e2e | canonicalize | long-string | schubfach-rs | json-canon-rs | schubfach-rs | 1.051x | [0.958, 1.158] | 0.3217 | 0.3516 | -0.366 | false | false | 0.0775 | 13.08 |
+| schubfach:go-vs-rs | e2e | canonicalize | long-string | schubfach | schubfach-rs | schubfach-rs | 2.328x | [2.067, 2.658] | 0.0002 | 0.0003 | 3.535 | true | true | 0.0775 | 13.08 |
+| bd:go-vs-rs | e2e | canonicalize | long-string | json-canon | json-canon-rs | json-canon-rs | 2.660x | [2.333, 3.005] | 0.0002 | 0.0003 | 4.009 | true | true | 0.0902 | 14.50 |
+| go:schubfach-vs-bd | e2e | canonicalize | nested-mixed | schubfach | json-canon | json-canon | 1.010x | [0.894, 1.147] | 0.8732 | 0.8943 | 0.052 | false | false | 0.3276 | 22.37 |
+| rs:schubfach-vs-bd | e2e | canonicalize | nested-mixed | schubfach-rs | json-canon-rs | schubfach-rs | 1.161x | [1.057, 1.253] | 0.0034 | 0.0044 | -1.171 | true | true | 0.0461 | 8.50 |
+| schubfach:go-vs-rs | e2e | canonicalize | nested-mixed | schubfach | schubfach-rs | schubfach-rs | 2.724x | [2.509, 2.934] | 0.0002 | 0.0003 | 6.418 | true | true | 0.0461 | 8.50 |
+| bd:go-vs-rs | e2e | canonicalize | nested-mixed | json-canon | json-canon-rs | json-canon-rs | 2.324x | [2.028, 2.634] | 0.0002 | 0.0003 | 3.530 | true | true | 0.0973 | 15.46 |
+| go:schubfach-vs-bd | e2e | canonicalize | numeric-boundary | schubfach | json-canon | schubfach | 1.110x | [0.985, 1.236] | 0.0934 | 0.1093 | -0.627 | false | false | 0.2185 | 14.54 |
+| rs:schubfach-vs-bd | e2e | canonicalize | numeric-boundary | schubfach-rs | json-canon-rs | schubfach-rs | 1.358x | [1.295, 1.427] | 0.0002 | 0.0003 | -4.454 | true | true | 0.0439 | 8.25 |
+| schubfach:go-vs-rs | e2e | canonicalize | numeric-boundary | schubfach | schubfach-rs | schubfach-rs | 2.828x | [2.599, 3.044] | 0.0002 | 0.0003 | 6.304 | true | true | 0.0439 | 8.25 |
+| bd:go-vs-rs | e2e | canonicalize | numeric-boundary | json-canon | json-canon-rs | json-canon-rs | 2.311x | [2.071, 2.510] | 0.0002 | 0.0003 | 4.342 | true | true | 0.0435 | 6.03 |
+| go:schubfach-vs-bd | e2e | canonicalize | rfc-key-sorting | schubfach | json-canon | schubfach | 1.030x | [0.924, 1.142] | 0.5871 | 0.6197 | -0.202 | false | false | 0.2133 | 13.97 |
+| rs:schubfach-vs-bd | e2e | canonicalize | rfc-key-sorting | schubfach-rs | json-canon-rs | schubfach-rs | 1.098x | [1.021, 1.180] | 0.0214 | 0.0266 | -0.892 | true | true | 0.0516 | 9.86 |
+| schubfach:go-vs-rs | e2e | canonicalize | rfc-key-sorting | schubfach | schubfach-rs | schubfach-rs | 2.916x | [2.666, 3.134] | 0.0002 | 0.0003 | 6.612 | true | true | 0.0516 | 9.86 |
+| bd:go-vs-rs | e2e | canonicalize | rfc-key-sorting | json-canon | json-canon-rs | json-canon-rs | 2.735x | [2.463, 2.976] | 0.0002 | 0.0003 | 5.557 | true | true | 0.0657 | 11.43 |
+| go:schubfach-vs-bd | e2e | canonicalize | small | schubfach | json-canon | json-canon | 1.001x | [0.877, 1.129] | 0.9942 | 0.9942 | 0.003 | false | false | 0.2734 | 19.30 |
+| rs:schubfach-vs-bd | e2e | canonicalize | small | schubfach-rs | json-canon-rs | schubfach-rs | 1.210x | [1.098, 1.326] | 0.0014 | 0.0018 | -1.310 | true | true | 0.0578 | 11.15 |
+| schubfach:go-vs-rs | e2e | canonicalize | small | schubfach | schubfach-rs | schubfach-rs | 2.733x | [2.449, 3.015] | 0.0002 | 0.0003 | 4.877 | true | true | 0.0578 | 11.15 |
+| bd:go-vs-rs | e2e | canonicalize | small | json-canon | json-canon-rs | json-canon-rs | 2.258x | [2.003, 2.557] | 0.0002 | 0.0003 | 3.897 | true | true | 0.1051 | 16.75 |
+| go:schubfach-vs-bd | e2e | canonicalize | surrogate-pair | schubfach | json-canon | schubfach | 1.009x | [0.904, 1.133] | 0.8762 | 0.8943 | -0.057 | false | false | 0.2291 | 15.51 |
+| rs:schubfach-vs-bd | e2e | canonicalize | surrogate-pair | schubfach-rs | json-canon-rs | schubfach-rs | 1.125x | [1.034, 1.233] | 0.0210 | 0.0262 | -0.908 | true | true | 0.0660 | 12.59 |
+| schubfach:go-vs-rs | e2e | canonicalize | surrogate-pair | schubfach | schubfach-rs | schubfach-rs | 2.819x | [2.549, 3.094] | 0.0002 | 0.0003 | 5.779 | true | true | 0.0660 | 12.59 |
+| bd:go-vs-rs | e2e | canonicalize | surrogate-pair | json-canon | json-canon-rs | json-canon-rs | 2.529x | [2.261, 2.816] | 0.0002 | 0.0003 | 4.672 | true | true | 0.0805 | 13.65 |
+| go:schubfach-vs-bd | e2e | canonicalize | unicode | schubfach | json-canon | json-canon | 1.087x | [0.964, 1.213] | 0.1568 | 0.1776 | 0.524 | false | false | 0.2742 | 19.08 |
+| rs:schubfach-vs-bd | e2e | canonicalize | unicode | schubfach-rs | json-canon-rs | schubfach-rs | 1.145x | [1.059, 1.245] | 0.0034 | 0.0044 | -1.152 | true | true | 0.0636 | 12.17 |
+| schubfach:go-vs-rs | e2e | canonicalize | unicode | schubfach | schubfach-rs | schubfach-rs | 2.989x | [2.743, 3.255] | 0.0002 | 0.0003 | 6.953 | true | true | 0.0636 | 12.17 |
+| bd:go-vs-rs | e2e | canonicalize | unicode | json-canon | json-canon-rs | json-canon-rs | 2.402x | [2.166, 2.692] | 0.0002 | 0.0003 | 4.282 | true | true | 0.0710 | 11.87 |
+| go:schubfach-vs-bd | e2e | canonicalize | verify-whitespace | schubfach | json-canon | schubfach | 1.109x | [0.961, 1.267] | 0.1672 | 0.1885 | -0.509 | false | false | 0.2645 | 18.59 |
+| rs:schubfach-vs-bd | e2e | canonicalize | verify-whitespace | schubfach-rs | json-canon-rs | schubfach-rs | 1.237x | [1.132, 1.334] | 0.0004 | 0.0005 | -1.671 | true | true | 0.0532 | 9.73 |
+| schubfach:go-vs-rs | e2e | canonicalize | verify-whitespace | schubfach | schubfach-rs | schubfach-rs | 2.605x | [2.345, 2.869] | 0.0002 | 0.0003 | 4.699 | true | true | 0.0532 | 9.73 |
+| bd:go-vs-rs | e2e | canonicalize | verify-whitespace | json-canon | json-canon-rs | json-canon-rs | 2.336x | [2.051, 2.662] | 0.0002 | 0.0003 | 3.548 | true | true | 0.0987 | 14.61 |
+| go:schubfach-vs-bd | e2e | verify | array-2048 | schubfach | json-canon | schubfach | 1.268x | [1.205, 1.348] | 0.0002 | 0.0003 | -2.793 | true | true | 0.4265 | 7.75 |
+| rs:schubfach-vs-bd | e2e | verify | array-2048 | schubfach-rs | json-canon-rs | schubfach-rs | 1.714x | [1.549, 1.917] | 0.0002 | 0.0003 | -3.520 | true | true | 0.4430 | 18.73 |
+| schubfach:go-vs-rs | e2e | verify | array-2048 | schubfach | schubfach-rs | schubfach-rs | 2.325x | [2.096, 2.544] | 0.0002 | 0.0003 | 7.369 | true | true | 0.4430 | 18.73 |
+| bd:go-vs-rs | e2e | verify | array-2048 | json-canon | json-canon-rs | json-canon-rs | 1.719x | [1.563, 1.826] | 0.0002 | 0.0003 | 5.097 | true | true | 0.5344 | 13.18 |
+| go:schubfach-vs-bd | e2e | verify | array-256 | schubfach | json-canon | schubfach | 1.284x | [1.130, 1.454] | 0.0018 | 0.0024 | -1.386 | true | true | 0.3290 | 18.34 |
+| rs:schubfach-vs-bd | e2e | verify | array-256 | schubfach-rs | json-canon-rs | schubfach-rs | 1.482x | [1.359, 1.622] | 0.0002 | 0.0003 | -2.963 | true | true | 0.1012 | 12.60 |
+| schubfach:go-vs-rs | e2e | verify | array-256 | schubfach | schubfach-rs | schubfach-rs | 2.232x | [2.011, 2.503] | 0.0002 | 0.0003 | 4.159 | true | true | 0.1012 | 12.60 |
+| bd:go-vs-rs | e2e | verify | array-256 | json-canon | json-canon-rs | json-canon-rs | 1.935x | [1.739, 2.166] | 0.0002 | 0.0003 | 3.599 | true | true | 0.1594 | 13.40 |
+| go:schubfach-vs-bd | e2e | verify | canonical-minimal | schubfach | json-canon | schubfach | 1.002x | [0.882, 1.141] | 0.9748 | 0.9868 | -0.011 | false | false | 0.2471 | 18.23 |
+| rs:schubfach-vs-bd | e2e | verify | canonical-minimal | schubfach-rs | json-canon-rs | schubfach-rs | 1.043x | [0.966, 1.116] | 0.2881 | 0.3163 | -0.395 | false | false | 0.0384 | 7.04 |
+| schubfach:go-vs-rs | e2e | verify | canonical-minimal | schubfach | schubfach-rs | schubfach-rs | 2.488x | [2.269, 2.732] | 0.0002 | 0.0003 | 4.689 | true | true | 0.0384 | 7.04 |
+| bd:go-vs-rs | e2e | verify | canonical-minimal | json-canon | json-canon-rs | json-canon-rs | 2.390x | [2.141, 2.694] | 0.0002 | 0.0003 | 4.079 | true | true | 0.0768 | 13.51 |
+| go:schubfach-vs-bd | e2e | verify | control-escapes | schubfach | json-canon | schubfach | 1.136x | [1.027, 1.259] | 0.0310 | 0.0379 | -0.838 | true | true | 0.1971 | 14.42 |
+| rs:schubfach-vs-bd | e2e | verify | control-escapes | schubfach-rs | json-canon-rs | schubfach-rs | 1.148x | [1.087, 1.235] | 0.0004 | 0.0005 | -1.582 | true | true | 0.0584 | 11.12 |
+| schubfach:go-vs-rs | e2e | verify | control-escapes | schubfach | schubfach-rs | schubfach-rs | 2.601x | [2.386, 2.843] | 0.0002 | 0.0003 | 5.916 | true | true | 0.0584 | 11.12 |
+| bd:go-vs-rs | e2e | verify | control-escapes | json-canon | json-canon-rs | json-canon-rs | 2.574x | [2.353, 2.780] | 0.0002 | 0.0003 | 5.341 | true | true | 0.0406 | 6.72 |
+| go:schubfach-vs-bd | e2e | verify | deep-64 | schubfach | json-canon | schubfach | 1.211x | [1.075, 1.379] | 0.0074 | 0.0094 | -1.099 | true | true | 0.3519 | 24.24 |
+| rs:schubfach-vs-bd | e2e | verify | deep-64 | schubfach-rs | json-canon-rs | schubfach-rs | 1.085x | [0.983, 1.198] | 0.1254 | 0.1447 | -0.575 | false | false | 0.0732 | 13.34 |
+| schubfach:go-vs-rs | e2e | verify | deep-64 | schubfach | schubfach-rs | schubfach-rs | 2.644x | [2.307, 3.012] | 0.0002 | 0.0003 | 3.632 | true | true | 0.0732 | 13.34 |
+| bd:go-vs-rs | e2e | verify | deep-64 | json-canon | json-canon-rs | json-canon-rs | 2.952x | [2.715, 3.256] | 0.0002 | 0.0003 | 7.760 | true | true | 0.0912 | 15.31 |
+| go:schubfach-vs-bd | e2e | verify | escaped-key-order | schubfach | json-canon | schubfach | 1.080x | [0.955, 1.229] | 0.2691 | 0.2995 | -0.420 | false | false | 0.2794 | 19.89 |
+| rs:schubfach-vs-bd | e2e | verify | escaped-key-order | schubfach-rs | json-canon-rs | schubfach-rs | 1.168x | [1.090, 1.250] | 0.0006 | 0.0008 | -1.539 | true | true | 0.0521 | 9.64 |
+| schubfach:go-vs-rs | e2e | verify | escaped-key-order | schubfach | schubfach-rs | schubfach-rs | 2.599x | [2.323, 2.877] | 0.0002 | 0.0003 | 4.397 | true | true | 0.0521 | 9.64 |
+| bd:go-vs-rs | e2e | verify | escaped-key-order | json-canon | json-canon-rs | json-canon-rs | 2.404x | [2.184, 2.652] | 0.0002 | 0.0003 | 4.637 | true | true | 0.0674 | 10.67 |
+| go:schubfach-vs-bd | e2e | verify | long-string | schubfach | json-canon | schubfach | 1.035x | [0.895, 1.196] | 0.6385 | 0.6711 | -0.167 | false | false | 0.3392 | 20.90 |
+| rs:schubfach-vs-bd | e2e | verify | long-string | schubfach-rs | json-canon-rs | schubfach-rs | 1.057x | [0.987, 1.126] | 0.1222 | 0.1423 | -0.585 | false | false | 0.0507 | 8.47 |
+| schubfach:go-vs-rs | e2e | verify | long-string | schubfach | schubfach-rs | schubfach-rs | 2.709x | [2.407, 2.986] | 0.0002 | 0.0003 | 4.316 | true | true | 0.0507 | 8.47 |
+| bd:go-vs-rs | e2e | verify | long-string | json-canon | json-canon-rs | json-canon-rs | 2.655x | [2.361, 2.960] | 0.0002 | 0.0003 | 4.096 | true | true | 0.0665 | 10.52 |
+| go:schubfach-vs-bd | e2e | verify | nested-mixed | schubfach | json-canon | schubfach | 1.153x | [1.016, 1.302] | 0.0314 | 0.0382 | -0.819 | true | true | 0.2742 | 19.30 |
+| rs:schubfach-vs-bd | e2e | verify | nested-mixed | schubfach-rs | json-canon-rs | schubfach-rs | 1.170x | [1.060, 1.274] | 0.0054 | 0.0069 | -1.121 | true | true | 0.0302 | 5.66 |
+| schubfach:go-vs-rs | e2e | verify | nested-mixed | schubfach | schubfach-rs | schubfach-rs | 2.659x | [2.400, 2.916] | 0.0002 | 0.0003 | 4.646 | true | true | 0.0302 | 5.66 |
+| bd:go-vs-rs | e2e | verify | nested-mixed | json-canon | json-canon-rs | json-canon-rs | 2.621x | [2.335, 2.951] | 0.0002 | 0.0003 | 5.009 | true | true | 0.1133 | 18.11 |
+| go:schubfach-vs-bd | e2e | verify | numeric-boundary | schubfach | json-canon | schubfach | 1.116x | [0.988, 1.280] | 0.1252 | 0.1447 | -0.579 | false | false | 0.2996 | 21.39 |
+| rs:schubfach-vs-bd | e2e | verify | numeric-boundary | schubfach-rs | json-canon-rs | schubfach-rs | 1.313x | [1.225, 1.383] | 0.0002 | 0.0003 | -3.039 | true | true | 0.0446 | 8.36 |
+| schubfach:go-vs-rs | e2e | verify | numeric-boundary | schubfach | schubfach-rs | schubfach-rs | 2.628x | [2.326, 2.894] | 0.0002 | 0.0003 | 4.143 | true | true | 0.0446 | 8.36 |
+| bd:go-vs-rs | e2e | verify | numeric-boundary | json-canon | json-canon-rs | json-canon-rs | 2.235x | [2.028, 2.460] | 0.0002 | 0.0003 | 4.424 | true | true | 0.0656 | 9.37 |
+| go:schubfach-vs-bd | e2e | verify | rfc-key-sorting | schubfach | json-canon | schubfach | 1.137x | [1.016, 1.267] | 0.0364 | 0.0441 | -0.804 | true | true | 0.2455 | 16.81 |
+| rs:schubfach-vs-bd | e2e | verify | rfc-key-sorting | schubfach-rs | json-canon-rs | schubfach-rs | 1.124x | [1.023, 1.215] | 0.0206 | 0.0258 | -0.931 | true | true | 0.0595 | 11.38 |
+| schubfach:go-vs-rs | e2e | verify | rfc-key-sorting | schubfach | schubfach-rs | schubfach-rs | 2.794x | [2.504, 3.060] | 0.0002 | 0.0003 | 5.367 | true | true | 0.0595 | 11.38 |
+| bd:go-vs-rs | e2e | verify | rfc-key-sorting | json-canon | json-canon-rs | json-canon-rs | 2.826x | [2.548, 3.139] | 0.0002 | 0.0003 | 5.631 | true | true | 0.0816 | 13.89 |
+| go:schubfach-vs-bd | e2e | verify | small | schubfach | json-canon | schubfach | 1.214x | [1.080, 1.357] | 0.0020 | 0.0026 | -1.226 | true | true | 0.2769 | 20.20 |
+| rs:schubfach-vs-bd | e2e | verify | small | schubfach-rs | json-canon-rs | schubfach-rs | 1.296x | [1.220, 1.385] | 0.0002 | 0.0003 | -2.738 | true | true | 0.0471 | 8.81 |
+| schubfach:go-vs-rs | e2e | verify | small | schubfach | schubfach-rs | schubfach-rs | 2.565x | [2.289, 2.846] | 0.0002 | 0.0003 | 4.305 | true | true | 0.0471 | 8.81 |
+| bd:go-vs-rs | e2e | verify | small | json-canon | json-canon-rs | json-canon-rs | 2.403x | [2.202, 2.577] | 0.0002 | 0.0003 | 6.416 | true | true | 0.0690 | 9.96 |
+| go:schubfach-vs-bd | e2e | verify | surrogate-pair | schubfach | json-canon | schubfach | 1.122x | [0.993, 1.266] | 0.0852 | 0.1012 | -0.654 | false | false | 0.2562 | 18.09 |
+| rs:schubfach-vs-bd | e2e | verify | surrogate-pair | schubfach-rs | json-canon-rs | schubfach-rs | 1.084x | [0.977, 1.194] | 0.1422 | 0.1633 | -0.540 | false | false | 0.0692 | 13.28 |
+| schubfach:go-vs-rs | e2e | verify | surrogate-pair | schubfach | schubfach-rs | schubfach-rs | 2.716x | [2.422, 3.001] | 0.0002 | 0.0003 | 4.875 | true | true | 0.0692 | 13.28 |
+| bd:go-vs-rs | e2e | verify | surrogate-pair | json-canon | json-canon-rs | json-canon-rs | 2.814x | [2.481, 3.161] | 0.0002 | 0.0003 | 4.937 | true | true | 0.0939 | 16.62 |
+| go:schubfach-vs-bd | e2e | verify | unicode | schubfach | json-canon | schubfach | 1.188x | [1.022, 1.368] | 0.0286 | 0.0353 | -0.841 | true | true | 0.3302 | 24.12 |
+| rs:schubfach-vs-bd | e2e | verify | unicode | schubfach-rs | json-canon-rs | schubfach-rs | 1.151x | [1.084, 1.248] | 0.0006 | 0.0008 | -1.420 | true | true | 0.0593 | 11.10 |
+| schubfach:go-vs-rs | e2e | verify | unicode | schubfach | schubfach-rs | schubfach-rs | 2.564x | [2.257, 2.894] | 0.0002 | 0.0003 | 3.600 | true | true | 0.0593 | 11.10 |
+| bd:go-vs-rs | e2e | verify | unicode | json-canon | json-canon-rs | json-canon-rs | 2.645x | [2.376, 2.880] | 0.0002 | 0.0003 | 4.891 | true | true | 0.0569 | 9.26 |
+| go:schubfach-vs-bd | e2e | verify | verify-whitespace | schubfach | json-canon | schubfach | 1.084x | [0.946, 1.263] | 0.2821 | 0.3125 | -0.394 | false | false | 0.3460 | 24.42 |
+| rs:schubfach-vs-bd | e2e | verify | verify-whitespace | schubfach-rs | json-canon-rs | schubfach-rs | 1.243x | [1.150, 1.329] | 0.0002 | 0.0003 | -1.996 | true | true | 0.0479 | 8.85 |
+| schubfach:go-vs-rs | e2e | verify | verify-whitespace | schubfach | schubfach-rs | schubfach-rs | 2.616x | [2.291, 2.938] | 0.0002 | 0.0003 | 3.623 | true | true | 0.0479 | 8.85 |
+| bd:go-vs-rs | e2e | verify | verify-whitespace | json-canon | json-canon-rs | json-canon-rs | 2.281x | [2.062, 2.524] | 0.0002 | 0.0003 | 4.447 | true | true | 0.0825 | 12.25 |
+| go:schubfach-vs-bd | api | canonicalize | array-2048 | schubfach | json-canon | schubfach | 1.604x | [1.596, 1.612] | 0.0002 | 0.0003 | -70.438 | true | true | 0.0139 | 0.69 |
+| rs:schubfach-vs-bd | api | canonicalize | array-2048 | schubfach-rs | json-canon-rs | schubfach-rs | 2.431x | [2.401, 2.458] | 0.0002 | 0.0003 | -63.571 | true | true | 0.0192 | 2.03 |
+| schubfach:go-vs-rs | api | canonicalize | array-2048 | schubfach | schubfach-rs | schubfach-rs | 2.144x | [2.122, 2.164] | 0.0002 | 0.0003 | 80.861 | true | true | 0.0192 | 2.03 |
+| bd:go-vs-rs | api | canonicalize | array-2048 | json-canon | json-canon-rs | json-canon-rs | 1.415x | [1.405, 1.427] | 0.0002 | 0.0003 | 39.704 | true | true | 0.0325 | 1.41 |
+| go:schubfach-vs-bd | api | canonicalize | array-256 | schubfach | json-canon | schubfach | 1.550x | [1.540, 1.563] | 0.0002 | 0.0003 | -44.456 | true | true | 0.0021 | 0.87 |
+| rs:schubfach-vs-bd | api | canonicalize | array-256 | schubfach-rs | json-canon-rs | schubfach-rs | 2.047x | [2.005, 2.085] | 0.0002 | 0.0003 | -26.642 | true | true | 0.0035 | 2.76 |
+| schubfach:go-vs-rs | api | canonicalize | array-256 | schubfach | schubfach-rs | schubfach-rs | 1.945x | [1.915, 1.968] | 0.0002 | 0.0003 | 51.701 | true | true | 0.0035 | 2.76 |
+| bd:go-vs-rs | api | canonicalize | array-256 | json-canon | json-canon-rs | json-canon-rs | 1.473x | [1.449, 1.496] | 0.0002 | 0.0003 | 22.901 | true | true | 0.0080 | 3.12 |
+| go:schubfach-vs-bd | api | canonicalize | canonical-minimal | schubfach | json-canon | schubfach | 1.514x | [1.506, 1.522] | 0.0002 | 0.0003 | -60.861 | true | true | 0.0000 | 0.83 |
+| rs:schubfach-vs-bd | api | canonicalize | canonical-minimal | schubfach-rs | json-canon-rs | schubfach-rs | 2.176x | [1.981, 2.314] | 0.0002 | 0.0003 | -11.025 | true | true | 0.0000 | 15.53 |
+| schubfach:go-vs-rs | api | canonicalize | canonical-minimal | schubfach | schubfach-rs | schubfach-rs | 1.842x | [1.682, 1.953] | 0.0002 | 0.0003 | 9.556 | true | true | 0.0000 | 15.53 |
+| bd:go-vs-rs | api | canonicalize | canonical-minimal | json-canon | json-canon-rs | json-canon-rs | 1.281x | [1.248, 1.309] | 0.0002 | 0.0003 | 9.840 | true | true | 0.0000 | 4.95 |
+| go:schubfach-vs-bd | api | canonicalize | control-escapes | schubfach | json-canon | json-canon | 1.065x | [1.059, 1.074] | 0.0002 | 0.0003 | 8.012 | true | true | 0.0000 | 0.95 |
+| rs:schubfach-vs-bd | api | canonicalize | control-escapes | schubfach-rs | json-canon-rs | schubfach-rs | 1.000x | [0.968, 1.035] | 0.9892 | 0.9942 | -0.004 | false | false | 0.0000 | 4.06 |
+| schubfach:go-vs-rs | api | canonicalize | control-escapes | schubfach | schubfach-rs | schubfach-rs | 2.206x | [2.166, 2.254] | 0.0002 | 0.0003 | 46.144 | true | true | 0.0000 | 4.06 |
+| bd:go-vs-rs | api | canonicalize | control-escapes | json-canon | json-canon-rs | json-canon-rs | 2.072x | [2.016, 2.131] | 0.0002 | 0.0003 | 30.615 | true | true | 0.0000 | 5.88 |
+| go:schubfach-vs-bd | api | canonicalize | deep-64 | schubfach | json-canon | schubfach | 1.000x | [0.995, 1.005] | 0.9936 | 0.9942 | -0.002 | false | false | 0.0001 | 0.75 |
+| rs:schubfach-vs-bd | api | canonicalize | deep-64 | schubfach-rs | json-canon-rs | json-canon-rs | 1.021x | [0.987, 1.135] | 0.9502 | 0.9659 | 0.302 | false | false | 0.0001 | 1.78 |
+| schubfach:go-vs-rs | api | canonicalize | deep-64 | schubfach | schubfach-rs | schubfach-rs | 1.730x | [1.574, 1.788] | 0.0002 | 0.0003 | 10.644 | true | true | 0.0009 | 12.08 |
+| bd:go-vs-rs | api | canonicalize | deep-64 | json-canon | json-canon-rs | json-canon-rs | 1.767x | [1.753, 1.787] | 0.0002 | 0.0003 | 59.516 | true | true | 0.0001 | 1.78 |
+| go:schubfach-vs-bd | api | canonicalize | deep | schubfach | json-canon | schubfach | 1.001x | [0.994, 1.007] | 0.8556 | 0.8843 | -0.083 | false | false | 0.0003 | 0.95 |
+| go:schubfach-vs-bd | api | canonicalize | escaped-key-order | schubfach | json-canon | schubfach | 1.597x | [1.590, 1.605] | 0.0002 | 0.0003 | -78.833 | true | true | 0.0000 | 0.55 |
+| rs:schubfach-vs-bd | api | canonicalize | escaped-key-order | schubfach-rs | json-canon-rs | schubfach-rs | 2.503x | [2.429, 2.575] | 0.0002 | 0.0003 | -22.949 | true | true | 0.0000 | 4.44 |
+| schubfach:go-vs-rs | api | canonicalize | escaped-key-order | schubfach | schubfach-rs | schubfach-rs | 2.371x | [2.324, 2.424] | 0.0002 | 0.0003 | 52.486 | true | true | 0.0000 | 4.44 |
+| bd:go-vs-rs | api | canonicalize | escaped-key-order | json-canon | json-canon-rs | json-canon-rs | 1.513x | [1.486, 1.548] | 0.0002 | 0.0003 | 20.474 | true | true | 0.0000 | 4.28 |
+| go:schubfach-vs-bd | api | canonicalize | large | schubfach | json-canon | schubfach | 1.725x | [1.717, 1.733] | 0.0002 | 0.0003 | -88.683 | true | true | 0.0585 | 0.61 |
+| go:schubfach-vs-bd | api | canonicalize | long-string | schubfach | json-canon | json-canon | 1.003x | [0.992, 1.016] | 0.6959 | 0.7252 | 0.177 | false | false | 0.0012 | 2.03 |
+| rs:schubfach-vs-bd | api | canonicalize | long-string | schubfach-rs | json-canon-rs | schubfach-rs | 1.001x | [0.999, 1.003] | 0.2845 | 0.3138 | -0.501 | false | false | 0.0000 | 0.33 |
+| schubfach:go-vs-rs | api | canonicalize | long-string | schubfach | schubfach-rs | schubfach-rs | 4.394x | [4.364, 4.429] | 0.0002 | 0.0003 | 90.073 | true | true | 0.0000 | 0.33 |
+| bd:go-vs-rs | api | canonicalize | long-string | json-canon | json-canon-rs | json-canon-rs | 4.378x | [4.329, 4.414] | 0.0002 | 0.0003 | 67.266 | true | true | 0.0000 | 0.19 |
+| go:schubfach-vs-bd | api | canonicalize | medium | schubfach | json-canon | schubfach | 1.709x | [1.700, 1.720] | 0.0002 | 0.0003 | -70.439 | true | true | 0.0026 | 0.96 |
+| go:schubfach-vs-bd | api | canonicalize | mixed-prod | schubfach | json-canon | schubfach | 1.324x | [1.313, 1.335] | 0.0002 | 0.0003 | -28.257 | true | true | 0.0013 | 1.19 |
+| go:schubfach-vs-bd | api | canonicalize | nested-mixed | schubfach | json-canon | schubfach | 1.414x | [1.406, 1.423] | 0.0002 | 0.0003 | -47.439 | true | true | 0.0000 | 0.91 |
+| rs:schubfach-vs-bd | api | canonicalize | nested-mixed | schubfach-rs | json-canon-rs | schubfach-rs | 1.998x | [1.918, 2.091] | 0.0002 | 0.0003 | -14.278 | true | true | 0.0001 | 7.59 |
+| schubfach:go-vs-rs | api | canonicalize | nested-mixed | schubfach | schubfach-rs | schubfach-rs | 2.592x | [2.507, 2.690] | 0.0002 | 0.0003 | 35.465 | true | true | 0.0001 | 7.59 |
+| bd:go-vs-rs | api | canonicalize | nested-mixed | json-canon | json-canon-rs | json-canon-rs | 1.834x | [1.780, 1.867] | 0.0002 | 0.0003 | 28.631 | true | true | 0.0001 | 4.90 |
+| go:schubfach-vs-bd | api | canonicalize | number-heavy | schubfach | json-canon | schubfach | 1.551x | [1.539, 1.564] | 0.0002 | 0.0003 | -43.906 | true | true | 0.0001 | 1.27 |
+| go:schubfach-vs-bd | api | canonicalize | numeric-boundary | schubfach | json-canon | schubfach | 1.482x | [1.470, 1.496] | 0.0002 | 0.0003 | -34.769 | true | true | 0.0001 | 1.00 |
+| rs:schubfach-vs-bd | api | canonicalize | numeric-boundary | schubfach-rs | json-canon-rs | schubfach-rs | 9.191x | [8.815, 9.382] | 0.0002 | 0.0003 | -57.107 | true | true | 0.0000 | 5.40 |
+| schubfach:go-vs-rs | api | canonicalize | numeric-boundary | schubfach | schubfach-rs | schubfach-rs | 12.998x | [12.499, 13.235] | 0.0002 | 0.0003 | 150.360 | true | true | 0.0000 | 5.40 |
+| bd:go-vs-rs | api | canonicalize | numeric-boundary | json-canon | json-canon-rs | json-canon-rs | 2.096x | [2.067, 2.127] | 0.0002 | 0.0003 | 46.622 | true | true | 0.0002 | 2.70 |
+| go:schubfach-vs-bd | api | canonicalize | rfc-key-sorting | schubfach | json-canon | json-canon | 1.010x | [1.006, 1.014] | 0.0002 | 0.0003 | 2.348 | true | true | 0.0000 | 0.56 |
+| rs:schubfach-vs-bd | api | canonicalize | rfc-key-sorting | schubfach-rs | json-canon-rs | json-canon-rs | 1.035x | [1.001, 1.072] | 0.0768 | 0.0916 | 0.846 | false | false | 0.0001 | 6.77 |
+| schubfach:go-vs-rs | api | canonicalize | rfc-key-sorting | schubfach | schubfach-rs | schubfach-rs | 2.320x | [2.290, 2.353] | 0.0002 | 0.0003 | 74.224 | true | true | 0.0000 | 2.89 |
+| bd:go-vs-rs | api | canonicalize | rfc-key-sorting | json-canon | json-canon-rs | json-canon-rs | 2.378x | [2.303, 2.455] | 0.0002 | 0.0003 | 35.372 | true | true | 0.0001 | 6.77 |
+| go:schubfach-vs-bd | api | canonicalize | small | schubfach | json-canon | schubfach | 1.338x | [1.315, 1.351] | 0.0002 | 0.0003 | -20.549 | true | true | 0.0000 | 2.46 |
+| rs:schubfach-vs-bd | api | canonicalize | small | schubfach-rs | json-canon-rs | schubfach-rs | 1.715x | [1.655, 1.780] | 0.0002 | 0.0003 | -12.753 | true | true | 0.0000 | 6.53 |
+| schubfach:go-vs-rs | api | canonicalize | small | schubfach | schubfach-rs | schubfach-rs | 2.146x | [2.080, 2.222] | 0.0002 | 0.0003 | 24.162 | true | true | 0.0000 | 6.53 |
+| bd:go-vs-rs | api | canonicalize | small | json-canon | json-canon-rs | json-canon-rs | 1.675x | [1.642, 1.713] | 0.0002 | 0.0003 | 24.998 | true | true | 0.0000 | 4.36 |
+| go:schubfach-vs-bd | api | canonicalize | surrogate-pair | schubfach | json-canon | schubfach | 1.015x | [0.997, 1.038] | 0.1984 | 0.2217 | -0.597 | false | false | 0.0000 | 1.25 |
+| rs:schubfach-vs-bd | api | canonicalize | surrogate-pair | schubfach-rs | json-canon-rs | schubfach-rs | 1.051x | [0.993, 1.119] | 0.1452 | 0.1660 | -0.680 | false | false | 0.0000 | 7.65 |
+| schubfach:go-vs-rs | api | canonicalize | surrogate-pair | schubfach | schubfach-rs | schubfach-rs | 2.424x | [2.315, 2.496] | 0.0002 | 0.0003 | 30.624 | true | true | 0.0000 | 7.65 |
+| bd:go-vs-rs | api | canonicalize | surrogate-pair | json-canon | json-canon-rs | json-canon-rs | 2.341x | [2.204, 2.450] | 0.0002 | 0.0003 | 17.043 | true | true | 0.0000 | 10.20 |
+| go:schubfach-vs-bd | api | canonicalize | unicode | schubfach | json-canon | json-canon | 1.002x | [0.998, 1.006] | 0.3375 | 0.3673 | 0.436 | false | false | 0.0000 | 0.59 |
+| rs:schubfach-vs-bd | api | canonicalize | unicode | schubfach-rs | json-canon-rs | schubfach-rs | 1.172x | [1.049, 1.358] | 0.0416 | 0.0501 | -0.977 | true | false | 0.0000 | 3.48 |
+| schubfach:go-vs-rs | api | canonicalize | unicode | schubfach | schubfach-rs | schubfach | 1.079x | [1.065, 1.103] | 0.0002 | 0.0003 | -3.653 | true | true | 0.0000 | 0.67 |
+| bd:go-vs-rs | api | canonicalize | unicode | json-canon | json-canon-rs | json-canon | 1.267x | [1.136, 1.457] | 0.0002 | 0.0003 | -1.412 | true | true | 0.0000 | 0.59 |
+| go:schubfach-vs-bd | api | canonicalize | verify-whitespace | schubfach | json-canon | schubfach | 1.724x | [1.715, 1.730] | 0.0002 | 0.0003 | -112.083 | true | true | 0.0000 | 0.71 |
+| rs:schubfach-vs-bd | api | canonicalize | verify-whitespace | schubfach-rs | json-canon-rs | schubfach-rs | 2.826x | [2.721, 2.933] | 0.0002 | 0.0003 | -21.438 | true | true | 0.0000 | 6.17 |
+| schubfach:go-vs-rs | api | canonicalize | verify-whitespace | schubfach | schubfach-rs | schubfach-rs | 2.623x | [2.538, 2.691] | 0.0002 | 0.0003 | 44.603 | true | true | 0.0000 | 6.17 |
+| bd:go-vs-rs | api | canonicalize | verify-whitespace | json-canon | json-canon-rs | json-canon-rs | 1.600x | [1.553, 1.631] | 0.0002 | 0.0003 | 21.498 | true | true | 0.0000 | 4.87 |
+| go:schubfach-vs-bd | api | verify | canonical/array-2048 | schubfach | json-canon | schubfach | 1.624x | [1.617, 1.631] | 0.0002 | 0.0003 | -82.302 | true | true | 0.0125 | 0.63 |
+| rs:schubfach-vs-bd | api | verify | canonical/array-2048 | schubfach-rs | json-canon-rs | schubfach-rs | 2.406x | [2.376, 2.451] | 0.0002 | 0.0003 | -41.103 | true | true | 0.0214 | 2.22 |
+| schubfach:go-vs-rs | api | verify | canonical/array-2048 | schubfach | schubfach-rs | schubfach-rs | 2.053x | [2.030, 2.075] | 0.0002 | 0.0003 | 72.732 | true | true | 0.0214 | 2.22 |
+| bd:go-vs-rs | api | verify | canonical/array-2048 | json-canon | json-canon-rs | json-canon-rs | 1.386x | [1.359, 1.397] | 0.0002 | 0.0003 | 26.773 | true | true | 0.0544 | 2.34 |
+| go:schubfach-vs-bd | api | verify | canonical/array-256 | schubfach | json-canon | schubfach | 1.534x | [1.526, 1.541] | 0.0002 | 0.0003 | -73.562 | true | true | 0.0022 | 0.89 |
+| rs:schubfach-vs-bd | api | verify | canonical/array-256 | schubfach-rs | json-canon-rs | schubfach-rs | 2.188x | [1.947, 2.320] | 0.0002 | 0.0003 | -12.472 | true | true | 0.0188 | 16.67 |
+| schubfach:go-vs-rs | api | verify | canonical/array-256 | schubfach | schubfach-rs | schubfach-rs | 2.236x | [1.991, 2.367] | 0.0002 | 0.0003 | 13.037 | true | true | 0.0188 | 16.67 |
+| bd:go-vs-rs | api | verify | canonical/array-256 | json-canon | json-canon-rs | json-canon-rs | 1.567x | [1.556, 1.576] | 0.0002 | 0.0003 | 66.135 | true | true | 0.0029 | 1.18 |
+| go:schubfach-vs-bd | api | verify | canonical/canonical-minimal | schubfach | json-canon | schubfach | 1.523x | [1.514, 1.533] | 0.0002 | 0.0003 | -47.821 | true | true | 0.0000 | 0.68 |
+| rs:schubfach-vs-bd | api | verify | canonical/canonical-minimal | schubfach-rs | json-canon-rs | schubfach-rs | 2.363x | [2.236, 2.476] | 0.0002 | 0.0003 | -14.559 | true | true | 0.0000 | 8.75 |
+| schubfach:go-vs-rs | api | verify | canonical/canonical-minimal | schubfach | schubfach-rs | schubfach-rs | 2.055x | [1.947, 2.123] | 0.0002 | 0.0003 | 21.104 | true | true | 0.0000 | 8.75 |
+| bd:go-vs-rs | api | verify | canonical/canonical-minimal | json-canon | json-canon-rs | json-canon-rs | 1.325x | [1.278, 1.355] | 0.0002 | 0.0003 | 9.329 | true | true | 0.0000 | 5.96 |
+| go:schubfach-vs-bd | api | verify | canonical/control-escapes | schubfach | json-canon | json-canon | 1.044x | [1.040, 1.049] | 0.0002 | 0.0003 | 8.519 | true | true | 0.0000 | 0.86 |
+| rs:schubfach-vs-bd | api | verify | canonical/control-escapes | schubfach-rs | json-canon-rs | json-canon-rs | 1.010x | [0.983, 1.041] | 0.5247 | 0.5635 | 0.291 | false | false | 0.0000 | 4.42 |
+| schubfach:go-vs-rs | api | verify | canonical/control-escapes | schubfach | schubfach-rs | schubfach-rs | 2.167x | [2.120, 2.206] | 0.0002 | 0.0003 | 50.211 | true | true | 0.0000 | 4.06 |
+| bd:go-vs-rs | api | verify | canonical/control-escapes | json-canon | json-canon-rs | json-canon-rs | 2.096x | [2.054, 2.143] | 0.0002 | 0.0003 | 40.691 | true | true | 0.0000 | 4.42 |
+| go:schubfach-vs-bd | api | verify | canonical/deep-64 | schubfach | json-canon | schubfach | 1.003x | [0.999, 1.007] | 0.1822 | 0.2045 | -0.628 | false | false | 0.0001 | 0.75 |
+| rs:schubfach-vs-bd | api | verify | canonical/deep-64 | schubfach-rs | json-canon-rs | json-canon-rs | 1.005x | [0.997, 1.019] | 0.3689 | 0.3979 | 0.427 | false | false | 0.0001 | 1.39 |
+| schubfach:go-vs-rs | api | verify | canonical/deep-64 | schubfach | schubfach-rs | schubfach-rs | 1.833x | [1.813, 1.847] | 0.0004 | 0.0005 | 65.657 | true | true | 0.0001 | 1.78 |
+| bd:go-vs-rs | api | verify | canonical/deep-64 | json-canon | json-canon-rs | json-canon-rs | 1.849x | [1.839, 1.865] | 0.0002 | 0.0003 | 93.847 | true | true | 0.0001 | 1.39 |
+| go:schubfach-vs-bd | api | verify | canonical/deep | schubfach | json-canon | schubfach | 1.011x | [1.007, 1.018] | 0.0004 | 0.0005 | -1.693 | true | true | 0.0003 | 1.05 |
+| go:schubfach-vs-bd | api | verify | canonical/escaped-key-order | schubfach | json-canon | schubfach | 1.639x | [1.630, 1.648] | 0.0002 | 0.0003 | -71.811 | true | true | 0.0000 | 0.81 |
+| rs:schubfach-vs-bd | api | verify | canonical/escaped-key-order | schubfach-rs | json-canon-rs | schubfach-rs | 2.534x | [2.429, 2.666] | 0.0002 | 0.0003 | -14.064 | true | true | 0.0000 | 6.61 |
+| schubfach:go-vs-rs | api | verify | canonical/escaped-key-order | schubfach | schubfach-rs | schubfach-rs | 2.412x | [2.315, 2.472] | 0.0002 | 0.0003 | 36.287 | true | true | 0.0000 | 6.61 |
+| bd:go-vs-rs | api | verify | canonical/escaped-key-order | json-canon | json-canon-rs | json-canon-rs | 1.560x | [1.480, 1.596] | 0.0002 | 0.0003 | 13.623 | true | true | 0.0000 | 7.16 |
+| go:schubfach-vs-bd | api | verify | canonical/large | schubfach | json-canon | schubfach | 1.735x | [1.727, 1.743] | 0.0002 | 0.0003 | -89.433 | true | true | 0.0675 | 0.73 |
+| go:schubfach-vs-bd | api | verify | canonical/long-string | schubfach | json-canon | json-canon | 1.003x | [0.993, 1.012] | 0.5451 | 0.5828 | 0.272 | false | false | 0.0008 | 1.34 |
+| rs:schubfach-vs-bd | api | verify | canonical/long-string | schubfach-rs | json-canon-rs | json-canon-rs | 1.003x | [0.993, 1.016] | 0.5703 | 0.6046 | 0.255 | false | false | 0.0003 | 1.81 |
+| schubfach:go-vs-rs | api | verify | canonical/long-string | schubfach | schubfach-rs | schubfach-rs | 4.445x | [4.407, 4.498] | 0.0004 | 0.0005 | 87.436 | true | true | 0.0002 | 1.54 |
+| bd:go-vs-rs | api | verify | canonical/long-string | json-canon | json-canon-rs | json-canon-rs | 4.446x | [4.408, 4.505] | 0.0002 | 0.0003 | 97.799 | true | true | 0.0003 | 1.81 |
+| go:schubfach-vs-bd | api | verify | canonical/medium | schubfach | json-canon | schubfach | 1.690x | [1.679, 1.700] | 0.0002 | 0.0003 | -71.621 | true | true | 0.0031 | 1.13 |
+| go:schubfach-vs-bd | api | verify | canonical/mixed-prod | schubfach | json-canon | schubfach | 1.320x | [1.314, 1.325] | 0.0002 | 0.0003 | -53.896 | true | true | 0.0008 | 0.72 |
+| go:schubfach-vs-bd | api | verify | canonical/nested-mixed | schubfach | json-canon | schubfach | 1.400x | [1.394, 1.406] | 0.0002 | 0.0003 | -72.776 | true | true | 0.0000 | 0.72 |
+| rs:schubfach-vs-bd | api | verify | canonical/nested-mixed | schubfach-rs | json-canon-rs | schubfach-rs | 1.935x | [1.873, 1.999] | 0.0002 | 0.0003 | -16.403 | true | true | 0.0000 | 5.66 |
+| schubfach:go-vs-rs | api | verify | canonical/nested-mixed | schubfach | schubfach-rs | schubfach-rs | 2.616x | [2.551, 2.691] | 0.0002 | 0.0003 | 47.980 | true | true | 0.0000 | 5.66 |
+| bd:go-vs-rs | api | verify | canonical/nested-mixed | json-canon | json-canon-rs | json-canon-rs | 1.893x | [1.848, 1.927] | 0.0002 | 0.0003 | 35.894 | true | true | 0.0001 | 4.32 |
+| go:schubfach-vs-bd | api | verify | canonical/number-heavy | schubfach | json-canon | schubfach | 1.552x | [1.541, 1.562] | 0.0002 | 0.0003 | -49.397 | true | true | 0.0001 | 0.93 |
+| go:schubfach-vs-bd | api | verify | canonical/numeric-boundary | schubfach | json-canon | schubfach | 1.474x | [1.463, 1.486] | 0.0002 | 0.0003 | -37.537 | true | true | 0.0001 | 0.82 |
+| rs:schubfach-vs-bd | api | verify | canonical/numeric-boundary | schubfach-rs | json-canon-rs | schubfach-rs | 9.091x | [8.972, 9.208] | 0.0002 | 0.0003 | -136.663 | true | true | 0.0000 | 2.54 |
+| schubfach:go-vs-rs | api | verify | canonical/numeric-boundary | schubfach | schubfach-rs | schubfach-rs | 13.307x | [13.134, 13.465] | 0.0002 | 0.0003 | 194.581 | true | true | 0.0000 | 2.54 |
+| bd:go-vs-rs | api | verify | canonical/numeric-boundary | json-canon | json-canon-rs | json-canon-rs | 2.158x | [2.141, 2.177] | 0.0002 | 0.0003 | 63.169 | true | true | 0.0001 | 1.12 |
+| go:schubfach-vs-bd | api | verify | canonical/rfc-key-sorting | schubfach | json-canon | json-canon | 1.005x | [1.001, 1.009] | 0.0462 | 0.0554 | 0.972 | true | false | 0.0000 | 0.66 |
+| rs:schubfach-vs-bd | api | verify | canonical/rfc-key-sorting | schubfach-rs | json-canon-rs | schubfach-rs | 1.007x | [0.963, 1.040] | 0.7556 | 0.7842 | -0.152 | false | false | 0.0001 | 5.58 |
+| schubfach:go-vs-rs | api | verify | canonical/rfc-key-sorting | schubfach | schubfach-rs | schubfach-rs | 2.177x | [2.111, 2.225] | 0.0002 | 0.0003 | 36.567 | true | true | 0.0001 | 5.58 |
+| bd:go-vs-rs | api | verify | canonical/rfc-key-sorting | json-canon | json-canon-rs | json-canon-rs | 2.152x | [2.101, 2.218] | 0.0002 | 0.0003 | 34.014 | true | true | 0.0001 | 5.83 |
+| go:schubfach-vs-bd | api | verify | canonical/small | schubfach | json-canon | schubfach | 1.353x | [1.348, 1.360] | 0.0002 | 0.0003 | -55.771 | true | true | 0.0000 | 0.59 |
+| rs:schubfach-vs-bd | api | verify | canonical/small | schubfach-rs | json-canon-rs | schubfach-rs | 1.683x | [1.604, 1.760] | 0.0002 | 0.0003 | -9.557 | true | true | 0.0000 | 8.20 |
+| schubfach:go-vs-rs | api | verify | canonical/small | schubfach | schubfach-rs | schubfach-rs | 2.032x | [1.945, 2.103] | 0.0002 | 0.0003 | 22.068 | true | true | 0.0000 | 8.20 |
+| bd:go-vs-rs | api | verify | canonical/small | json-canon | json-canon-rs | json-canon-rs | 1.635x | [1.572, 1.667] | 0.0002 | 0.0003 | 19.235 | true | true | 0.0000 | 5.73 |
+| go:schubfach-vs-bd | api | verify | canonical/surrogate-pair | schubfach | json-canon | json-canon | 1.008x | [1.005, 1.012] | 0.0006 | 0.0008 | 1.891 | true | true | 0.0000 | 0.50 |
+| rs:schubfach-vs-bd | api | verify | canonical/surrogate-pair | schubfach-rs | json-canon-rs | schubfach-rs | 1.051x | [0.976, 1.166] | 0.3519 | 0.3813 | -0.457 | false | false | 0.0000 | 8.23 |
+| schubfach:go-vs-rs | api | verify | canonical/surrogate-pair | schubfach | schubfach-rs | schubfach-rs | 2.325x | [2.234, 2.414] | 0.0002 | 0.0003 | 28.188 | true | true | 0.0000 | 8.23 |
+| bd:go-vs-rs | api | verify | canonical/surrogate-pair | json-canon | json-canon-rs | json-canon-rs | 2.195x | [1.991, 2.344] | 0.0002 | 0.0003 | 12.380 | true | true | 0.0000 | 17.06 |
+| go:schubfach-vs-bd | api | verify | canonical/unicode | schubfach | json-canon | json-canon | 1.001x | [0.997, 1.006] | 0.6795 | 0.7111 | 0.190 | false | false | 0.0000 | 0.61 |
+| rs:schubfach-vs-bd | api | verify | canonical/unicode | schubfach-rs | json-canon-rs | json-canon-rs | 1.040x | [1.024, 1.059] | 0.0008 | 0.0011 | 1.948 | true | true | 0.0000 | 2.07 |
+| schubfach:go-vs-rs | api | verify | canonical/unicode | schubfach | schubfach-rs | schubfach | 1.096x | [1.083, 1.115] | 0.0004 | 0.0005 | -5.254 | true | true | 0.0000 | 0.74 |
+| bd:go-vs-rs | api | verify | canonical/unicode | json-canon | json-canon-rs | json-canon | 1.055x | [1.045, 1.066] | 0.0002 | 0.0003 | -4.266 | true | true | 0.0000 | 0.61 |
+| go:schubfach-vs-bd | api | verify | canonical/verify-whitespace | schubfach | json-canon | schubfach | 1.702x | [1.695, 1.709] | 0.0004 | 0.0005 | -101.826 | true | true | 0.0000 | 0.45 |
+| rs:schubfach-vs-bd | api | verify | canonical/verify-whitespace | schubfach-rs | json-canon-rs | schubfach-rs | 2.691x | [2.510, 2.823] | 0.0002 | 0.0003 | -19.352 | true | true | 0.0000 | 11.82 |
+| schubfach:go-vs-rs | api | verify | canonical/verify-whitespace | schubfach | schubfach-rs | schubfach-rs | 2.568x | [2.400, 2.689] | 0.0002 | 0.0003 | 23.371 | true | true | 0.0000 | 11.82 |
+| bd:go-vs-rs | api | verify | canonical/verify-whitespace | json-canon | json-canon-rs | json-canon-rs | 1.624x | [1.595, 1.652] | 0.0002 | 0.0003 | 28.582 | true | true | 0.0000 | 3.71 |
+| go:schubfach-vs-bd | api | verify | noncanonical/control-escapes | schubfach | json-canon | json-canon | 1.048x | [1.042, 1.054] | 0.0004 | 0.0005 | 6.855 | true | true | 0.0000 | 0.80 |
+| go:schubfach-vs-bd | api | verify | noncanonical/escaped-key-order | schubfach | json-canon | schubfach | 1.604x | [1.596, 1.613] | 0.0002 | 0.0003 | -65.865 | true | true | 0.0000 | 0.66 |
+| go:schubfach-vs-bd | api | verify | noncanonical/large | schubfach | json-canon | schubfach | 1.719x | [1.711, 1.730] | 0.0002 | 0.0003 | -75.970 | true | true | 0.0705 | 0.74 |
+| go:schubfach-vs-bd | api | verify | noncanonical/medium | schubfach | json-canon | schubfach | 1.671x | [1.664, 1.680] | 0.0002 | 0.0003 | -80.862 | true | true | 0.0017 | 0.62 |
+| go:schubfach-vs-bd | api | verify | noncanonical/mixed-prod | schubfach | json-canon | schubfach | 1.299x | [1.293, 1.306] | 0.0002 | 0.0003 | -41.265 | true | true | 0.0007 | 0.68 |
+| go:schubfach-vs-bd | api | verify | noncanonical/nested-mixed | schubfach | json-canon | schubfach | 1.394x | [1.388, 1.401] | 0.0002 | 0.0003 | -54.579 | true | true | 0.0000 | 0.72 |
+| go:schubfach-vs-bd | api | verify | noncanonical/number-heavy | schubfach | json-canon | schubfach | 1.538x | [1.526, 1.552] | 0.0004 | 0.0005 | -40.911 | true | true | 0.0001 | 1.13 |
+| go:schubfach-vs-bd | api | verify | noncanonical/numeric-boundary | schubfach | json-canon | schubfach | 1.469x | [1.461, 1.480] | 0.0002 | 0.0003 | -50.773 | true | true | 0.0001 | 1.19 |
+| go:schubfach-vs-bd | api | verify | noncanonical/rfc-key-sorting | schubfach | json-canon | json-canon | 1.022x | [1.016, 1.027] | 0.0002 | 0.0003 | 3.256 | true | true | 0.0000 | 0.81 |
+| go:schubfach-vs-bd | api | verify | noncanonical/small | schubfach | json-canon | schubfach | 1.339x | [1.332, 1.345] | 0.0002 | 0.0003 | -48.327 | true | true | 0.0000 | 0.71 |
+| go:schubfach-vs-bd | api | verify | noncanonical/surrogate-pair | schubfach | json-canon | json-canon | 1.019x | [1.014, 1.023] | 0.0002 | 0.0003 | 3.818 | true | true | 0.0000 | 0.60 |
+| go:schubfach-vs-bd | api | verify | noncanonical/unicode | schubfach | json-canon | json-canon | 1.009x | [1.002, 1.015] | 0.0160 | 0.0202 | 1.208 | true | true | 0.0000 | 0.90 |
+| go:schubfach-vs-bd | api | verify | noncanonical/verify-whitespace | schubfach | json-canon | schubfach | 1.702x | [1.694, 1.710] | 0.0002 | 0.0003 | -106.419 | true | true | 0.0000 | 0.87 |

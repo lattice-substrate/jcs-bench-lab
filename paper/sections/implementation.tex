@@ -1,30 +1,36 @@
 \section{Implementation}
 \label{sec:implementation}
 
-Both implementations are written in Go 1.25.6 (minimum 1.24) and share the same
-\rfcjcs-compliant JSON canonicalization pipeline.  They differ only in
-the digit-generation module:
-
+We maintain four implementations with a common CLI ABI:
 \begin{itemize}
-\item \texttt{impl-schubfach}: uses the \schubfach algorithm with
-      \texttt{bits.Mul64} for 128-bit multiplication.  Zero heap
-      allocation in the formatting hot path.
-
-\item \texttt{impl-json-canon}: uses the \burgerdybvig algorithm with
-      \texttt{math/big.Int}.  Uses \texttt{sync.Pool} to reuse
-      big-integer buffers.
+\item \texttt{impl-schubfach} (Go): \schubfach number formatting.
+\item \texttt{impl-json-canon} (Go): \burgerdybvig number formatting.
+\item \texttt{impl-schubfach-rs} (Rust): \schubfach-aligned Rust path.
+\item \texttt{impl-json-canon-rs} (Rust): \burgerdybvig-aligned Rust path.
 \end{itemize}
 
-Both implementations:
-\begin{itemize}
-\item Do not use \texttt{encoding/json} for canonicalization.
-\item Produce static binaries (\texttt{CGO\_ENABLED=0}).
-\item Pass identical conformance gates (154 structural cases + 286{,}362
-      oracle vectors).
-\item Implement identical CLI ABI: \texttt{canonicalize} and
-      \texttt{verify} modes with defined exit codes and error classes.
-\end{itemize}
+The lab harness treats each implementation as a black-box canonicalizer
+with identical CLI contracts (\texttt{canonicalize}, \texttt{verify},
+exit-code policy, and error-class expectations).  This preserves
+algorithm comparability while allowing language/runtime differences to be
+measured independently.
 
-The shared pipeline handles JSON parsing, recursive key sorting (UTF-16
-code unit order per \rfcjcs), string escaping, and output serialization.
-The digit-generation module is invoked only for JSON number values.
+Rust builds use release configuration (\texttt{opt-level=3},
+\texttt{lto=true}, \texttt{codegen-units=1}, \texttt{strip=true}) to
+align optimization policy with production benchmarking practice.
+
+\subsection{Rust Implementation Notes}
+
+The Rust \schubfach implementation uses native \texttt{u128} arithmetic
+for the 128-bit intermediate products required by the algorithm,
+eliminating the need for compiler intrinsics or multi-word emulation.
+The Rust \burgerdybvig implementation uses \texttt{num-bigint::BigInt}
+for multiprecision arithmetic; buffer lifecycle is managed by Rust's RAII
+ownership model (deterministic \texttt{Drop}), removing the need for
+explicit pooling strategies such as Go's \texttt{sync.Pool}.
+
+Both Rust implementations share an identical JSON parser and serializer;
+only the \texttt{jcsfloat} digit-generation module differs between them,
+mirroring the Go design.  Rust binaries are approximately 430--456\,KB
+(stripped), compared to 2.5--2.7\,MB for the statically-linked Go
+binaries.

@@ -1,4 +1,8 @@
 .tmp/
 bin/
-results/
 apibench.test
+/lab
+paper/*.aux
+paper/*.blg
+paper/*.log
+paper/*.out
