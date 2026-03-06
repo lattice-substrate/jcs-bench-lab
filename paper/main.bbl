@@ -65,7 +65,7 @@ Raffaello Giulietti.
 \bibitem{ieee754}
 {IEEE}.
 \newblock {\em {IEEE Standard for Floating-Point Arithmetic}}.
-\newblock Number 754-2019. IEEE, 2019.
+\newblock Number 754-2019 in IEEE Std. IEEE, 2019.
 
 \bibitem{jeon2021dragonbox}
 Junekey Jeon.
@@ -90,6 +90,11 @@ Florian Loitsch.
 \newblock In {\em Proceedings of the ACM SIGPLAN 2010 Conference on Programming
   Language Design and Implementation (PLDI)}, pages 233--243. ACM, 2010.
 
+\bibitem{godragonboxcl}
+Taichi Maeda.
+\newblock strconv: replace {Ryu} ftoa with {Dragonbox}, 2025.
+\newblock Go CL 700075; merged November 2025, included in Go~1.26.
+
 \bibitem{mytkowicz2009producing}
 Todd Mytkowicz, Amer Diwan, Matthias Hauswirth, and Peter~F. Sweeney.
 \newblock Producing wrong data without doing anything obviously wrong!
@@ -101,6 +106,11 @@ Todd Mytkowicz, Amer Diwan, Matthias Hauswirth, and Peter~F. Sweeney.
 Anders Rundgren, Bret Jordan, and Samuel Erdtman.
 \newblock {JSON Canonicalization Scheme (JCS)}.
 \newblock RFC 8785, June 2020.
+
+\bibitem{steele1990how}
+Guy~L. Steele~Jr. and Jon~L. White.
+\newblock How to print floating-point numbers accurately.
+\newblock {\em ACM SIGPLAN Notices}, 25(6):112--126, 1990.
 
 \bibitem{w3c2024rdf}
 {W3C}.
