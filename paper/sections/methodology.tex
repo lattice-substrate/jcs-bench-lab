@@ -113,7 +113,14 @@ All comparisons use:
 \item Cohen's $d$ for effect size.\footnote{Computed as
       $(\bar{x}_A - \bar{x}_B) / s_p$ where $A$ and $B$ are the first
       and second implementation in each pair; negative values indicate
-      implementation $A$ is faster.}
+      implementation $A$ is faster.  In API benchmarks where coefficient
+      of variation is typically ${<}$2\%, Cohen's $d$ values can exceed
+      50 in absolute value; such magnitudes reflect low measurement
+      variance rather than practically meaningful effect-size
+      distinctions.  Readers should use the confidence intervals on
+      speedup ratios as the primary measure of practical effect size;
+      Cohen's $d$ is most informative in CLI benchmarks where higher
+      variance produces values in the conventional interpretive range.}
 \item Noise floor documentation: standard deviation of the faster
       implementation ($\sigma = \text{CV} \times \bar{x}_\text{faster}$),
       quantifying measurement noise in the same units as the metric.

@@ -1,7 +1,8 @@
 \section{Conclusion}
 \label{sec:conclusion}
 
-We presented the first empirical comparison of four digit-generation
+We presented a conformance-gated benchmark methodology and applied it to
+the first empirical comparison of four digit-generation
 algorithms---\burgerdybvig (multiprecision), \schubfach, \ryualg, and
 \dragonbox (all fixed-width)---inside a \rfcjcs/\ecma-constrained JSON
 canonicalization pipeline, with cross-language validation in Go and Rust
@@ -21,8 +22,9 @@ Key findings:
 \item Fixed-width algorithms achieve 1.4--1.8$\times$ speedup on
       number-dense workloads ($\nu(D) \geq 40\%$) in Go API benchmarks
       due to zero heap allocation; the advantage replicates at
-      2.3--3.0$\times$ in Rust (excluding extreme outliers), confirming
-      it is algorithmic.
+      2.3--3.0$\times$ in Rust (excluding extreme outliers), providing
+      evidence that the advantage is algorithmic rather than
+      language-specific.
 \item In end-to-end CLI measurement, the advantage narrows due to
       process startup dominance, but remains statistically significant
       on number-dense workloads.
@@ -34,7 +36,10 @@ Key findings:
       implementations were not cross-compiled in this study.
 \item Preliminary profiling suggests digit generation accounts for
       approximately 15--40\% of total canonicalization cost depending
-      on number density.
+      on number density. The observed pipeline-level speedups
+      (1.4--1.8$\times$ in Go, 2.3--3.0$\times$ in Rust) are consistent
+      with isolation-level speedups of ${\approx}5\times$ attenuated by
+      Amdahl's Law at these pipeline fractions.
 \end{itemize}
 
 The benchmark infrastructure, 286{,}362 oracle vectors, and all raw data

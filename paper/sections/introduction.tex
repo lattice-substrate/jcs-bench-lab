@@ -23,6 +23,22 @@ we measure on number-dense payloads corresponds to freeing
 approximately 24\% of a CPU core at 1{,}000 canonicalizations per
 second on a representative 14\,KB workload.
 
+Beyond throughput, the choice of digit-generation algorithm is a
+correctness concern in systems where canonicalized bytes are hashed and
+signed at every layer of a processing pipeline.  In deterministic
+infrastructure---where data-processing steps execute in sandboxed
+isolation and every governed artifact is schema-validated, canonically
+serialized, and cryptographically bound---a formatting divergence at the
+number-rendering layer does not produce one wrong document: it
+invalidates every hash computed over those bytes, every signature
+computed over those hashes, and every audit trail that chains those
+signatures.  The digit-generation algorithm sits at the foundation of a
+determinism guarantee that no higher layer can independently recover.
+This makes both the correctness validation (conformance gating) and the
+performance characterization reported here directly relevant to
+infrastructure where canonicalization is not optional but
+load-bearing~\cite{rfc8785}.
+
 Two families of algorithms can satisfy this requirement: multiprecision
 arithmetic approaches exemplified by \burgerdybvig~\cite{burger1996printing},
 and fixed-width integer approaches exemplified by
@@ -36,6 +52,12 @@ the formatting stage is only one component of the total cost.
 This paper makes three contributions:
 
 \begin{enumerate}
+\item A benchmark methodology that gates performance measurement on
+      conformance verification: implementations must pass 286{,}362
+      oracle vectors and 776 structural conformance cases before timing
+      data is collected.  We document noise floors and minimum observable
+      effect sizes for all comparisons.
+
 \item The first empirical comparison of four digit-generation algorithms
       (three fixed-width: \schubfach, \ryualg, \dragonbox; one
       multiprecision: \burgerdybvig) under \ecma/\rfcjcs constraints,
@@ -45,12 +67,6 @@ This paper makes three contributions:
       in Go API benchmarks; the advantage replicates at
       2.3--3.0$\times$ in Rust.
       String-dominant and deeply-nested inputs show $<$5\% difference.
-
-\item A benchmark methodology that gates performance measurement on
-      conformance verification: implementations must pass 286{,}362
-      oracle vectors and 776 structural conformance cases before timing
-      data is collected.  We document noise floors and minimum observable
-      effect sizes for all comparisons.
 
 \item A cross-language validation design (4$\times$2 matrix of
       algorithm $\times$ language) that separates algorithmic effects from

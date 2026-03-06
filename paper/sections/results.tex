@@ -97,8 +97,8 @@ In CLI end-to-end measurement, Rust implementations are approximately
 process startup overhead (Rust native binary vs.\ Go runtime
 initialization).  In API benchmarks, the within-Rust algorithmic ordering
 replicates the within-Go ordering: all three fixed-width algorithms
-outperform \burgerdybvig on number-dense workloads, confirming that the
-fixed-width advantage is not language-specific.
+outperform \burgerdybvig on number-dense workloads, providing evidence
+that the fixed-width advantage is not language-specific.
 
 This decomposition separates algorithmic effects from language/runtime
 effects and directly addresses language-specific performance threats.

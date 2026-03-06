@@ -58,10 +58,14 @@ Benjamini--Hochberg FDR correction across 1{,}644 comparisons
 algorithms perform within 1--8\% of each other across both languages,
 while each is 1.4--1.8$\times$ faster than \burgerdybvig on
 number-dense workloads ($\nu(D) \geq 40\%$) in Go API benchmarks;
-the advantage replicates at 2.3--3.0$\times$ in Rust, confirming it is
-algorithmic rather than language-specific (excluding extreme outliers on
-\texttt{numeric-boundary} and \texttt{number-heavy} in Rust at
-8--9$\times$, discussed in \S\ref{sec:discussion}).
+these pipeline-level ratios are consistent with larger
+isolation-level speedups attenuated by Amdahl's Law, since digit
+generation accounts for approximately 15--40\% of total pipeline cost;
+the advantage replicates at 2.3--3.0$\times$ in Rust, consistent with
+an algorithmic rather than language-specific explanation (excluding two
+pure-numeric workloads in Rust where digit generation accounts for
+${>}$95\% of pipeline cost, producing 8--9$\times$ ratios discussed in
+\S\ref{sec:discussion}).
 On string-dominant and deeply-nested inputs the difference narrows to
 $<$5\%.
 All eight implementations produce byte-identical output; Go binaries are
@@ -89,8 +93,8 @@ Ry\=u, Dragonbox, Burger--Dybvig, RFC~8785, ECMA-262, benchmark methodology, cro
 All data, software, and oracle vectors are freely available online.
 The benchmark infrastructure, all eight implementations, workload manifests,
 and oracle generation scripts are available at the accompanying
-repository.\footnote{Repository URL and Zenodo DOI to be inserted for
-camera-ready version.}  Complete benchmark tables (full API benchmarks,
+repository.\footnote{\url{https://github.com/lattice-substrate/jcs-bench-lab}.
+Zenodo DOI to be minted before camera-ready submission.}  Complete benchmark tables (full API benchmarks,
 full CLI benchmarks, and all 1{,}644 statistical comparisons across
 16~pairs) are provided in the supplementary materials.  Oracle vector
 checksums (SHA-256) are documented in \texttt{PROVENANCE.json} files

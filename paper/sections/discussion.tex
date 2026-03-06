@@ -32,7 +32,7 @@ canonicalization function), number-dense inputs (e.g.,
 digit-generation path.  In Rust within-language API benchmarks, the same
 algorithmic ordering holds at larger magnitudes (2.3--3.0$\times$ on the
 same workloads, excluding the two extreme outliers discussed below),
-confirming the advantage is algorithmic.  Deeply-nested
+providing evidence that the advantage is algorithmic.  Deeply-nested
 workloads (\texttt{deep}, \texttt{deep-64}) contain numbers but show
 ${\approx}1.0\times$ because JSON structural parsing and key sorting
 dominate, diluting the digit-generation signal.  The speedup therefore
@@ -84,7 +84,10 @@ Because these are \emph{within-Rust} comparisons (same harness on both
 sides), they are unaffected by the cross-language measurement granularity
 asymmetry discussed in \S\ref{sec:methodology}.  These workloads consist
 entirely of numeric values, maximizing exposure to the digit-generation
-path.  The Rust \burgerdybvig implementation uses the \texttt{num-bigint}
+path.  We report these workloads separately because their near-zero
+non-numeric content makes the pipeline-level ratio approach the
+isolation-level ratio, which is not representative of mixed workloads
+where parsing and serialization dilute the digit-generation signal.  The Rust \burgerdybvig implementation uses the \texttt{num-bigint}
 crate (Karatsuba multiplication) with a lazily-initialized
 power-of-ten cache (\texttt{OnceLock<Vec<BigUint>>}); although the
 harness discards 3~warmup iterations to amortize first-invocation
@@ -160,7 +163,7 @@ amplifies the startup-dominance effect: for small workloads the language
 runtime overhead is the primary differentiator, not the digit-generation
 algorithm.
 
-\textbf{Algorithmic ordering is language-independent.}  The key finding
+\textbf{Algorithmic ordering replicates across languages.}  The key finding
 from the cross-language design is that within-Rust comparisons replicate
 the within-Go ordering: all three fixed-width algorithms outperform
 \burgerdybvig on number-dense workloads in both languages, and the three
@@ -235,3 +238,20 @@ allocator with digit generation) and cache effects absent from
 isolation benchmarks.  This convergence confirms that our pipeline
 results and their isolation results measure the same underlying
 algorithmic advantage at different levels of system integration.
+
+\subsection{Methodological Contribution}
+
+The conformance-gated methodology introduced in this paper is
+independent of the specific algorithms compared.  The core design---gate
+timing on correctness, validate against multiple independent oracles,
+document noise floors and minimum detectable effects for every
+comparison---is reusable for any specification-constrained formatting
+evaluation.  The methodology addresses a gap in the float-to-string
+literature, where prior benchmarks (including Adams's Ry\=u evaluation
+and Champagne Gareau and Lemire's comprehensive C++ study) measure
+performance in isolation without first establishing conformance to a
+target specification.  In domains where correctness is a hard
+prerequisite---canonicalization, serialization standards,
+interoperability testing---measuring the speed of a non-conformant
+implementation is meaningless.  The benchmark infrastructure released
+with this paper implements this methodology as a reusable pipeline.
