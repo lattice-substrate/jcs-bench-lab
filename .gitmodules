@@ -10,3 +10,15 @@
 [submodule "impl-json-canon-rs"]
 	path = impl-json-canon-rs
 	url = git@github.com:lattice-substrate/jcs-burger-dybvig-rs.git
+[submodule "impl-ryu"]
+	path = impl-ryu
+	url = git@github.com:lattice-substrate/jcs-ryu.git
+[submodule "impl-dragonbox"]
+	path = impl-dragonbox
+	url = git@github.com:lattice-substrate/jcs-dragonbox.git
+[submodule "impl-ryu-rs"]
+	path = impl-ryu-rs
+	url = git@github.com:lattice-substrate/jcs-ryu-rs.git
+[submodule "impl-dragonbox-rs"]
+	path = impl-dragonbox-rs
+	url = git@github.com:lattice-substrate/jcs-dragonbox-rs.git
